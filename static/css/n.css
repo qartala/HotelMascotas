@@ -1,0 +1,379 @@
+* {
+    font-family: montserrat;
+}
+
+body {
+    background: #f1fbff;
+}
+
+.section-padding {
+    padding: 100px 0;
+}
+
+.carousel-item {
+    height: 100vh;
+    min-height: 300px;
+}
+
+.carousel-caption {
+    bottom: 220px;
+    z-index: 2;
+}
+
+.carousel-caption h1 {
+    font-size: 45px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 25px;
+}
+
+.carousel-caption p {
+    width: 60%;
+    margin: auto;
+    font-size: 18px;
+    line-height: 1.9;
+}
+
+.carousel-inner::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1;
+}
+
+
+.w-100 {
+    height: 100vh;
+}
+
+.services .card-body i {
+    font-size: 50px;
+}
+
+.separator-ribbon {
+    width: 100%;
+    height: 2px;
+    background: #FFD700;
+    margin: 50px 0;
+}
+
+/* ===== Cards ===== */
+.card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.card-body {
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #777;
+}
+
+.btn-warning {
+    background-color: #FFD700;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: background-color 0.3s;
+}
+
+.btn-warning:hover {
+    background-color: #e6b800;
+}
+
+/* ===== Responsive Design ===== */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .carousel-caption {
+        bottom: 370px;
+    }
+    .carousel-caption p {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .navbar-nav {
+        text-align: center;
+    }
+    .carousel-caption {
+        bottom: 125px;
+    }
+    .carousel-caption h1 {
+        font-size: 17px;
+    }
+    .carousel-caption a {
+        padding: 10px 15px;
+    }
+    .carousel-caption p {
+        width: 100%;
+        line-height: 1.6;
+        font-size: 12px;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+}
+
+
+
+.service-card {
+    border: none;
+    background: #f8f9fa;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.service-card img {
+    border-radius: 0;
+    object-fit: cover;
+    height: 250px;
+}
+
+.service-card .card-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.service-card .card-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #6c757d;
+}
+
+.service-card .btn-primary {
+    background-color: #ffcc00;
+    border-color: #ffcc00;
+    color: #000;
+    font-weight: 600;
+    padding: 10px 20px;
+    text-transform: uppercase;
+}
+
+.service-card .btn-primary:hover {
+    background-color: #e6b800;
+    border-color: #e6b800;
+}
+
+
+/* Estilo para el título de habitaciones */
+/* Estilo para el título de habitaciones */
+.title {
+    font-size: 2.5rem; /* Tamaño de fuente grande para el título */
+    font-weight: 700; /* Negrita */
+    color: #333; /* Color oscuro para el título */
+    position: relative; /* Posicionamiento relativo para el decorado */
+    margin-bottom: 3rem; /* Espacio inferior para separar del contenido */
+}
+
+.title::before {
+    content: ''; /* Crea un decorado antes del título */
+    position: absolute;
+    left: 50%; /* Centra el decorado horizontalmente */
+    bottom: -10px; /* Ubica el decorado debajo del título */
+    transform: translateX(-50%); /* Centra el decorado horizontalmente */
+    width: 80px; /* Ancho del decorado */
+    height: 4px; /* Alto del decorado */
+    background-color: #ffbb00; /* Color del decorado (puedes cambiarlo) */
+    border-radius: 2px; /* Bordes redondeados del decorado */
+}
+
+.card {
+    border: none;
+    border-radius: 10px; /* Radio de borde para redondear las tarjetas */
+    overflow: hidden; /* Oculta el desbordamiento del contenido */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para las tarjetas */
+    transition: transform 0.3s, box-shadow 0.3s; /* Transición para efectos de hover */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Levanta la tarjeta al pasar el cursor */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada en hover */
+}
+
+.btn-warning {
+    background-color: #ffbb00; /* Color de fondo del botón */
+    border-color: #ffbb00; /* Color del borde del botón */
+}
+
+.btn-warning:hover {
+    background-color: #ff9100; /* Color de fondo del botón en hover */
+    border-color: #ff9100; /* Color del borde del botón en hover */
+}
+
+
+
+
+
+
+.nosotros {
+    background: #ffffff; /* Color de fondo blanco para más elegancia */
+    border-radius: 10px; /* Bordes redondeados para un toque más moderno */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra ligera para un efecto de elevación */
+    padding: 30px; /* Espaciado interno para separar el contenido de los bordes */
+}
+
+.nosotros-img {
+    text-align: center; /* Centra la imagen en el contenedor */
+}
+
+.nosotros-img img {
+    max-width: 80%; /* Ajusta el ancho máximo de la imagen */
+    height: auto; /* Ajusta la altura automáticamente */
+    border-radius: 8px; /* Bordes redondeados para la imagen */
+    object-fit: cover; /* Asegura que la imagen se ajuste correctamente */
+}
+
+.nosotros-text {
+    padding: 20px; /* Espaciado interno para mejor separación del contenido */
+}
+
+.nosotros-text h2 {
+    font-size: 2rem; /* Tamaño de fuente más grande para el título */
+    margin-bottom: 20px; /* Espaciado debajo del título */
+    font-weight: 700; /* Negrita para el título */
+}
+
+.nosotros-text p {
+    font-size: 1rem; /* Tamaño de fuente estándar para el párrafo */
+    line-height: 1.6; /* Mayor altura de línea para una mejor legibilidad */
+    margin-bottom: 20px; /* Espaciado debajo del párrafo */
+}
+
+.btn-warning {
+    font-size: 1rem; /* Tamaño de fuente del botón */
+    padding: 10px 20px; /* Espaciado interno del botón */
+    border-radius: 5px; /* Bordes redondeados para el botón */
+}
+
+@media (max-width: 767px) {
+    .nosotros-text h2 {
+        font-size: 1.5rem; /* Ajuste del tamaño del título en pantallas pequeñas */
+    }
+
+    .nosotros-text p {
+        font-size: 0.9rem; /* Ajuste del tamaño del párrafo en pantallas pequeñas */
+    }
+
+    .btn-warning {
+        font-size: 0.9rem; /* Ajuste del tamaño del botón en pantallas pequeñas */
+        padding: 8px 16px; /* Ajuste del espaciado interno del botón */
+    }
+}
+
+
+
+#welcomeAlert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    width: auto;
+}
+
+
+
+/* Navbar Styles */
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+
+.navbar-nav .nav-link {
+    color: #000;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 15px 20px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffbb00;
+    background-color: transparent;
+}
+
+.navbar-toggler-icon {
+    background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath d="M4 6h16M4 12h16M4 18h16" stroke="%23000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3E%3C/svg%3E');
+}
+
+/* Carrito Button */
+.carro .btn {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.carro .btn:hover {
+    background-color: #f8f9fa;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    border-radius: 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    color: #333;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Admin Button */
+.ms-3 .btn-success {
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.ms-3 .btn-success:hover {
+    background-color: #45a049;
+    border-color: #36a03d;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767px) {
+    .navbar-nav {
+        margin-top: 15px;
+    }
+
+    .carro {
+        margin-top: 15px;
+    }
+}
