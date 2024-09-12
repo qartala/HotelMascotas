@@ -1,0 +1,11 @@
+- model: Usuario.Tipo_cuenta
+  pk: 1
+  fields:
+     nombre: Usuario
+
+
+- model: Usuario.Tipo_cuenta
+  pk: 2
+  fields:
+     nombre: Admin
+
