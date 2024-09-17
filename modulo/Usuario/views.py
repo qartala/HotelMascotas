@@ -16,6 +16,10 @@ from django.contrib import messages
 def admin(request):
     return render(request,'base/administrador.html')
 
+
+def colaborador(request):
+    return render(request,'base/colaborador.html')
+
 def listar(request):
     usuarios = User.objects.all()
 
