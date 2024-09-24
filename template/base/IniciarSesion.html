@@ -31,6 +31,15 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'registrarse' %}">Registrarse</a>
           </li>
+
+          {% if user.is_authenticated %}
+            {% if user.username == 'admin' %}
+              
+            {% else %}
+              
+            {% endif %}
+          {% endif %}
+
         </ul>
       </div>
     </div>

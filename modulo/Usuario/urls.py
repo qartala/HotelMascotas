@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import colaborador
+
 from .views import eliminar_suscriptor,admin,suscripcion,desuscribirse,registrarse,iniciarsesion,admin,eliminarSuscriptor,ingresarSuscriptor,vigencia,principalUsuario,listar,cerrar_sesion
 
 urlpatterns = [
@@ -15,7 +16,9 @@ urlpatterns = [
     path('listarUsuario',listar,name='listarUsuario'),
     path('cerrar_sesion',cerrar_sesion,name='cerrar_sesion'),
     path('eliminar_suscriptor/<int:id_s>',eliminar_suscriptor,name='eliminar_suscriptor'),
+
     path('colaborador/',colaborador,name='colaborador'),
+
     
 ]
 

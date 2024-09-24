@@ -17,8 +17,10 @@ def admin(request):
     return render(request,'base/administrador.html')
 
 
+
 def colaborador(request):
     return render(request,'base/colaborador.html')
+
 
 def listar(request):
     usuarios = User.objects.all()
@@ -120,10 +122,17 @@ def iniciarsesion(request):
         if usuario_encontrado is not None:
             login(request, usuario_encontrado)
             messages.success(request, 'Inicio de sesión exitoso')
-            return redirect('principalUsuario')
+
+            if usuario_encontrado.username == 'admin':
+                return redirect('vistaAdmin')  # Redirige al panel de admin
+            else:
+                return redirect('principalUsuario')  # Redirige al sitio normal
         else:
-            sweetify.warning(request, 'Usuario y contraseña no existen :C')
-            return render(request, 'base/IniciarSesion.html')
+            messages.error(request, 'Usuario y contraseña no existen :C')
+            return render(request, 'base/IniciarSesion.html')  # Muestra el formulario de nuevo
+
+    # Si la solicitud no es GET ni POST, redirige o maneja el error de otra manera.
+
 
 
 def eliminarSuscriptor(request):

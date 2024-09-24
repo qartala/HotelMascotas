@@ -1,6 +1,10 @@
 from django.urls import path,include
 from .views import  agregar_carrito, agregar_carrito2, carroCompra,histoCompra,seguimiento,compra
+
+from .views import eliminar_producto ,vaciarCarro ,mas,menos, iniciar_pago, confirmar_pago
+
 from .views import eliminar_producto ,vaciarCarro ,mas,menos,realizar_compra
+
 
 urlpatterns = [
     path('carroCompra',carroCompra,name='carroCompra'),
@@ -13,6 +17,11 @@ urlpatterns = [
     path('Vaciar', vaciarCarro ,name='vaciar'),
     path('mas/<int:id_p>', mas,name='mas'),
     path('menos/<int:id_p>', menos,name='menos'),
+
+    path('iniciar_pago/', iniciar_pago, name='iniciar_pago'),
+    path('confirmar_pago/', confirmar_pago, name='confirmar_pago'), 
+
     path('Realizar', realizar_compra ,name='Realizar'),
+
 ]
     

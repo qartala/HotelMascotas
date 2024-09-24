@@ -3,10 +3,35 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
+from django.contrib import messages
+from django.shortcuts import redirect, render
+
+from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions
+from django.conf import settings
+import uuid
+
+
+
 from django.contrib.auth.decorators import login_required
 
 from modulo.Compra.models import Carrito, Detalle_compra ,Habitacion, Historial,Seguimiento,Compra
 from modulo.Usuario.models import Usuario
+
+
+from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions
+import uuid
+
+def carroCompra(request):
+    usuario = Usuario.objects.get(idUsuario__id=request.user.id)
+    carrito = Carrito.objects.filter(idUsuario__id=usuario.id)
+
+    total = sum(item.total for item in carrito)
+    
+    contexto = {
+        'carrito': carrito,
+        'total': total
+    }
+    return render(request, 'base/carro_compra.html', contexto)
 
 # Create your views here.
 def carroCompra(request):
@@ -21,6 +46,7 @@ def carroCompra(request):
         'total':total
     }
     return render(request,'base/carro_compra.html',contexto)
+
 
 def vaciarCarro(request):
     cliente = Usuario.objects.get(idUsuario = request.user.id)
@@ -142,6 +168,68 @@ def menos(request,id_p):
         producto_carrito.save()
     return HttpResponseRedirect (reverse('carroCompra'))
 
+
+def iniciar_pago(request):
+    if request.method == 'POST':
+        amount = request.POST['total']  # Asegúrate de que el total esté en el formulario
+        session_id = request.session.session_key or "session_id"
+        buy_order = str(uuid.uuid4().hex[:12])  # Generar un buy_order único
+        return_url = settings.WEBPAY_PLUS_RETURN_URL
+        
+        # Configuración de Transbank
+        options = WebpayOptions(
+            commerce_code=settings.WEBPAY_PLUS_COMMERCE_CODE,
+            api_key=settings.WEBPAY_PLUS_API_KEY
+        )
+        transaction = Transaction(options)
+        
+        try:
+            response = transaction.create(buy_order, session_id, amount, return_url)
+            return redirect(response['url'] + '?token_ws=' + response['token'])
+        except Exception as e:
+            print("Error:", e)
+            messages.error(request, 'Ocurrió un error al iniciar el pago.')
+            return redirect('carroCompra')
+    
+    return render(request, 'base/iniciar_pago.html')
+
+def confirmar_pago(request):
+    token_ws = request.GET.get('token_ws', None)
+    if token_ws:
+        try:
+            options = WebpayOptions(
+                commerce_code=settings.WEBPAY_PLUS_COMMERCE_CODE,
+                api_key=settings.WEBPAY_PLUS_API_KEY
+            )
+            transaction = Transaction(options)
+            response = transaction.commit(token_ws)
+            
+            details = response.get('detail', response.get('response', response))
+            messages.success(request, f'¡Pago Completado! Detalles: {details}')
+            
+            return redirect('home')  # Cambia 'home' por la vista que desees
+        except Exception as e:
+            print("Error:", e)
+            messages.error(request, 'Ocurrió un error al confirmar el pago.')
+            return redirect('home')
+    else:
+        messages.error(request, "Token de pago no proporcionado.")
+        return redirect('home')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def realizar_compra(request):
     usuario = Usuario.objects.get(idUsuario__id =request.user.id )
     carrito = Carrito.objects.filter(idUsuario__id = usuario.id)
@@ -171,6 +259,7 @@ def realizar_compra(request):
         x.delete()
 
     return HttpResponseRedirect (reverse('principalUsuario'))
+
 
 
 

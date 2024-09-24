@@ -34,16 +34,6 @@ body {
     line-height: 1.9;
 }
 
-.carousel-inner::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 1;
-}
 
 
 .w-100 {
@@ -144,8 +134,6 @@ body {
     }
 }
 
-
-
 .service-card {
     border: none;
     background: #f8f9fa;
@@ -189,8 +177,6 @@ body {
     border-color: #e6b800;
 }
 
-
-/* Estilo para el título de habitaciones */
 /* Estilo para el título de habitaciones */
 .title {
     font-size: 2.5rem; /* Tamaño de fuente grande para el título */
@@ -234,11 +220,6 @@ body {
     background-color: #ff9100; /* Color de fondo del botón en hover */
     border-color: #ff9100; /* Color del borde del botón en hover */
 }
-
-
-
-
-
 
 .nosotros {
     background: #ffffff; /* Color de fondo blanco para más elegancia */
@@ -295,76 +276,50 @@ body {
     }
 }
 
-
-
 #welcomeAlert {
     position: fixed;
     top: 20px;
     right: 20px;
     z-index: 1050;
-    width: auto;
 }
-
-
 
 /* Navbar Styles */
 .navbar {
-    background-color: #ffffff;
+    background-color: #ffffff; /* Fondo del navbar */
     border-bottom: 1px solid #ddd;
 }
 
 .navbar-nav .nav-link {
-    color: #000;
+    color: #000; /* Color del texto del enlace */
     font-size: 16px;
     font-weight: 500;
     padding: 15px 20px;
 }
 
 .navbar-nav .nav-link:hover {
-    color: #ffbb00;
+    color: #ffbb00; /* Color al pasar el mouse */
     background-color: transparent;
 }
 
+/* Estilo específico para el botón del carrito */
+.navbar-nav .carro {
+    background-color: #ffbb00; /* Color de fondo del botón */
+    color: #000; /* Color del texto del botón */
+    border: none;
+    border-radius: 25px; /* Bordes redondeados */
+    padding: 10px 20px; /* Padding interno */
+    font-size: 16px; /* Tamaño de fuente */
+    font-weight: bold; /* Negrita */
+    transition: background-color 0.3s; /* Transición de fondo */
+}
+
+.navbar-nav .carro:hover {
+    background-color: #e6b800; /* Color al pasar el mouse */
+}
+
+/* Navbar Toggler Icon */
 .navbar-toggler-icon {
     background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath d="M4 6h16M4 12h16M4 18h16" stroke="%23000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3E%3C/svg%3E');
-}
-
-/* Carrito Button */
-.carro .btn {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 50px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.carro .btn:hover {
-    background-color: #f8f9fa;
-}
-
-/* Dropdown Menu */
-.dropdown-menu {
-    border-radius: 0;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.dropdown-item {
-    color: #333;
-}
-
-.dropdown-item:hover {
-    background-color: #f8f9fa;
-}
-
-/* Admin Button */
-.ms-3 .btn-success {
-    border-radius: 50%;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: background-color 0.3s, border-color 0.3s;
-}
-
-.ms-3 .btn-success:hover {
-    background-color: #45a049;
-    border-color: #36a03d;
 }
 
 /* Responsive Adjustments */
@@ -372,111 +327,9 @@ body {
     .navbar-nav {
         margin-top: 15px;
     }
-
-    .carro {
-        margin-top: 15px;
-    }
 }
 
-.card {
-    display: flex;
-    flex-direction: column;
-}
 
-.card-body {
-    flex-grow: 1;
-}
 
-.service-card {
-    height: 100%;
-}
 
-.card-img-top {
-    height: 200px;
-    object-fit: cover; 
-}
 
-.colaborador-img img {
-    width: 80%; 
-    max-width: 400px; 
-    height: auto; 
-    display: block;
-    margin: 0 auto; 
-}
-
-.mb-4 {
-    margin-bottom: 50px !important; 
-}
-
-section {
-    scroll-margin-top: 100px;  /* Ajusta este valor al tamaño de tu navbar */
-}
-
-#precios {
-    margin-bottom: 50px; /* Ajusta este valor según sea necesario */
-  }
-  
-  #nosotros {
-    padding-top: 50px; /* Ajusta este valor según sea necesario */
-  }
-  
-      .btn-custom-red {
-      background-color: #dc3545; /* Rojo Bootstrap */
-      color: white;
-      border: none;
-      font-weight: bold; /* Opcional: Para un texto más destacado */
-    }
-
-    .btn-custom-red:hover {
-      background-color: #c82333; /* Rojo oscuro al pasar el mouse */
-    }
-
-.section-padding {
-    padding-top: 30px;  
-    padding-bottom: 30px; 
-}
-
-/* Eliminar el margen superior entre secciones */
-#colaborador {
-    margin-top: 0;
-    padding-top: 0; /* ajusta el padding */
-}
-
-  .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-  }
-  
-  .btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
-  }
-  
-  .modal-content {
-    border-radius: 10px;
-  }
-  
-  .modal-header {
-    border-bottom: 1px solid #dee2e6;
-  }
-  
-  .modal-body {
-    padding: 2rem;
-  }
-  
-  .form-label {
-    font-weight: bold;
-  }
-  
-  .form-control {
-    border-radius: 0.25rem;
-    border-color: #ced4da;
-  }
-  
-  .form-select {
-    border-radius: 0.25rem;
-  }
-  
-  .btn-close-white {
-    filter: invert(1);
-  }
