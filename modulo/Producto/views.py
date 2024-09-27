@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from modulo.Usuario.models import Usuario
 import sweetify
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 
 # Create your views here. aqui
@@ -15,6 +16,7 @@ def principal(request):
     }
     return render(request, 'base/caso.html', context=contexto)
 
+@user_passes_test(lambda u: u.is_superuser)
 def listar(request):
     productos = Habitacion.objects.all()
     contexto = {
@@ -25,7 +27,7 @@ def listar(request):
 
 
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def modificar(request, idHabitacion):
     try:
         productoEncontrado = Habitacion.objects.get(id=idHabitacion)
@@ -65,7 +67,8 @@ def modificar(request, idHabitacion):
 
     
 
-# aqui  
+# aqui 
+@user_passes_test(lambda u: u.is_superuser)
 def promociones(request):
     buscar = request.GET.get("buscar", "")
     productos = Habitacion.objects.filter(tipoPerro__icontains=buscar)
@@ -76,6 +79,7 @@ def promociones(request):
     }
     return render(request, 'base/Promociones.html', context=contexto)
 
+@user_passes_test(lambda u: u.is_superuser)
 def agregarProductos(request):
     categorias = Categoria.objects.all()
     promociones = Promocion.objects.all()
@@ -115,11 +119,11 @@ def agregarProductos(request):
                 return render(request,'base/AgregarProductos.html',context = contexto)
         sweetify.success(request, 'Producto agregado con éxito!!!')    
         return HttpResponseRedirect(reverse('agregarProductos'))
-
+    
+@user_passes_test(lambda u: u.is_superuser)
 def agregarCategoria(request):
     if request.method == 'GET':
         return render(request,'base/AgregarCategoria.html')
-
     elif request.method =='POST':
         nuevaCategoria = Categoria()
         nuevaCategoria.nombre = request.POST['nombre']
@@ -127,7 +131,7 @@ def agregarCategoria(request):
         sweetify.success(request, 'Categoria creada con éxito!!!')
         return HttpResponseRedirect(reverse('agregarCategoria'))
         
-
+@user_passes_test(lambda u: u.is_superuser)
 def crearOferta(request):
     if request.method == 'GET':
         return render(request,'base/crear_oferta.html')
@@ -157,6 +161,7 @@ def crearOferta(request):
     sweetify.success(request, 'Oferta creada con éxito!!!')
     return HttpResponseRedirect(reverse('crearOferta'))
 
+@user_passes_test(lambda u: u.is_superuser)
 def eliminar(request, idProducto):
     try:
         productoEncontrado = Habitacion.objects.get(id=idProducto)

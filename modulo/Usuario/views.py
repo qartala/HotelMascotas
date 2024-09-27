@@ -2,7 +2,7 @@ from logging import error
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout,authenticate
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from modulo.Usuario.models import  Usuario ,Suscripcion
@@ -14,12 +14,22 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Ficha
 from .forms import FichaSaludForm
+from django.views.decorators.cache import cache_control
 
 # Create your views here.
+# Para las vistas en las que se proteja y solo la pueda ver el admin
+@user_passes_test(lambda u: u.is_superuser)
+# para borrar el cache, cuando se cierre sesion no se queden cosas guardadas en el navegador
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def admin(request):
-    return render(request,'base/administrador.html')
+    if request.user.is_authenticated and request.user.is_superuser:
+        return render(request,'base/administrador.html')
+    elif request.user.is_authenticated and request.user.is_superuser == False:
+        return redirect('principalUsuario')
+    else:
+        return HttpResponseRedirect(reverse('inicio'))
 
-
+@login_required
 def perfil (request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('principal')) 
@@ -29,6 +39,7 @@ def perfil (request):
 def colaborador(request):
     return render(request,'base/colaborador.html')
 
+@login_required
 def ficha_salud_view(request):
     if request.method == 'POST':
         form = FichaSaludForm(request.POST)
@@ -42,6 +53,7 @@ def ficha_salud_view(request):
         form = FichaSaludForm()
     return render(request, 'base/ficha.html', {'form': form})
 
+@login_required
 def listar_fichas_view(request):
     # Obtener el usuario autenticado
     usuario = Usuario.objects.get(idUsuario=request.user)
@@ -49,6 +61,7 @@ def listar_fichas_view(request):
     fichas = Ficha.objects.filter(id_usuario=usuario)
     return render(request, 'base/listar_fichas.html', {'fichas': fichas})
 
+@login_required
 def editar_ficha_view(request, pk):
     ficha = get_object_or_404(Ficha, pk=pk)  # Obtiene la ficha por su ID
     if request.method == 'POST':
@@ -61,6 +74,7 @@ def editar_ficha_view(request, pk):
 
     return render(request, 'base/editar_ficha.html', {'form': form})
 
+@login_required
 def eliminar_ficha(request, id):
     ficha = get_object_or_404(Ficha, id=id)
     ficha.delete()
@@ -171,12 +185,12 @@ def iniciarsesion(request):
             login(request, usuario_encontrado)
             messages.success(request, 'Inicio de sesión exitoso')
 
-            if usuario_encontrado.username == 'admin':
+            if usuario_encontrado.is_superuser == True:
                 return redirect('vistaAdmin')  # Redirige al panel de admin
             else:
                 return redirect('principalUsuario')  # Redirige al sitio normal
         else:
-            messages.error(request, 'Usuario y contraseña no existen :C')
+            messages.error(request, 'Usuario y contraseña no existen')
             return render(request, 'base/IniciarSesion.html')  # Muestra el formulario de nuevo
 
     # Si la solicitud no es GET ni POST, redirige o maneja el error de otra manera.
@@ -243,33 +257,30 @@ def eliminar_suscriptor(request,id_s):
 # hay que agregar esto a las urls 
 
 
-
+@login_required
 def cerrar_sesion(request):
     if request.user.is_authenticated:
         logout(request)
     return HttpResponseRedirect(reverse('principal')) 
 
-
+@login_required
 def principalUsuario (request):
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(('inicio'))
-    
-    suscrito = Suscripcion.objects.all()
-    productos = Habitacion.objects.all()
+        return HttpResponseRedirect(reverse('inicio'))
+    elif request.user.is_superuser:
+        return HttpResponseRedirect(reverse('vistaAdmin'))
+    else:
+        suscrito = Suscripcion.objects.all()
+        productos = Habitacion.objects.all()
 
-    contexto = {
-        'productos':productos,
-        'suscrito':suscrito,
-    }
-    
-    contexto = {}
-    buscar = ""
-    try:
-        buscar = request.GET["buscar"]
-    except Exception:
-        pass
-    if request.method == "GET":
+        contexto = {
+            'productos':productos,
+            'suscrito':suscrito,
+        }
         
-        productos = Habitacion.objects.filter(tipoPerro__contains=buscar)
-        contexto["productos"] = productos
-    return render(request,'base/casoUsuario.html',context = contexto)
+        
+        buscar = request.GET.get("buscar", "")
+        if request.method == "GET" and buscar:
+            productos = Habitacion.objects.filter(tipoPerro__contains=buscar)
+            contexto["productos"] = productos
+        return render(request,'base/casoUsuario.html',context = contexto)
