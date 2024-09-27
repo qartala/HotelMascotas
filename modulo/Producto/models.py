@@ -24,3 +24,5 @@ class Habitacion(models.Model):
     tiempoText = models.CharField(max_length=200)
     id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
     id_Promocion = models.ForeignKey(Promocion, on_delete=models.CASCADE)
+
+# class FichaMascota(models.Model):

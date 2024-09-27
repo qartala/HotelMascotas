@@ -13,8 +13,8 @@ from modulo.Producto.urls import urlpatterns as urlhabitacion
 urlpatterns = [
     path('',include(urlhabitacion)),
     path('admin/',include(urlusuario)),
-    path('compra/',include(urlcompra)),
-    path('habitacion/',include(urlhabitacion))
+    path('compra/',include(urlcompra))
+    # path('habitacion/',include(urlhabitacion))
 ]
 
 

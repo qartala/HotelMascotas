@@ -11,15 +11,61 @@ from modulo.Producto.models import Habitacion
 import datetime
 import sweetify
 from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Ficha
+from .forms import FichaSaludForm
 
 # Create your views here.
 def admin(request):
     return render(request,'base/administrador.html')
 
 
+def perfil (request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('principal')) 
+    else:
+        return render(request, 'base/perfil.html')
 
 def colaborador(request):
     return render(request,'base/colaborador.html')
+
+def ficha_salud_view(request):
+    if request.method == 'POST':
+        form = FichaSaludForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit=False) # No guarda el objeto aún
+            usuario = Usuario.objects.get(idUsuario=request.user)  
+            form.id_usuario = usuario  # Asigna el usuario autenticado
+            form.save()
+            return render(request,'base/perfil.html')  # Redirige a la lista de fichas tras guardar
+    else:
+        form = FichaSaludForm()
+    return render(request, 'base/ficha.html', {'form': form})
+
+def listar_fichas_view(request):
+    # Obtener el usuario autenticado
+    usuario = Usuario.objects.get(idUsuario=request.user)
+    # Filtrar las fichas por el usuario autenticado
+    fichas = Ficha.objects.filter(id_usuario=usuario)
+    return render(request, 'base/listar_fichas.html', {'fichas': fichas})
+
+def editar_ficha_view(request, pk):
+    ficha = get_object_or_404(Ficha, pk=pk)  # Obtiene la ficha por su ID
+    if request.method == 'POST':
+        form = FichaSaludForm(request.POST, instance=ficha)  # Carga la instancia de la ficha
+        if form.is_valid():
+            form.save()  # Guarda los cambios
+            return redirect('listar_fichas')  # Redirige a la lista de fichas
+    else:
+        form = FichaSaludForm(instance=ficha)  # Carga la instancia para el formulario
+
+    return render(request, 'base/editar_ficha.html', {'form': form})
+
+def eliminar_ficha(request, id):
+    ficha = get_object_or_404(Ficha, id=id)
+    ficha.delete()
+    return redirect('listar_fichas')  # Redirige a la lista de fichas tras eliminar
+
 
 
 def listar(request):
@@ -80,11 +126,13 @@ def registrarse(request):
         
     elif request.method =='POST':
         usuario = request.POST['usuario']
+        nombre = request.POST['nombre']
         contrasenia = request.POST['contrasenia']
         correo = request.POST['correo']
         try:
             usuario_creado, se_creo = User.objects.get_or_create(
                                         username = usuario,
+                                        first_name = nombre,
                                         password = contrasenia,
                                         email = correo
                                         )          #el usuario es unico, por si lo duplico dara error
@@ -92,7 +140,7 @@ def registrarse(request):
             codigo_error =int (ex.args[0])
             if codigo_error == 1062:
                 
-             sweetify.warning(request, 'Usuario ya existe, no se creo :C') 
+             sweetify.warning(request, 'El nombre de usuario ya existe') 
     
             return render(request,'base/Registrarse.html')
 
@@ -107,7 +155,7 @@ def registrarse(request):
         return HttpResponseRedirect(reverse('iniciarsesion'))
         
     else:
-        sweetify.warning(request, 'Usuario ya existe, no se creo :C') 
+        sweetify.warning(request, 'El nombre de usuario ya existe')
     return render(request,'base/Registrarse.html',contexto)
 
 
@@ -203,6 +251,8 @@ def cerrar_sesion(request):
 
 
 def principalUsuario (request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(('inicio'))
     
     suscrito = Suscripcion.objects.all()
     productos = Habitacion.objects.all()
