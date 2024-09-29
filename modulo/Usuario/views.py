@@ -14,7 +14,8 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Ficha
 from .forms import FichaSaludForm
-from django.views.decorators.cache import cache_control
+from django.views.decorators.cache import cache_control, never_cache
+
 
 # Create your views here.
 # Para las vistas en las que se proteja y solo la pueda ver el admin
@@ -24,12 +25,12 @@ from django.views.decorators.cache import cache_control
 def admin(request):
     if request.user.is_authenticated and request.user.is_superuser:
         return render(request,'base/administrador.html')
-    elif request.user.is_authenticated and request.user.is_superuser == False:
+    elif request.user.is_authenticated and not request.user.is_superuser:
         return redirect('principalUsuario')
     else:
         return HttpResponseRedirect(reverse('inicio'))
 
-@login_required
+
 def perfil (request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('principal')) 
@@ -39,7 +40,7 @@ def perfil (request):
 def colaborador(request):
     return render(request,'base/colaborador.html')
 
-@login_required
+
 def ficha_salud_view(request):
     if request.method == 'POST':
         form = FichaSaludForm(request.POST)
@@ -53,7 +54,7 @@ def ficha_salud_view(request):
         form = FichaSaludForm()
     return render(request, 'base/ficha.html', {'form': form})
 
-@login_required
+
 def listar_fichas_view(request):
     # Obtener el usuario autenticado
     usuario = Usuario.objects.get(idUsuario=request.user)
@@ -61,7 +62,7 @@ def listar_fichas_view(request):
     fichas = Ficha.objects.filter(id_usuario=usuario)
     return render(request, 'base/listar_fichas.html', {'fichas': fichas})
 
-@login_required
+
 def editar_ficha_view(request, pk):
     ficha = get_object_or_404(Ficha, pk=pk)  # Obtiene la ficha por su ID
     if request.method == 'POST':
@@ -74,7 +75,7 @@ def editar_ficha_view(request, pk):
 
     return render(request, 'base/editar_ficha.html', {'form': form})
 
-@login_required
+
 def eliminar_ficha(request, id):
     ficha = get_object_or_404(Ficha, id=id)
     ficha.delete()
@@ -179,13 +180,12 @@ def iniciarsesion(request):
     elif request.method == 'POST':
         usuario = request.POST.get('usuario')
         contrasenia = request.POST.get('contrasenia')
-
         usuario_encontrado = authenticate(username=usuario, password=contrasenia)
         if usuario_encontrado is not None:
             login(request, usuario_encontrado)
             messages.success(request, 'Inicio de sesión exitoso')
 
-            if usuario_encontrado.is_superuser == True:
+            if usuario_encontrado.is_superuser:
                 return redirect('vistaAdmin')  # Redirige al panel de admin
             else:
                 return redirect('principalUsuario')  # Redirige al sitio normal
@@ -257,13 +257,13 @@ def eliminar_suscriptor(request,id_s):
 # hay que agregar esto a las urls 
 
 
-@login_required
+@never_cache
 def cerrar_sesion(request):
     if request.user.is_authenticated:
         logout(request)
-    return HttpResponseRedirect(reverse('principal')) 
+    return HttpResponseRedirect(reverse('')) 
 
-@login_required
+
 def principalUsuario (request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('inicio'))
