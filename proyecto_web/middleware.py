@@ -16,36 +16,54 @@ class LoginRequiredMiddleware:
     def __call__(self, request):
         # Lista de URLs protegidas
         # Usamos reverse, porque solo queremos obtener el nombre (name=) de las rutas
+        rutas_protegidas_sin_sesion = [
+            'principal',
+            'iniciarsesion',
+        ]
+         
         rutas_protegidas = [
-            reverse('principalUsuario'), # URLs que quieras proteger
-            reverse('perfil'),
-            reverse('carroCompra'),
-            reverse('compra'),
+            'principalUsuario', # URLs que quieras proteger
+            'perfil',
+            'carroCompra',
+            'compra',
+            'cerrar_sesion',
+            'ficha_salud',
+            'listar_fichas',
+            'editar_ficha',
+            'eliminar_ficha',
         ]
 
         rutas_protegidas_admin = [
-             reverse('vistaAdmin'),
-             reverse('listarProducto'),
-             reverse('crearOferta'),
-             reverse('agregarCategoria'),
-             reverse('agregarProductos'),
+             'vistaAdmin',
+             'listarProducto',
+             'crearOferta',
+             'agregarCategoria',
+             'agregarProductos',
+             'modificarProducto',
+             'eliminarProducto',
+             'cerrar_sesion',
         ]
 
-        match = resolve(request.path)
         # Verifica si la URL solicitada es una de las protegidas
         # Usamos redirect, porque genera una respuesta HTTP para evitar errores al redirigir al usuario
-        
-        if request.path in rutas_protegidas and not request.user.is_authenticated:
-            # Si no está autenticado, redirige a la página de inicio de sesión
-            return redirect('principal')
-        elif request.path in rutas_protegidas and request.user.is_superuser:
-            # Si es superusuario, redirige a otra página (puedes cambiar esta redirección)
-            return redirect('vistaAdmin')
-        elif request.path in rutas_protegidas_admin and not request.user.is_superuser:
-            return redirect('principalUsuario')
-        
-        elif match.url_name == 'modificarProducto' and not request.user.is_superuser:
-            return redirect('principalUsuario')
+        ruta_actual = resolve(request.path_info).url_name
+
+        if not request.user.is_authenticated:
+            if ruta_actual not in rutas_protegidas_sin_sesion:
+                # Redirigir a una página pública o de inicio de sesión si no está autenticado
+                return redirect(reverse('iniciarsesion'))
+
+        # Caso 2: Usuario autenticado y no es admin
+        elif request.user.is_authenticated and not request.user.is_staff:
+            if ruta_actual not in rutas_protegidas:
+                # Redirigir al perfil de usuario si intenta acceder a una ruta no autorizada
+                return redirect(reverse('principalUsuario'))
+
+        # Caso 3: Usuario autenticado y es admin
+        elif request.user.is_authenticated and request.user.is_staff:
+            if ruta_actual not in rutas_protegidas_admin:
+                # Redirigir al panel de admin si intenta acceder a una ruta no autorizada
+                return redirect(reverse('vistaAdmin'))
         
         response = self.get_response(request)
         return response

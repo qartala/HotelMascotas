@@ -3,7 +3,7 @@ from .views import colaborador
 from .views import principal,eliminar_ficha,editar_ficha_view,listar_fichas_view,ficha_salud_view,perfil,eliminar_suscriptor,suscripcion,desuscribirse,registrarse,iniciarsesion,eliminarSuscriptor,ingresarSuscriptor,vigencia,principalUsuario,listar,cerrar_sesion
 
 urlpatterns = [
-    path('', principal, name='principal'),
+    path('principal', principal, name='principal'),
     path('suscripcion',suscripcion,name='suscripcion'),
     path('perfil/', perfil, name='perfil'),
     path('desuscribirse',desuscribirse,name='desuscribirse'),
