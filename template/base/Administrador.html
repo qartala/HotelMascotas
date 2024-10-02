@@ -66,7 +66,7 @@
 
     <div id="wrapper">
         <!-- Sidebar -->
-        <form method="POST" action="{% url 'cerrar_sesion' %}">
+        <form id="formLogout" method="POST" action="{% url 'cerrar_sesion' %}">{% csrf_token %}</form>
         {% csrf_token %}
         <div id="sidebar-wrapper">
             <div class="sidebar-heading">Administrador</div>
@@ -77,11 +77,10 @@
                 <a href="{% url 'agregarProductos' %}" class="list-group-item list-group-item-action">Agregar Habitación</a>
                 <a href="{% url 'listarProducto' %}" class="list-group-item list-group-item-action">Habitaciones</a>
                 <a href="" class="list-group-item list-group-item-action">Solicitudes</a>
-                <a type="submit" href="{% url 'cerrar_sesion' %}" class="list-group-item list-group-item-action">Cerrar sesion</a>
+                <button type="submit" form="formLogout" class="list-group-item list-group-item-action">Cerrar sesion</button>
             </div>
         </div>
-        </form>
-
+        
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <main class="container py-5 text-center">

@@ -107,6 +107,7 @@
 </head>
 
 <body>
+  <form id="formLogout" method="POST" action="{% url 'cerrar_sesion' %}">{% csrf_token %}</form>
     <div class="row">
         <nav class="navbar navbar-expand-lg fixed-top">
           <div class="container">
@@ -128,7 +129,7 @@
                 <li class="nav-item"><a class="nav-link" href="#membresia">Membresía</a></li>
                 <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'perfil' %}">Perfil</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
+                <li class="nav-item"><button type="submit" form="formLogout" class="nav-link">Cerrar sesion</button></li>
               </ul>
             </div>
           </div>
@@ -159,9 +160,6 @@
               </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <p>a</p>
     </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

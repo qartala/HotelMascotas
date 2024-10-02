@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login,logout,authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from modulo.Usuario.models import  Usuario ,Suscripcion
 from .models import User
 from modulo.Producto.models import Habitacion
@@ -15,26 +15,20 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Ficha
 from .forms import FichaSaludForm
 from django.views.decorators.cache import cache_control, never_cache
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
-
-# Create your views here.
-# Para las vistas en las que se proteja y solo la pueda ver el admin
-@user_passes_test(lambda u: u.is_superuser)
-# para borrar el cache, cuando se cierre sesion no se queden cosas guardadas en el navegador
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def admin(request):
-    if request.user.is_authenticated and request.user.is_superuser:
-        return render(request,'base/administrador.html')
-    elif request.user.is_authenticated and not request.user.is_superuser:
-        return redirect('principalUsuario')
-    else:
-        return HttpResponseRedirect(reverse('inicio'))
+def principal(request):
+    buscar = request.GET.get("buscar", "")
+    productos = Habitacion.objects.filter(tipoPerro__icontains=buscar)
+    contexto = {
+        'productos': productos
+    }
+    return render(request, 'base/caso.html', context=contexto)
 
 
 def perfil (request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('principal')) 
-    else:
         return render(request, 'base/perfil.html')
 
 def colaborador(request):
@@ -54,14 +48,12 @@ def ficha_salud_view(request):
         form = FichaSaludForm()
     return render(request, 'base/ficha.html', {'form': form})
 
-
 def listar_fichas_view(request):
     # Obtener el usuario autenticado
     usuario = Usuario.objects.get(idUsuario=request.user)
     # Filtrar las fichas por el usuario autenticado
     fichas = Ficha.objects.filter(id_usuario=usuario)
     return render(request, 'base/listar_fichas.html', {'fichas': fichas})
-
 
 def editar_ficha_view(request, pk):
     ficha = get_object_or_404(Ficha, pk=pk)  # Obtiene la ficha por su ID
@@ -75,11 +67,10 @@ def editar_ficha_view(request, pk):
 
     return render(request, 'base/editar_ficha.html', {'form': form})
 
-
 def eliminar_ficha(request, id):
     ficha = get_object_or_404(Ficha, id=id)
     ficha.delete()
-    return redirect('listar_fichas')  # Redirige a la lista de fichas tras eliminar
+    return redirect('perfil')  # Redirige a la lista de fichas tras eliminar
 
 
 
@@ -173,7 +164,6 @@ def registrarse(request):
         sweetify.warning(request, 'El nombre de usuario ya existe')
     return render(request,'base/Registrarse.html',contexto)
 
-
 def iniciarsesion(request):
     if request.method == 'GET':
         return render(request, 'base/IniciarSesion.html')
@@ -190,7 +180,7 @@ def iniciarsesion(request):
             else:
                 return redirect('principalUsuario')  # Redirige al sitio normal
         else:
-            messages.error(request, 'Usuario y contraseña no existen')
+            messages.error(request, 'El usuario no existe')
             return render(request, 'base/IniciarSesion.html')  # Muestra el formulario de nuevo
 
     # Si la solicitud no es GET ni POST, redirige o maneja el error de otra manera.
@@ -257,19 +247,18 @@ def eliminar_suscriptor(request,id_s):
 # hay que agregar esto a las urls 
 
 
-@never_cache
+
 def cerrar_sesion(request):
+    print(f"Usuario autenticado: {request.user.is_authenticated}")
     if request.user.is_authenticated:
+        print("Cerrando sesión del usuario")
         logout(request)
-    return HttpResponseRedirect(reverse('')) 
+        request.session.flush()
+    return redirect('iniciarsesion')
 
 
 def principalUsuario (request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('inicio'))
-    elif request.user.is_superuser:
-        return HttpResponseRedirect(reverse('vistaAdmin'))
-    else:
+    if request:
         suscrito = Suscripcion.objects.all()
         productos = Habitacion.objects.all()
 

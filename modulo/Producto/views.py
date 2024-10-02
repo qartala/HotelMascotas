@@ -9,15 +9,15 @@ from django.views.decorators.cache import cache_control, never_cache
 
 
 # Create your views here. aqui
-def principal(request):
-    buscar = request.GET.get("buscar", "")
-    productos = Habitacion.objects.filter(tipoPerro__icontains=buscar)
-    contexto = {
-        'productos': productos
-    }
-    return render(request, 'base/caso.html', context=contexto)
 
-def listar(request):
+# Para las vistas en las que se proteja y solo la pueda ver el admin
+@user_passes_test(lambda u: u.is_superuser)
+# para borrar el cache, cuando se cierre sesion no se queden cosas guardadas en el navegador
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def admin(request):
+        return render(request,'base/administrador.html')
+
+def listarProducto(request):
     productos = Habitacion.objects.all()
     contexto = {
         'productos': productos
@@ -25,13 +25,11 @@ def listar(request):
     return render(request, 'base/listar.html', context=contexto)
 
 
-
-
 def modificar(request, idHabitacion):
     try:
         productoEncontrado = Habitacion.objects.get(id=idHabitacion)
     except Habitacion.DoesNotExist:
-        return HttpResponseRedirect(reverse('listarProducto'))
+        return redirect('listarProducto')
     if request.method == 'GET':
         categorias = Categoria.objects.all()
         promociones = Promocion.objects.all()
@@ -61,12 +59,12 @@ def modificar(request, idHabitacion):
             productoEncontrado.id_Promocion = promocionEncontrada
         
         productoEncontrado.save()
-        return HttpResponseRedirect(reverse('listarProducto'))
+        return redirect('listarProducto')
 
 
     
 
-# aqui 
+# aqui
 def promociones(request):
     buscar = request.GET.get("buscar", "")
     productos = Habitacion.objects.filter(tipoPerro__icontains=buscar)
@@ -117,7 +115,6 @@ def agregarProductos(request):
         sweetify.success(request, 'Producto agregado con éxito!!!')    
         return HttpResponseRedirect(reverse('agregarProductos'))
 
-@never_cache 
 def agregarCategoria(request):
     if request.method == 'GET':
         return render(request,'base/AgregarCategoria.html')
@@ -127,8 +124,7 @@ def agregarCategoria(request):
         nuevaCategoria.save()
         sweetify.success(request, 'Categoria creada con éxito!!!')
         return HttpResponseRedirect(reverse('agregarCategoria'))
-
-@never_cache        
+      
 def crearOferta(request):
     if request.method == 'GET':
         return render(request,'base/crear_oferta.html')
