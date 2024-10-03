@@ -19,6 +19,7 @@ class LoginRequiredMiddleware:
         rutas_protegidas_sin_sesion = [
             'principal',
             'iniciarsesion',
+            'registrarse',
         ]
          
         rutas_protegidas = [

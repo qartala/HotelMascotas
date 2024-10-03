@@ -11,6 +11,9 @@
   <link rel="stylesheet" href="{% static 'css/n.css' %}">
   <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
     <style>
+        .oculto {
+            display: none;
+        }
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -158,6 +161,12 @@
                                 <label for="nombre">Nombre del Perro:</label>
                                 <input type="text" id="nombre_perro" name="nombre_perro" value="{{form.nombre_perro.value}}" placeholder="Nombre de tu perro" class="form-control" required>
                             </div>
+                            {% if user.is_authenticated %}
+                            <div class="oculto">
+                                <label for="nombre_dueno">dueno</label>
+                                <input type="text" id="nombre_dueno" name="nombre_dueno" value="{{user.first_name}}" placeholder="" class="form-control" required>
+                            </div>
+                            {% endif %}
                             <div class="field">
                                 <label for="raza">Raza:</label>
                                 <input type="text" id="raza" name="raza" value="{{form.raza.value}}" placeholder="Raza del perro" class="form-control" required>
@@ -214,7 +223,7 @@
               </div>
               <div class="row d-flex justify-content-center">
                   <div class="col-7">
-                      <button class="btn" type="submit">Guardar Ficha de Salud</button>
+                      <button href="{% url 'perfil' %}" class="btn" type="submit">Guardar Ficha de Salud</button>
                   </div>
               </div>
         </form>

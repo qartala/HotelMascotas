@@ -41,9 +41,7 @@ def ficha_salud_view(request):
         if form.is_valid():
             form = form.save(commit=False) # No guarda el objeto aún
             usuario = Usuario.objects.get(idUsuario=request.user)  
-            dueno = Usuario.objects.get(idUsuario=request.user.first_name)  
             form.id_usuario = usuario  # Asigna el usuario autenticado
-            form.nombre_dueno = dueno  # Asigna el usuario autenticado
             form.save()
             return render(request,'base/perfil.html')  # Redirige a la lista de fichas tras guardar
     else:
