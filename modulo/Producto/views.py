@@ -15,6 +15,9 @@ def principal(request):
     }
     return render(request, 'base/caso.html', context=contexto)
 
+def admin(request):
+        return render(request,'base/administrador.html')
+
 def listar(request):
     productos = Habitacion.objects.all()
     contexto = {

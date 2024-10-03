@@ -207,14 +207,14 @@ def confirmar_pago(request):
             details = response.get('detail', response.get('response', response))
             messages.success(request, f'¡Pago Completado! Detalles: {details}')
             
-            return redirect('home')  # Cambia 'home' por la vista que desees
+            return redirect('principalUsuario')  # Cambia 'home' por la vista que desees
         except Exception as e:
             print("Error:", e)
             messages.error(request, 'Ocurrió un error al confirmar el pago.')
-            return redirect('home')
+            return redirect('principalUsuario')
     else:
         messages.error(request, "Token de pago no proporcionado.")
-        return redirect('home')
+        return redirect('principalUsuario')
 
 
 

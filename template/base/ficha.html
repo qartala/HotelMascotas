@@ -1,0 +1,332 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pets Team</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/n.css' %}">
+  <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+    <style>
+        .oculto {
+            display: none;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://images.unsplash.com/photo-1544061351-2c7eeb9c9207'); /* Imagen de fondo relacionada con perros */
+            background-size: cover;
+            background-position: center;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .section h2 {
+            color: #2980b9;
+        }
+        .field {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .field input, .field textarea, .field select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #2980b9;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+        .footer img {
+            width: 30px;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+        .navbar {
+            background: linear-gradient(to left, rgba(255, 166, 0, 0.89), rgba(8, 8, 8, 0.658));
+            backdrop-filter: blur(10px);
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            }
+
+        .navbar-nav .nav-link {
+        color: white;
+        }
+
+        .navbar-nav .nav-link:hover {
+        color: rgb(255, 255, 255);
+        }
+        .navbar-nav .nav-link {
+        font-size: 1.2rem;
+        font-weight: 500;
+        }
+
+        .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: bold;
+        }
+        footer {
+        background: linear-gradient(to left, rgba(255, 166, 0, 0.89), rgba(8, 8, 8, 0.658));
+        backdrop-filter: blur(10px);
+        text-align: center;
+        padding: 20px 0;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="#">
+            <img width="50px" height="50px" src="https://cdn-icons-png.flaticon.com/512/21/21565.png" alt="" style="filter: brightness(0) invert(1);">
+    
+            <span class="text-white">Pets</span> Team
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li class="nav-item"><a class="nav-link" href="{% url 'principalUsuario' %}">Inicio</a></li>
+              <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
+              <li class="nav-item"><a class="nav-link" href="#colaborador">¿Quieres ser Colaborador?</a></li>
+              <li class="nav-item"><a class="nav-link" href="#services">Servicios</a></li>
+              <li class="nav-item"><a class="nav-link" href="#precios">Precios</a></li>
+              <li class="nav-item"><a class="nav-link" href="#membresia">Membresía</a></li>
+              <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'perfil' %}">Perfil</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <form method="POST" action="">
+        {% csrf_token %}
+          <div class="container">
+              <div class="row d-flex justify-content-center pt-5">
+                  <div class="col-7">
+                  </div>
+              </div>
+              <div class="row d-flex justify-content-center pt-5">
+                  <div class="col-7">
+                    <div class="card">
+                        <div class="section">
+                            <h1>Ficha de Salud de la Mascota</h1> 
+                            <h2>Información General</h2>
+                            <div class="field">
+                                <label for="nombre">Nombre del Perro:</label>
+                                <input type="text" id="nombre_perro" name="nombre_perro" value="{{ form.nombre_perro.value|default:'' }}" placeholder="Nombre de tu perro" class="form-control" required>
+
+                            </div>
+                            {% if user.is_authenticated %}
+                            <div class="oculto">
+                                <label for="nombre_dueno">dueno</label>
+                                <input type="text" id="nombre_dueno" name="nombre_dueno" value="{{user.first_name}}" placeholder="" class="form-control" required>
+                            </div>
+                            {% endif %}
+                            <div class="field">
+                                <label for="raza">Raza:</label>
+                                <input type="text" id="raza" name="raza" value="{{form.raza.value|default:'' }}" placeholder="Raza del perro" class="form-control" required>
+                            </div>
+                            <div class="field">
+                                <label for="edad">Edad:</label>
+                                <input type="number" id="edad" name="edad" value="{{form.edad.value|default:'' }}" placeholder="Edad en años" class="form-control" required>
+                            </div>
+                            <div class="field">
+                                <label for="peso">Peso:</label>
+                                <input type="number" id="peso" name="peso" value="{{form.peso.value|default:'' }}" placeholder="Peso en kg" class="form-control" required>
+                            </div>
+                            <div class="field">
+                                <label for="chip">¿Tiene Chip?</label>
+                                <select id="chip" name="chip" value="{{form.chip.value}}" class="form-control" required>
+                                    <option value="">Selecciona...</option>
+                                    <option value="si">Sí</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="comida">Tipo de Comida:</label>
+                                <input type="text" id="comida" name="comida" value="{{form.comida.value|default:'' }}" placeholder="Escribe el tipo de comida" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="row d-flex justify-content-center">
+                  <div class="col-7">
+                    <div class="card">
+                      <div class="section">
+                          <h2>Historial Médico</h2>
+                          <div class="field">
+                            <label for="vacunas">Vacunas Administradas:</label>
+                            <select id="vacunas" name="vacunas" class="form-control" multiple>
+                                <option value="ninguna_vacuna">Ninguna</option>
+                                <option value="rabia">Vacuna contra la Rabia</option>
+                                <option value="parvovirus">Vacuna contra el Parvovirus</option>
+                                <option value="moquillo">Vacuna contra el Moquillo</option>
+                                <option value="hepatitis">Vacuna contra la Hepatitis</option>
+                                <option value="tifus">Vacuna contra el Tifus Canino</option>
+                            </select>
+                            <button type="button" onclick="agregarVacuna()">Agregar Vacuna</button>
+                        </div>
+                        <div class="field">
+                            <label for="vacunasTextarea">Vacunas Seleccionadas:</label>
+                            <textarea id="vacunasTextarea" name="vacunas" rows="4" class="form-control"></textarea>
+                        </div>
+
+                          <div class="field">
+                            <label for="alergias">Alergias:</label>
+                            <select id="alergias" name="alergias" class="form-control" multiple>
+                                <option value="ninguna_alergia">Ninguna</option>
+                                <option value="polen">Alergia al Polen</option>
+                                <option value="polvo">Alergia al Polvo</option>
+                                <option value="alimentos">Alergia a Alimentos</option>
+                            </select>
+                            <button type="button" onclick="agregarAlergia()">Agregar Vacuna</button>
+                        </div>
+                        <div class="field">
+                            <label for="alergiasTextarea">Alergias Seleccionadas:</label>
+                            <textarea id="alergiasTextarea" name="alergias" rows="4" class="form-control"></textarea>
+                        </div>
+
+                          <div class="field">
+                            <label for="enfermedades">Enfermedades:</label>
+                            <select id="enfermedades" name="enfermedades" class="form-control" multiple>
+                                <option value="ninguna_enfermedad">Ninguna</option>
+                                <option value="diabetes">Diabetes</option>
+                                <option value="hipotiroidismo">Hipotiroidismo</option>
+                                <option value="epilepsia">Epilepsia</option>
+                            </select>
+                            <button type="button" onclick="agregarEnfermedad()">Agregar Vacuna</button>
+                        </div>
+                        
+                        <div class="field">
+                            <label for="enfermedadesTextarea">Enfermedades Seleccionadas:</label>
+                            <textarea id="enfermedadesTextarea" name="enfermedades" rows="4" class="form-control"></textarea>
+                        </div>
+                        
+                        
+                          <!-- {% if user.is_authenticated %}
+                          <div id="" style="display: none;">
+                            <input type="number" id="id_usuario" name="id_usuario" value="{{form.id.value}}">
+                          </div>
+                          {% endif %} -->
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="row d-flex justify-content-center">
+                  <div class="col-7">
+                      <button href="{% url 'perfil' %}" class="btn" type="submit">Guardar Ficha de Salud</button>
+                  </div>
+              </div>
+        </form>
+              <div class="row d-flex justify-content-center pb-2">
+                  <div class="col-7">
+                      <div class="footer">
+                          <p>¡Cuida de tu mejor amigo!</p>
+                          <img src="https://img.icons8.com/ios-filled/50/000000/dog.png" alt="Perro">
+                      </div>
+                  </div>
+              </div>
+          </div>
+      
+          <script>
+            function agregarVacuna() {
+                var select = document.getElementById("vacunas");
+                var textarea = document.getElementById("vacunasTextarea");
+                var selectedValues = Array.from(select.selectedOptions).map(option => option.text);
+
+                selectedValues.forEach(value => {
+                    if (!textarea.value.includes(value)) {
+                        textarea.value += value + "\n"; // Agrega la opción seleccionada al textarea
+                    }
+                });
+}
+
+            function agregarAlergia() {
+                var select = document.getElementById("alergias");
+                var textarea = document.getElementById("alergiasTextarea");
+                var selectedValues = Array.from(select.selectedOptions).map(option => option.text);
+        
+                selectedValues.forEach(value => {
+                    if (!textarea.value.includes(value)) {
+                        textarea.value += value + "\n"; // Agrega la opción seleccionada al textarea
+                    }
+                });
+            }
+
+            function agregarEnfermedad() {
+                var select = document.getElementById("enfermedades");
+                var textarea = document.getElementById("enfermedadesTextarea");
+                var selectedValues = Array.from(select.selectedOptions).map(option => option.text);
+        
+                selectedValues.forEach(value => {
+                    if (!textarea.value.includes(value)) {
+                        textarea.value += value + "\n"; // Agrega la opción seleccionada al textarea
+                    }
+                });
+            }
+
+        </script>
+
+</body>
+<footer>
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+          <p>&copy; 2024 Pets Team. Todos los derechos reservados.</p>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</html>

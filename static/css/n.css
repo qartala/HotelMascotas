@@ -1,15 +1,57 @@
 * {
-    font-family: montserrat;
+    font-family: 'Montserrat', sans-serif;
 }
 
 body {
-    background: #f1fbff;
+    background-color: #f1fbff;
+    background-size: cover;
+    background-attachment: fixed;
+    color: rgb(0, 0, 0);
+    padding-top: 56px; /* Espacio para el navbar fijo */
 }
 
 .section-padding {
     padding: 100px 0;
 }
 
+/* Navbar Styles */
+.navbar {
+    background: linear-gradient(to left, rgba(255, 166, 0, 0.89), rgba(8, 8, 8, 0.658));
+    backdrop-filter: blur(10px);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.navbar-nav .nav-link {
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 15px 20px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffbb00;
+    background-color: transparent;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+    text-transform: uppercase;
+}
+
+.navbar-brand:focus, 
+.navbar-brand:hover {
+    color: #000;
+}
+
+.navbar-toggler-icon {
+    background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath d="M4 6h16M4 12h16M4 18h16" stroke="%23000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3E%3C/svg%3E');
+}
+
+/* Carousel Styles */
 .carousel-item {
     height: 100vh;
     min-height: 300px;
@@ -18,6 +60,10 @@ body {
 .carousel-caption {
     bottom: 220px;
     z-index: 2;
+    background: rgba(190, 154, 124, 0.466);
+    backdrop-filter: blur(5px);
+    padding: 20px;
+    border-radius: 10px;
 }
 
 .carousel-caption h1 {
@@ -25,6 +71,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-top: 25px;
+    color: #fff;
 }
 
 .carousel-caption p {
@@ -34,29 +81,44 @@ body {
     line-height: 1.9;
 }
 
-
-
 .w-100 {
     height: 100vh;
 }
 
-.services .card-body i {
-    font-size: 50px;
+/* Button Styles */
+.btn-custom-download {
+    color: black !important;
+    background-color: transparent;
 }
 
-.separator-ribbon {
-    width: 100%;
-    height: 2px;
-    background: #FFD700;
-    margin: 50px 0;
+.btn-custom-download:hover {
+    color: black !important;
+    text-decoration: none;
 }
 
-/* ===== Cards ===== */
+.btn-warning {
+    background-color: #FFD700;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: background-color 0.3s;
+}
+
+.btn-warning:hover {
+    background-color: #e6b800;
+}
+
+/* Card Styles */
 .card {
+    backdrop-filter: blur(10px);
     border: none;
     border-radius: 15px;
     overflow: hidden;
     transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .card:hover {
@@ -85,55 +147,7 @@ body {
     color: #777;
 }
 
-.btn-warning {
-    background-color: #FFD700;
-    border: none;
-    color: #000;
-    font-weight: bold;
-    text-transform: uppercase;
-    padding: 10px 20px;
-    border-radius: 25px;
-    transition: background-color 0.3s;
-}
-
-.btn-warning:hover {
-    background-color: #e6b800;
-}
-
-/* ===== Responsive Design ===== */
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-    .carousel-caption {
-        bottom: 370px;
-    }
-    .carousel-caption p {
-        width: 100%;
-    }
-}
-
-@media only screen and (max-width: 767px) {
-    .navbar-nav {
-        text-align: center;
-    }
-    .carousel-caption {
-        bottom: 125px;
-    }
-    .carousel-caption h1 {
-        font-size: 17px;
-    }
-    .carousel-caption a {
-        padding: 10px 15px;
-    }
-    .carousel-caption p {
-        width: 100%;
-        line-height: 1.6;
-        font-size: 12px;
-    }
-
-    .card {
-        margin-bottom: 20px;
-    }
-}
-
+/* Service Card Styles */
 .service-card {
     border: none;
     background: #f8f9fa;
@@ -177,102 +191,125 @@ body {
     border-color: #e6b800;
 }
 
-/* Estilo para el título de habitaciones */
+/* Separator Ribbon */
+.separator-ribbon {
+    width: 100%;
+    height: 2px;
+    background: #FFD700;
+    margin: 50px 0;
+}
+
+/* Footer Styles */
+footer {
+    background: linear-gradient(to left, rgba(255, 166, 0, 0.89), rgba(8, 8, 8, 0.658));
+    backdrop-filter: blur(10px);
+    padding: 20px 0;
+}
+
+.social-icons a {
+    margin: 0 10px;
+}
+
+/* Title Styles */
 .title {
-    font-size: 2.5rem; /* Tamaño de fuente grande para el título */
-    font-weight: 700; /* Negrita */
-    color: #333; /* Color oscuro para el título */
-    position: relative; /* Posicionamiento relativo para el decorado */
-    margin-bottom: 3rem; /* Espacio inferior para separar del contenido */
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    position: relative;
+    margin-bottom: 3rem;
 }
 
 .title::before {
-    content: ''; /* Crea un decorado antes del título */
+    content: '';
     position: absolute;
-    left: 50%; /* Centra el decorado horizontalmente */
-    bottom: -10px; /* Ubica el decorado debajo del título */
-    transform: translateX(-50%); /* Centra el decorado horizontalmente */
-    width: 80px; /* Ancho del decorado */
-    height: 4px; /* Alto del decorado */
-    background-color: #ffbb00; /* Color del decorado (puedes cambiarlo) */
-    border-radius: 2px; /* Bordes redondeados del decorado */
+    left: 50%;
+    bottom: -10px;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background-color: #ffbb00;
+    border-radius: 2px;
 }
 
-.card {
-    border: none;
-    border-radius: 10px; /* Radio de borde para redondear las tarjetas */
-    overflow: hidden; /* Oculta el desbordamiento del contenido */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para las tarjetas */
-    transition: transform 0.3s, box-shadow 0.3s; /* Transición para efectos de hover */
-}
-
-.card:hover {
-    transform: translateY(-5px); /* Levanta la tarjeta al pasar el cursor */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada en hover */
-}
-
-.btn-warning {
-    background-color: #ffbb00; /* Color de fondo del botón */
-    border-color: #ffbb00; /* Color del borde del botón */
-}
-
-.btn-warning:hover {
-    background-color: #ff9100; /* Color de fondo del botón en hover */
-    border-color: #ff9100; /* Color del borde del botón en hover */
-}
-
+/* Nosotros Section */
 .nosotros {
-    background: #ffffff; /* Color de fondo blanco para más elegancia */
-    border-radius: 10px; /* Bordes redondeados para un toque más moderno */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra ligera para un efecto de elevación */
-    padding: 30px; /* Espaciado interno para separar el contenido de los bordes */
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
 }
 
 .nosotros-img {
-    text-align: center; /* Centra la imagen en el contenedor */
+    text-align: center;
 }
 
 .nosotros-img img {
-    max-width: 80%; /* Ajusta el ancho máximo de la imagen */
-    height: auto; /* Ajusta la altura automáticamente */
-    border-radius: 8px; /* Bordes redondeados para la imagen */
-    object-fit: cover; /* Asegura que la imagen se ajuste correctamente */
+    max-width: 80%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
 .nosotros-text {
-    padding: 20px; /* Espaciado interno para mejor separación del contenido */
+    padding: 20px;
 }
 
 .nosotros-text h2 {
-    font-size: 2rem; /* Tamaño de fuente más grande para el título */
-    margin-bottom: 20px; /* Espaciado debajo del título */
-    font-weight: 700; /* Negrita para el título */
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 700;
 }
 
 .nosotros-text p {
-    font-size: 1rem; /* Tamaño de fuente estándar para el párrafo */
-    line-height: 1.6; /* Mayor altura de línea para una mejor legibilidad */
-    margin-bottom: 20px; /* Espaciado debajo del párrafo */
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
 }
 
 .btn-warning {
-    font-size: 1rem; /* Tamaño de fuente del botón */
-    padding: 10px 20px; /* Espaciado interno del botón */
-    border-radius: 5px; /* Bordes redondeados para el botón */
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 5px;
 }
 
-@media (max-width: 767px) {
+/* Responsive Design */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .carousel-caption {
+        bottom: 370px;
+    }
+    .carousel-caption p {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .navbar-nav {
+        text-align: center;
+        margin-top: 15px;
+    }
+    .carousel-caption {
+        bottom: 125px;
+    }
+    .carousel-caption h1 {
+        font-size: 17px;
+    }
+    .carousel-caption p {
+        width: 100%;
+        line-height: 1.6;
+        font-size: 12px;
+    }
+    .card {
+        margin-bottom: 20px;
+    }
     .nosotros-text h2 {
-        font-size: 1.5rem; /* Ajuste del tamaño del título en pantallas pequeñas */
+        font-size: 1.5rem;
     }
-
     .nosotros-text p {
-        font-size: 0.9rem; /* Ajuste del tamaño del párrafo en pantallas pequeñas */
+        font-size: 0.9rem;
     }
-
     .btn-warning {
-        font-size: 0.9rem; /* Ajuste del tamaño del botón en pantallas pequeñas */
-        padding: 8px 16px; /* Ajuste del espaciado interno del botón */
+        font-size: 0.9rem;
+        padding: 8px 16px;
     }
 }
 
@@ -282,54 +319,3 @@ body {
     right: 20px;
     z-index: 1050;
 }
-
-/* Navbar Styles */
-.navbar {
-    background-color: #ffffff; /* Fondo del navbar */
-    border-bottom: 1px solid #ddd;
-}
-
-.navbar-nav .nav-link {
-    color: #000; /* Color del texto del enlace */
-    font-size: 16px;
-    font-weight: 500;
-    padding: 15px 20px;
-}
-
-.navbar-nav .nav-link:hover {
-    color: #ffbb00; /* Color al pasar el mouse */
-    background-color: transparent;
-}
-
-/* Estilo específico para el botón del carrito */
-.navbar-nav .carro {
-    background-color: #ffbb00; /* Color de fondo del botón */
-    color: #000; /* Color del texto del botón */
-    border: none;
-    border-radius: 25px; /* Bordes redondeados */
-    padding: 10px 20px; /* Padding interno */
-    font-size: 16px; /* Tamaño de fuente */
-    font-weight: bold; /* Negrita */
-    transition: background-color 0.3s; /* Transición de fondo */
-}
-
-.navbar-nav .carro:hover {
-    background-color: #e6b800; /* Color al pasar el mouse */
-}
-
-/* Navbar Toggler Icon */
-.navbar-toggler-icon {
-    background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath d="M4 6h16M4 12h16M4 18h16" stroke="%23000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3E%3C/svg%3E');
-}
-
-/* Responsive Adjustments */
-@media (max-width: 767px) {
-    .navbar-nav {
-        margin-top: 15px;
-    }
-}
-
-
-
-
-

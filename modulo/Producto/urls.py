@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import listar, eliminar, principal, promociones, agregarProductos, crearOferta, agregarCategoria, modificar
+from .views import listar,admin, eliminar,promociones, agregarProductos, crearOferta, agregarCategoria, modificar
 
 urlpatterns = [
-    path('', principal, name='principal'),
+    path('panel/',admin, name='vistaAdmin'),
     path('promociones/', promociones, name='promociones'),
     path('agregarProductos/', agregarProductos, name='agregarProductos'),
     path('crearOferta/', crearOferta, name='crearOferta'),

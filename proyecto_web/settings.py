@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'proyecto_web.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'proyecto_web.urls'
@@ -85,13 +86,23 @@ WSGI_APPLICATION = 'proyecto_web.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'petsteam',#cambiar segun base de datos de mysql
+        'NAME': 'petsteam1',#cambiar segun base de datos de mysql
         'USER':'root', #cambiar segun configuracion mysql
-        'PASSWORD':'admin',#cambiar segun configuracion mysql
+        'PASSWORD':'root',#cambiar segun configuracion mysql
         'HOST':'localhost',
         'PORT': 3306 #cambiar segun configuracion mysql
     }
 }
+
+# Correo electronico
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'petsteamcl@gmail.com'
+EMAIL_HOST_PASSWORD = 'rfmv itgh wwuu byya'  # Reemplaza por la contraseña real o usa un App Password.
+
 
 
 # Password validation
@@ -177,3 +188,6 @@ TRANSBANK_IS_TEST = True
 WEBPAY_PLUS_COMMERCE_CODE = '597055555532'
 WEBPAY_PLUS_API_KEY = '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C'
 WEBPAY_PLUS_RETURN_URL = 'http://localhost:8000/pagos/confirmar/'
+
+
+LOGIN_URL = ''

@@ -11,14 +11,78 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/n.css' %}">
   <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 </head>
+
+<style>
+  body {
+    background-color: rgb(255, 255, 255);
+    background-size: cover;
+    background-attachment: fixed;
+    color: rgb(0, 0, 0);
+    padding-top: 56px; 
+  }
+
+  .navbar {
+    background: linear-gradient(to left, rgba(255, 166, 0, 0.89), rgba(8, 8, 8, 0.658));
+    backdrop-filter: blur(10px);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  .navbar-nav .nav-link {
+    color: white;
+  }
+
+  .navbar-nav .nav-link:hover {
+    color: rgb(255, 255, 255);
+  }
+
+  .card {
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .carousel-caption {
+    bottom: 20%;
+    background: rgba(190, 154, 124, 0.466);
+    backdrop-filter: blur(5px);
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  footer {
+    background: linear-gradient(to left, rgba(255, 166, 0, 0.89), rgba(8, 8, 8, 0.658));
+    backdrop-filter: blur(10px);
+    padding: 20px 0;
+  }
+
+  h1, h2, h3 {
+    font-weight: bold;
+  }
+
+  h1 {
+    font-size: 3rem;
+    color: rgb(255, 255, 255);
+  }
+
+  h2 {
+    font-size: 2.5rem;
+    color: rgb(0, 0, 0);
+  }
+
+  .form-control {
+    font-family: inherit; }
+</style>
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="container">
       <a class="navbar-brand" href="#">
-        <img width="50px" height="50px" src="https://cdn-icons-png.flaticon.com/512/21/21537.png" alt="">
-        <span class="text-warning">Pets</span> Team
+        <img width="50px" height="50px" src="https://cdn-icons-png.flaticon.com/512/21/21565.png" alt="" style="filter: brightness(0) invert(1);">
+        <span class="text-white">Pets</span> Team
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
@@ -29,13 +93,10 @@
             <a class="nav-link" href="{% url 'principal' %}">Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'iniciarsesion' %}">Iniciar sesión</a>
+            <a class="nav-link" href="{% url 'iniciarsesionColaborador' %}">Iniciar sesión</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#services">Servicios a postular</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#contacto">Contacto</a>
           </li>
         </ul>
       </div>
@@ -45,106 +106,72 @@
   <div id="carouselExampleCaptions" class="carousel slide">
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img src="https://cdn.pixabay.com/photo/2018/10/01/09/21/pets-3715733_1280.jpg" class="d-block w-100" alt="...">
+        <img src="https://fotografias.antena3.com/clipping/cmsimages01/2022/10/11/553426E8-890D-4503-B5E6-61CA30B41B12/perro-raza-corgi_98.jpg?crop=1920,1080,x0,y101&width=1900&height=1069&optimize=low&format=webply" class="d-block w-100" alt="...">
         <div class="carousel-caption">
-          <h1>Bienvenidos Colaboradores<br><span class="text-warning">Pets</span> Team</h1>
+          <h1>Colaboradores<br><span class="text-warning">Pets</span> Team</h1>
           <p>En el Hotel de Mascotas Pets Team, trabajamos en equipo para garantizar una experiencia de lujo para cada perro, ofreciendo un ambiente cómodo y seguro, siempre comprometidos con su bienestar.</p>
-          <p><a href="#" class="btn btn-warning mt-3" data-bs-toggle="modal" data-bs-target="#registroModal">!¡Registrate aquí!</a></p>
+          <p><a href="#" class="btn btn-warning mt-3" data-bs-toggle="modal" data-bs-target="#registroModal">¡Registrate aquí!</a></p>
         </div>
       </div>
     </div>
   </div>
 
-  <section id="services" class="services section-padding" style="scroll-margin-top: 100px;">
-    <div class="container">
-      <div class="section-header text-center pb-5">
-        <h2 class="text-center mb-5 title">Servicios a postular</h2>
-        <p>En Pets Team, ofrecemos una gama de servicios diseñados para satisfacer todas las necesidades de tu mascota. Desde habitaciones confortables hasta actividades recreativas y cuidado personalizado, nos aseguramos de que cada perro disfrute de una estancia placentera y segura. Nuestro equipo de profesionales está dedicado a proporcionar el mejor servicio y atención a tu compañero peludo.</p>
-      </div>
-      <div class="row">
-        <div class="col-lg-4 col-md-6 mb-4">
-          <div class="card service-card">
-            <img src="https://img77.uenicdn.com/image/upload/v1660129686/business/34a2655ee442423ba88adb10daf4aa05.png" class="card-img-top" alt="LoTransfer">
-            <div class="card-body text-center">
-              <h5 class="card-title">LoTransfer</h5>
-              <p class="card-text">Transportamos a su canino o felino en jaulas aprobadas por las normas internacionales de seguridad por las líneas aéreas.</p>
-              <a href="#" class="btn btn-primary">Ver más</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 mb-4">
-          <div class="card service-card">
-            <img src="https://cdn-icons-png.flaticon.com/256/13666/13666152.png" class="card-img-top" alt="Mejor Cuidado">
-            <div class="card-body text-center">
-              <h5 class="card-title">Mejor Cuidado</h5>
-              <p class="card-text">Ofrecemos un cuidado excepcional para tu mascota, asegurando un entorno seguro y amoroso. Nuestro equipo está dedicado a atender cada necesidad de tu perro con la máxima atención y profesionalismo.</p>
-              <a href="#" class="btn btn-primary">Ver más</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 mb-4">
-          <div class="card service-card">
-            <img src="https://images.vexels.com/content/128739/preview/shower-flat-green-icon-3d1a11.png" class="card-img-top" alt="Limpieza">
-            <div class="card-body text-center">
-              <h5 class="card-title">Limpieza</h5>
-              <p class="card-text">Baños de limpieza (Si hacemos corte de pelo)</p>
-              <a href="#" class="btn btn-primary">Ver más</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-<!-- Modal Registro -->
 <div class="modal fade" id="registroModal" tabindex="-1" aria-labelledby="registroModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="registroModalLabel">Registro de Colaboradores</h5>
+        <h5 class="modal-title" id="registroModalLabel" style="text-align: center;">Registro de Colaboradores</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form id="registroForm" method="POST" enctype="multipart/form-data" action="{% url 'registro_colaborador' %}">
+          {% csrf_token %}
+          
           <div class="mb-3">
-            <label for="fullname" class="form-label">Nombre Completo:</label>
-            <input type="text" class="form-control" id="fullname" placeholder="Nombre Completo" required>
+              <label for="fullname" class="form-label">Nombre Completo:</label>
+              <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Nombre Completo" required>
           </div>
+
           <div class="mb-3">
-            <label for="username" class="form-label">Nombre de Usuario:</label>
-            <input type="text" class="form-control" id="username" placeholder="Nombre de Usuario" required>
+              <label for="username" class="form-label">Nombre de Usuario:</label>
+              <input type="text" class="form-control" id="username" name="username" placeholder="Nombre de Usuario" required>
+              <div id="username-feedback" class="text-danger"></div>
           </div>
+
           <div class="mb-3">
             <label for="phone" class="form-label">Teléfono:</label>
-            <input type="tel" class="form-control" id="phone" placeholder="+56 9" required>
+            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+569" required>
           </div>
+
           <div class="mb-3">
-            <label for="email" class="form-label">Correo Electrónico:</label>
-            <input type="email" class="form-control" id="email" placeholder="usuario@gmail.com" required>
+              <label for="email" class="form-label">Correo Electrónico:</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="usuario@gmail.com" required>
+              <div id="email-feedback" class="text-danger"></div>
           </div>
+
           <div class="mb-3">
-            <label for="password" class="form-label">Contraseña:</label>
-            <input type="password" class="form-control" id="password" placeholder="Contraseña" required>
+              <label for="password" class="form-label">Contraseña:</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
           </div>
+
+
           <div class="mb-3">
-            <label for="confirm-password" class="form-label">Confirmar Contraseña:</label>
-            <input type="password" class="form-control" id="confirm-password" placeholder="Repetir contraseña" required>
+              <label for="service" class="form-label">Servicios a postular:</label>
+              <select class="form-select" id="service" name="service" required>
+                  <option value="" disabled selected>Seleccione un servicio:</option>
+                  <option value="Baños">Baños</option>
+                  <option value="Spa">Spa</option>
+                  <option value="Fotografía">Fotografía</option>
+                  <option value="Cortes de pelo">Cortes de pelo</option>
+                  <option value="Servicio de transportes">Transportes</option>
+              </select>
           </div>
+
           <div class="mb-3">
-            <label for="service" class="form-label">Servicios a postular:</label>
-            <select class="form-select" id="service" required>
-              <option value="" disabled selected>Seleccione un servicio:</option>
-              <option value="Baños">Baños</option>
-              <option value="Spa">Spa</option>
-              <option value="Fotografía">Fotografía</option>
-              <option value="Cortes de pelo">Cortes de pelo</option>
-              <option value="Servicio de transportes">Servicio de transportes</option>
-            </select>
+              <label for="pdf-upload" class="form-label">Subir Archivo PDF</label>
+              <input type="file" class="form-control" id="pdf-upload" name="pdf_file" accept=".pdf" required>
           </div>
-          <div class="mb-3">
-            <label for="pdf-upload" class="form-label">Subir Archivo PDF</label>
-            <input type="file" class="form-control" id="pdf-upload" accept=".pdf">
-          </div>
+
           <button type="submit" class="btn btn-primary">Registrarse</button>
         </form>
       </div>
@@ -155,24 +182,77 @@
   </div>
 </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var buttons = document.querySelectorAll('.reservar-btn');
-      
-      buttons.forEach(function(button) {
-        button.addEventListener('click', function(event) {
-          var isAuthenticated = button.getAttribute('data-is-authenticated') === 'True';
 
-          if (!isAuthenticated) {
-            event.preventDefault();
-            alert('Debes iniciar sesión para reservar.');
-            window.location.href = '{% url "iniciarsesion" %}';
-          }
-        });
+<script>
+  {% if messages %}
+    {% for message in messages %}
+      Swal.fire({
+        icon: '{{ message.tags }}' === 'success' ? 'success' : 'error',
+        title: '{{ message.tags }}' === 'success' ? 'En espera de confirmación' : 'Error al registrar',
+        text: '{{ message }}',
+        showConfirmButton: false,
+        timer: 5000
       });
-    });
-  </script>
-</body>
+    {% endfor %}
+  {% endif %}
 
+
+  document.getElementById('registroForm').addEventListener('submit', function(event) {
+    var fullname = document.getElementById('fullname').value;
+    var username = document.getElementById('username').value;
+    var phone = document.getElementById('phone').value;
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+
+    var usernamePattern = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[.-]).{1,15}$/;
+    var phonePattern = /^\+569\d{8}$/;
+    var passwordPattern = /^(?=.*[A-Z]).{1,15}$/;
+
+    if (fullname.length > 100) {
+      event.preventDefault();
+      Swal.fire('Error', 'El nombre completo no puede exceder los 100 caracteres.', 'error');
+    } else if (!usernamePattern.test(username)) {
+      event.preventDefault();
+      Swal.fire('Error', 'El nombre de usuario debe tener al menos una mayúscula, un número, y un punto o guion. Máximo 15 caracteres.', 'error');
+    } else if (!phonePattern.test(phone)) {
+      event.preventDefault();
+      Swal.fire('Error', 'El teléfono debe tener el formato +56 9 seguido de 8 dígitos.', 'error');
+    } else if (!passwordPattern.test(password)) {
+      event.preventDefault();
+      Swal.fire('Error', 'La contraseña debe contener al menos una letra mayúscula y tener hasta 15 caracteres.', 'error');
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var phoneInput = document.getElementById('phone');
+    
+    phoneInput.value = "+569";
+    phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
+    
+    phoneInput.addEventListener('keydown', function(event) {
+      var cursorPosition = phoneInput.selectionStart;
+    
+      if ((event.key === 'Backspace' || event.key === 'Delete') && cursorPosition <= 4) {
+        event.preventDefault();
+      }
+    
+      if (cursorPosition < 4 && event.key !== 'ArrowRight' && event.key !== 'Tab') {
+        event.preventDefault();
+        phoneInput.setSelectionRange(4, 4);
+      }
+    });
+    
+
+    phoneInput.addEventListener('input', function() {
+      if (phoneInput.value.length > 12) { 
+        phoneInput.value = phoneInput.value.slice(0, 12);
+      }
+    });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
 </html>

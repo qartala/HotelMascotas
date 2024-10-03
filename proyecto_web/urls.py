@@ -11,10 +11,10 @@ from modulo.Compra.urls import urlpatterns as urlcompra
 from modulo.Producto.urls import urlpatterns as urlhabitacion
 
 urlpatterns = [
-    path('',include(urlhabitacion)),
-    path('admin/',include(urlusuario)),
+    path('',include(urlusuario)),
+    path('admin/',include(urlhabitacion)),
     path('compra/',include(urlcompra)),
-    path('habitacion/',include(urlhabitacion))
+    #path('habitacion/',include(urlhabitacion))
 ]
 
 

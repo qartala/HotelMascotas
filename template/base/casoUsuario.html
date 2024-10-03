@@ -19,7 +19,7 @@
       background-size: cover;
       background-attachment: fixed;
       color: rgb(0, 0, 0);
-      padding-top: 56px; /* Espacio para el navbar fijo */
+      padding-top: 56px; 
     }
 
     .navbar {
@@ -95,7 +95,6 @@
       font-weight: bold;
     }
 
-    /* Añadir margen a las secciones para separación */
     section {
       padding: 60px 0;
     }
@@ -123,6 +122,7 @@
                 <li class="nav-item"><a class="nav-link" href="#precios">Precios</a></li>
                 <li class="nav-item"><a class="nav-link" href="#membresia">Membresía</a></li>
                 <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'perfil' %}">Perfil</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
             </ul>
         </div>

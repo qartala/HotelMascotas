@@ -65,20 +65,19 @@
 <body>
 
     <div id="wrapper">
-        <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <div class="sidebar-heading">Administrador</div>
             <div class="list-group list-group-flush">
-                <a href="{% url 'principalUsuario' %}" class="list-group-item list-group-item-action">Inicio</a>
+                <a href="{% url 'vistaAdmin' %}" class="list-group-item list-group-item-action">Inicio</a>
                 <a href="{% url 'crearOferta' %}" class="list-group-item list-group-item-action">Crear Oferta</a>
                 <a href="{% url 'agregarCategoria' %}" class="list-group-item list-group-item-action">Crear Categoría</a>
                 <a href="{% url 'agregarProductos' %}" class="list-group-item list-group-item-action">Agregar Habitación</a>
                 <a href="{% url 'listarProducto' %}" class="list-group-item list-group-item-action">Habitaciones</a>
-                <a href="" class="list-group-item list-group-item-action">Solicitudes</a>
+                <a href="{% url 'solicitudes_admin' %}" class="list-group-item list-group-item-action">Solicitudes</a>
+                <a href="{% url 'listar_colaboradores_aprobados' %}" class="list-group-item list-group-item-action">Colaboradores</a>
+                <a href="{% url 'cerrar_sesion' %}" class="list-group-item list-group-item-action">Cerrar sesion</a>
             </div>
-        </div>
-
-        <!-- Page Content -->
+        </div>  
         <div id="page-content-wrapper">
             <main class="container py-5 text-center">
                 <h1 class="mb-4">Panel de Administrador</h1>
@@ -122,6 +121,26 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="card shadow border-light">
+                            <div class="card-body text-center">
+                                <i class="fas fa-check-circle fa-4x mb-3 text-dark"></i> 
+                                <h5 class="card-title">Solicitudes</h5>
+                                <a class="btn btn-primary" href="{% url 'solicitudes_admin' %}">Solicitudes</a>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="col-md-4">
+                        <div class="card shadow border-light">
+                            <div class="card-body text-center">
+                                <i class="fas fa-users fa-4x mb-3 text-dark"></i>
+                                <h5 class="card-title">Colaboradores</h5>
+                                <a class="btn btn-primary" href="{% url 'listar_colaboradores_aprobados' %}">Colaboradores</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
                 </div>
             </main>
         </div>

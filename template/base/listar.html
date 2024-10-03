@@ -111,7 +111,6 @@
 
 <body>
     <div id="wrapper">
-        <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <div class="sidebar-heading">Administrador</div>
             <div class="list-group list-group-flush">
@@ -120,10 +119,11 @@
                 <a href="{% url 'agregarCategoria' %}" class="list-group-item list-group-item-action">Crear Categoría</a>
                 <a href="{% url 'agregarProductos' %}" class="list-group-item list-group-item-action">Agregar Habitación</a>
                 <a href="{% url 'listarProducto' %}" class="list-group-item list-group-item-action">Habitaciones</a>
+                <a href="{% url 'solicitudes_admin' %}" class="list-group-item list-group-item-action">Solicitudes</a>
+                <a href="{% url 'listar_colaboradores_aprobados' %}" class="list-group-item list-group-item-action">Colaboradores</a>
             </div>
         </div>
 
-        <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container py-5">
                 <section class="text-center mb-5">
