@@ -29,6 +29,8 @@ def principal(request):
 
 
 def perfil (request):
+        tipo = request.user
+        print(tipo)
         return render(request, 'base/perfil.html')
 
 def colaborador(request):
@@ -156,7 +158,6 @@ def registrarse(request):
         usuario_creado.save()
         nuevoUsuario = Usuario()
         nuevoUsuario.idUsuario = usuario_creado
-        nuevoUsuario.tipo_cuenta = 'Usuario'
         nuevoUsuario.save()
         return HttpResponseRedirect(reverse('iniciarsesion'))
         
@@ -173,8 +174,8 @@ def iniciarsesion(request):
         usuario_encontrado = authenticate(username=usuario, password=contrasenia)
         if usuario_encontrado is not None:
             login(request, usuario_encontrado)
-            messages.success(request, 'Inicio de sesión exitoso')
-
+            sweetify.success(request, 'Inicio de sesión exitoso', button='Continuar')
+            
             if usuario_encontrado.is_superuser:
                 return redirect('vistaAdmin')  # Redirige al panel de admin
             else:

@@ -5,7 +5,14 @@ from django.contrib.auth.models import User
 
 class Usuario(models.Model):
     idUsuario = models.OneToOneField(User,on_delete=models.CASCADE)
-    tipo_cuenta = models.CharField(max_length=20)
+    colaborador = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Perfil de {self.idUsuario.username}'
+    
+    # Ejemplo de cómo verificar si un usuario es colaborador:
+    # usuario = User.objects.get(username='mi_usuario')
+    # es_colaborador = usuario.perfil.colaborador
 
 class Suscripcion(models.Model):
     f_suscripcion=models.DateField()

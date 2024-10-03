@@ -41,16 +41,15 @@ INSTALLED_APPS = [
     'modulo.Producto.apps.ProductoConfig',
     'modulo.Usuario.apps.UsuarioConfig',
     'modulo.Compra.apps.CompraConfig',
-    'modulo.principio.apps.PrincipioConfig',
     'sweetify'
     
 ]
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
