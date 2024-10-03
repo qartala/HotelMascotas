@@ -159,7 +159,8 @@
                             <h2>Información General</h2>
                             <div class="field">
                                 <label for="nombre">Nombre del Perro:</label>
-                                <input type="text" id="nombre_perro" name="nombre_perro" value="{{form.nombre_perro.value}}" placeholder="Nombre de tu perro" class="form-control" required>
+                                <input type="text" id="nombre_perro" name="nombre_perro" value="{{ form.nombre_perro.value|default:'' }}" placeholder="Nombre de tu perro" class="form-control" required>
+
                             </div>
                             {% if user.is_authenticated %}
                             <div class="oculto">
@@ -169,15 +170,15 @@
                             {% endif %}
                             <div class="field">
                                 <label for="raza">Raza:</label>
-                                <input type="text" id="raza" name="raza" value="{{form.raza.value}}" placeholder="Raza del perro" class="form-control" required>
+                                <input type="text" id="raza" name="raza" value="{{form.raza.value|default:'' }}" placeholder="Raza del perro" class="form-control" required>
                             </div>
                             <div class="field">
                                 <label for="edad">Edad:</label>
-                                <input type="number" id="edad" name="edad" value="{{form.edad.value}}" placeholder="Edad en años" class="form-control" required>
+                                <input type="number" id="edad" name="edad" value="{{form.edad.value|default:'' }}" placeholder="Edad en años" class="form-control" required>
                             </div>
                             <div class="field">
                                 <label for="peso">Peso:</label>
-                                <input type="number" id="peso" name="peso" value="{{form.peso.value}}" placeholder="Peso en kg" class="form-control" required>
+                                <input type="number" id="peso" name="peso" value="{{form.peso.value|default:'' }}" placeholder="Peso en kg" class="form-control" required>
                             </div>
                             <div class="field">
                                 <label for="chip">¿Tiene Chip?</label>
@@ -189,7 +190,7 @@
                             </div>
                             <div class="field">
                                 <label for="comida">Tipo de Comida:</label>
-                                <input type="text" id="comida" name="comida" value="{{form.comida.value}}" placeholder="Escribe el tipo de comida" class="form-control" required>
+                                <input type="text" id="comida" name="comida" value="{{form.comida.value|default:'' }}" placeholder="Escribe el tipo de comida" class="form-control" required>
                             </div>
                         </div>
                     </div>
@@ -201,17 +202,54 @@
                       <div class="section">
                           <h2>Historial Médico</h2>
                           <div class="field">
-                              <label for="vacunas">Vacunas Administradas:</label>
-                              <textarea id="vacunas" name="vacunas" value="{{form.vacunas.value}}" rows="4" placeholder="Escribe las vacunas administradas..." class="form-control" required></textarea>
-                          </div>
+                            <label for="vacunas">Vacunas Administradas:</label>
+                            <select id="vacunas" name="vacunas" class="form-control" multiple>
+                                <option value="ninguna_vacuna">Ninguna</option>
+                                <option value="rabia">Vacuna contra la Rabia</option>
+                                <option value="parvovirus">Vacuna contra el Parvovirus</option>
+                                <option value="moquillo">Vacuna contra el Moquillo</option>
+                                <option value="hepatitis">Vacuna contra la Hepatitis</option>
+                                <option value="tifus">Vacuna contra el Tifus Canino</option>
+                            </select>
+                            <button type="button" onclick="agregarVacuna()">Agregar Vacuna</button>
+                        </div>
+                        <div class="field">
+                            <label for="vacunasTextarea">Vacunas Seleccionadas:</label>
+                            <textarea id="vacunasTextarea" name="vacunas" rows="4" class="form-control"></textarea>
+                        </div>
+
                           <div class="field">
-                              <label for="alergias">Alergias:</label>
-                              <textarea id="alergias" name="alergias" value="{{form.alergias.value}}" rows="4" placeholder="Escribe las alergias si las tiene..." class="form-control" required></textarea>
-                          </div>
+                            <label for="alergias">Alergias:</label>
+                            <select id="alergias" name="alergias" class="form-control" multiple>
+                                <option value="ninguna_alergia">Ninguna</option>
+                                <option value="polen">Alergia al Polen</option>
+                                <option value="polvo">Alergia al Polvo</option>
+                                <option value="alimentos">Alergia a Alimentos</option>
+                            </select>
+                            <button type="button" onclick="agregarAlergia()">Agregar Vacuna</button>
+                        </div>
+                        <div class="field">
+                            <label for="alergiasTextarea">Alergias Seleccionadas:</label>
+                            <textarea id="alergiasTextarea" name="alergias" rows="4" class="form-control"></textarea>
+                        </div>
+
                           <div class="field">
-                              <label for="enfermedades">Enfermedades Previas:</label>
-                              <textarea id="enfermedades" name="enfermedades" value="{{form.enfermedades.value}}" rows="4" placeholder="Escribe las enfermedades previas..." class="form-control" required></textarea>
-                          </div>
+                            <label for="enfermedades">Enfermedades:</label>
+                            <select id="enfermedades" name="enfermedades" class="form-control" multiple>
+                                <option value="ninguna_enfermedad">Ninguna</option>
+                                <option value="diabetes">Diabetes</option>
+                                <option value="hipotiroidismo">Hipotiroidismo</option>
+                                <option value="epilepsia">Epilepsia</option>
+                            </select>
+                            <button type="button" onclick="agregarEnfermedad()">Agregar Vacuna</button>
+                        </div>
+                        
+                        <div class="field">
+                            <label for="enfermedadesTextarea">Enfermedades Seleccionadas:</label>
+                            <textarea id="enfermedadesTextarea" name="enfermedades" rows="4" class="form-control"></textarea>
+                        </div>
+                        
+                        
                           <!-- {% if user.is_authenticated %}
                           <div id="" style="display: none;">
                             <input type="number" id="id_usuario" name="id_usuario" value="{{form.id.value}}">
@@ -237,7 +275,44 @@
               </div>
           </div>
       
-    
+          <script>
+            function agregarVacuna() {
+                var select = document.getElementById("vacunas");
+                var textarea = document.getElementById("vacunasTextarea");
+                var selectedValues = Array.from(select.selectedOptions).map(option => option.text);
+
+                selectedValues.forEach(value => {
+                    if (!textarea.value.includes(value)) {
+                        textarea.value += value + "\n"; // Agrega la opción seleccionada al textarea
+                    }
+                });
+}
+
+            function agregarAlergia() {
+                var select = document.getElementById("alergias");
+                var textarea = document.getElementById("alergiasTextarea");
+                var selectedValues = Array.from(select.selectedOptions).map(option => option.text);
+        
+                selectedValues.forEach(value => {
+                    if (!textarea.value.includes(value)) {
+                        textarea.value += value + "\n"; // Agrega la opción seleccionada al textarea
+                    }
+                });
+            }
+
+            function agregarEnfermedad() {
+                var select = document.getElementById("enfermedades");
+                var textarea = document.getElementById("enfermedadesTextarea");
+                var selectedValues = Array.from(select.selectedOptions).map(option => option.text);
+        
+                selectedValues.forEach(value => {
+                    if (!textarea.value.includes(value)) {
+                        textarea.value += value + "\n"; // Agrega la opción seleccionada al textarea
+                    }
+                });
+            }
+
+        </script>
 
 </body>
 <footer>

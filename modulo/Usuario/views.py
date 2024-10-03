@@ -174,7 +174,7 @@ def iniciarsesion(request):
         usuario_encontrado = authenticate(username=usuario, password=contrasenia)
         if usuario_encontrado is not None:
             login(request, usuario_encontrado)
-            sweetify.success(request, 'Inicio de sesión exitoso', button='Continuar')
+            messages.success(request, 'Inicio de sesión exitoso')
             
             if usuario_encontrado.is_superuser:
                 return redirect('vistaAdmin')  # Redirige al panel de admin
@@ -250,12 +250,9 @@ def eliminar_suscriptor(request,id_s):
 
 
 def cerrar_sesion(request):
-    print(f"Usuario autenticado: {request.user.is_authenticated}")
     if request.user.is_authenticated:
-        print("Cerrando sesión del usuario")
         logout(request)
-        request.session.flush()
-    return redirect('iniciarsesion')
+    return HttpResponseRedirect(reverse('principal')) 
 
 
 def principalUsuario (request):

@@ -46,10 +46,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -184,5 +184,3 @@ WEBPAY_PLUS_RETURN_URL = 'http://localhost:8000/pagos/confirmar/'
 
 
 LOGIN_URL = ''
-
-CSRF_USE_SESSIONS = True

@@ -35,3 +35,12 @@ class Ficha(models.Model):
 
     def str(self):
         return f"{self.nombre_perro} ({self.nombre_dueno})"
+    
+    def get_vacunas(self):
+        return self.vacunas.split(',')
+
+    def get_alergias(self):
+        return self.alergias.split(',')
+
+    def get_enfermedades(self):
+        return self.enfermedades.split(',')
