@@ -1,25 +1,24 @@
-from logging import error
-from django.http import JsonResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth.models import User
+from datetime import datetime, timedelta
+from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
-from modulo.Usuario.models import Usuario, Suscripcion, Colaborador
-from django.core.mail import send_mail
-from modulo.Producto.models import Habitacion
-import datetime
-from django.db import IntegrityError
-import sweetify
-import re
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.contrib import messages
-from .models import Ficha
-from .forms import FichaSaludForm
+from django.core.mail import send_mail
+from django.db import IntegrityError
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render, redirect
+from django.template.loader import render_to_string
+from django.urls import reverse
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.http import JsonResponse
-from django.template.loader import render_to_string
+from logging import error
+from modulo.Producto.models import Habitacion
+from modulo.Usuario.models import Usuario, Suscripcion, Colaborador
+import re
+import sweetify
+from .forms import DisponibilidadForm, FichaSaludForm, PerfilColaboradorForm
+from .models import Disponibilidad, Ficha
 
 
 def admin(request):
@@ -37,42 +36,41 @@ def perfil (request):
         tipo = request.user
         print(tipo)
         return render(request, 'base/perfil.html')
+    
 def ficha_salud_view(request):
     if request.method == 'POST':
         form = FichaSaludForm(request.POST)
         if form.is_valid():
-            form = form.save(commit=False) # No guarda el objeto aún
+            form = form.save(commit=False) 
             usuario = Usuario.objects.get(idUsuario=request.user)  
-            form.id_usuario = usuario  # Asigna el usuario autenticado
+            form.id_usuario = usuario  
             form.save()
-            return render(request,'base/perfil.html')  # Redirige a la lista de fichas tras guardar
+            return render(request,'base/perfil.html')  
     else:
         form = FichaSaludForm()
     return render(request, 'base/ficha.html', {'form': form})
 
 def listar_fichas_view(request):
-    # Obtener el usuario autenticado
     usuario = Usuario.objects.get(idUsuario=request.user)
-    # Filtrar las fichas por el usuario autenticado
     fichas = Ficha.objects.filter(id_usuario=usuario)
     return render(request, 'base/listar_fichas.html', {'fichas': fichas})
 
 def editar_ficha_view(request, pk):
-    ficha = get_object_or_404(Ficha, pk=pk)  # Obtiene la ficha por su ID
+    ficha = get_object_or_404(Ficha, pk=pk)  
     if request.method == 'POST':
-        form = FichaSaludForm(request.POST, instance=ficha)  # Carga la instancia de la ficha
+        form = FichaSaludForm(request.POST, instance=ficha)  
         if form.is_valid():
-            form.save()  # Guarda los cambios
-            return redirect('listar_fichas')  # Redirige a la lista de fichas
+            form.save() 
+            return redirect('listar_fichas')  
     else:
-        form = FichaSaludForm(instance=ficha)  # Carga la instancia para el formulario
+        form = FichaSaludForm(instance=ficha)  
 
     return render(request, 'base/editar_ficha.html', {'form': form})
 
 def eliminar_ficha(request, id):
     ficha = get_object_or_404(Ficha, id=id)
     ficha.delete()
-    return redirect('perfil')  # Redirige a la lista de fichas tras eliminar
+    return redirect('perfil')  
 
 def colaborador(request):
     return render(request,'base/colaborador.html')
@@ -83,6 +81,98 @@ def listar_colaboradores(request):
         'colaborador': colaborador
     }
     return render(request, 'base/solicitudes.html', context=contexto)
+
+def horas_reservadas(request):
+    colaborador_id = request.session.get('colaborador_id')
+    
+    if not colaborador_id:
+        return redirect('iniciarsesionColaborador')
+
+    colaborador = Colaborador.objects.get(id=colaborador_id)
+
+    hoy = datetime.now().date()
+    en_30_dias = hoy + timedelta(days=30)
+    
+    reservas = Disponibilidad.objects.filter(colaborador=colaborador, fecha__range=[hoy, en_30_dias])
+    
+    contexto = {
+        'reservas': reservas,
+        'colaborador': colaborador,  
+    }
+    
+    return render(request, 'base/horas_reservadas.html', contexto)
+
+def eliminar_reserva(request, reserva_id):
+    colaborador_id = request.session.get('colaborador_id')
+    if not colaborador_id:
+        return redirect('iniciarsesionColaborador')
+    reserva = get_object_or_404(Disponibilidad, id=reserva_id, colaborador_id=colaborador_id)
+    reserva.delete()
+
+    return redirect('horas_reservadas')
+
+def registrar_disponibilidad(request):
+    colaborador_id = request.session.get('colaborador_id')
+
+    if not colaborador_id:
+        return redirect('iniciarsesionColaborador') 
+
+    colaborador = Colaborador.objects.get(id=colaborador_id)  
+    
+    if request.method == 'POST':
+        form = DisponibilidadForm(request.POST)
+        if form.is_valid():
+            disponibilidad = form.save(commit=False)
+            disponibilidad.colaborador = colaborador
+            disponibilidad.servicio = colaborador.servicio  
+
+            conflicto = Disponibilidad.objects.filter(
+                colaborador=colaborador,
+                servicio=disponibilidad.servicio,
+                fecha=disponibilidad.fecha,
+                hora_inicio=disponibilidad.hora_inicio
+            ).exists()
+
+            if conflicto:
+                form.add_error(None, "Ya has registrado una disponibilidad para este servicio en este horario.")
+            else:
+                disponibilidad.save()
+                return redirect('horas_reservadas') 
+    else:
+        form = DisponibilidadForm()
+
+    contexto = {
+        'form': form,
+        'colaborador': colaborador,  
+    }
+
+    return render(request, 'base/horario_disponible.html', contexto)
+
+
+def perfil_colaborador(request):
+    colaborador_id = request.session.get('colaborador_id')
+
+    if not colaborador_id: 
+        return redirect('iniciarsesionColaborador')
+
+    colaborador = Colaborador.objects.get(id=colaborador_id)
+
+    if request.method == 'POST':
+        form = PerfilColaboradorForm(request.POST, request.FILES, instance=colaborador)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil_colaborador')  
+    else:
+        form = PerfilColaboradorForm(instance=colaborador)
+
+    contexto = {
+        'colaborador': colaborador,  
+        'form': form  
+    }
+    
+    return render(request, 'base/perfil_colaborador.html', contexto)
+
+
 
 def registro_colaborador(request):
     if request.method == 'POST':
@@ -101,11 +191,12 @@ def registro_colaborador(request):
         if len(username) > 15:
             messages.error(request, 'El nombre de usuario no puede tener más de 15 caracteres.')
             return render(request, 'base/colaborador.html')
+
         if not re.match(r'^(?=.*[A-Z])(?=.*[0-9])(?=.*[.-]).{1,15}$', username):
             messages.error(request, 'El nombre de usuario debe contener al menos una mayúscula, un número y un punto o guion.')
             return render(request, 'base/colaborador.html')
 
-        if User.objects.filter(username=username).exists() or Colaborador.objects.filter(username=username).exists():
+        if Colaborador.objects.filter(username=username).exists():
             messages.error(request, f"El nombre de usuario '{username}' ya está en uso.")
             return render(request, 'base/colaborador.html')
 
@@ -117,13 +208,14 @@ def registro_colaborador(request):
             messages.error(request, 'Introduce una dirección de correo válida.')
             return render(request, 'base/colaborador.html')
 
-        if User.objects.filter(email=email).exists() or Colaborador.objects.filter(email=email).exists():
+        if Colaborador.objects.filter(email=email).exists():
             messages.error(request, f"El correo electrónico '{email}' ya está en uso.")
             return render(request, 'base/colaborador.html')
 
         if len(password) > 15:
             messages.error(request, 'La contraseña no puede tener más de 15 caracteres.')
             return render(request, 'base/colaborador.html')
+
         if not re.match(r'^(?=.*[A-Z]).{1,15}$', password):
             messages.error(request, 'La contraseña debe contener al menos una letra mayúscula.')
             return render(request, 'base/colaborador.html')
@@ -136,8 +228,9 @@ def registro_colaborador(request):
             servicio=servicio,
             pdf_file=pdf_file
         )
-        colaborador.save()
 
+        colaborador.set_password(password)
+        colaborador.save()  
         messages.success(request, 'Registro exitoso. Espera la confirmación del administrador.')
         return redirect('registro_colaborador')
 
@@ -211,9 +304,46 @@ def listar_colaboradores_aprobados(request):
     colaboradores_aprobados = Colaborador.objects.filter(estado='aprobado')
     return render(request, 'base/colaboradores_aprobados.html', {'colaboradores': colaboradores_aprobados})
 
-
 def iniciarsesionColaborador(request):
-    return render(request,'base/iniciarsesionColaborador.html')
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+           
+            colaborador = Colaborador.objects.get(username=username, estado='aprobado')
+
+            if colaborador.check_password(password):
+            
+                request.session['colaborador_id'] = colaborador.id
+                messages.success(request, 'Inicio de sesión exitoso.')
+                return redirect('inicio_colaborador')  
+            else:
+                messages.error(request, 'Contraseña incorrecta.')
+                return redirect('iniciarsesionColaborador')
+        except Colaborador.DoesNotExist:
+           
+            messages.error(request, 'Colaborador no registrado. Regístrate para continuar.')
+            return redirect('registro_colaborador')  
+
+    return render(request, 'base/iniciarsesionColaborador.html')
+
+    
+    
+def inicio_colaborador(request):
+    colaborador_id = request.session.get('colaborador_id')
+    
+    if not colaborador_id:
+        return redirect('iniciarsesionColaborador') 
+
+    colaborador = Colaborador.objects.get(id=colaborador_id)
+    
+    contexto = {
+        'colaborador': colaborador,
+    }
+    return render(request, 'base/inicio_colaborador.html', contexto)
+
+
 
 def listar(request):
     usuarios = User.objects.all()
@@ -392,8 +522,12 @@ def eliminar_suscriptor(request,id_s):
 def cerrar_sesion(request):
     if request.user.is_authenticated:
         logout(request)
-    return HttpResponseRedirect(reverse('principal')) 
 
+    storage = messages.get_messages(request)
+    for message in storage:
+        message.used = True  
+
+    return HttpResponseRedirect(reverse('principal'))
 
 def principalUsuario (request):
     

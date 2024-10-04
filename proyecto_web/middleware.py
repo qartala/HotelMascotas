@@ -22,7 +22,12 @@ class LoginRequiredMiddleware:
             'registrarse',
             'colaborador',
             'registro_colaborador',
-            'iniciarsesionColaborador'
+            'iniciarsesionColaborador',
+            'inicio_colaborador',
+            'iniciarsesionColaborador',
+            'registrar_disponibilidad',
+            'perfil_colaborador',
+            'horas_reservadas'
         ]
          
         rutas_protegidas = [

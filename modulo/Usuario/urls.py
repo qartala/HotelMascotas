@@ -1,9 +1,11 @@
 from django.urls import path
 from .views import colaborador
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
-from .views import principal,eliminar_ficha,editar_ficha_view,listar_fichas_view,ficha_salud_view,perfil,verificar_usuario,verificar_correo,listar_colaboradores_aprobados,iniciarsesionColaborador,eliminar_suscriptor,suscripcion,desuscribirse,registrarse,iniciarsesion,eliminarSuscriptor,ingresarSuscriptor,vigencia,principalUsuario,listar,cerrar_sesion
+from .views import eliminar_reserva,horas_reservadas,perfil_colaborador,registrar_disponibilidad,principal,eliminar_ficha,editar_ficha_view,listar_fichas_view,ficha_salud_view,perfil,verificar_usuario,verificar_correo,listar_colaboradores_aprobados,iniciarsesionColaborador,eliminar_suscriptor,suscripcion,desuscribirse,registrarse,iniciarsesion,eliminarSuscriptor,ingresarSuscriptor,vigencia,principalUsuario,listar,cerrar_sesion
 
 urlpatterns = [
     path('',principal,name='principal'),
@@ -32,7 +34,17 @@ urlpatterns = [
     path('editar-ficha/<int:pk>/', editar_ficha_view, name='editar_ficha'),
     path('eliminar-ficha/<int:id>/', eliminar_ficha, name='eliminar_ficha'),
     path('perfil/',perfil, name='perfil'),
+    path('inicio_colaborador/', views.inicio_colaborador, name='inicio_colaborador'),
+    path('iniciarsesionColaborador/', views.iniciarsesionColaborador, name='iniciarsesionColaborador'),
+    path('disponibilidad/', registrar_disponibilidad, name='registrar_disponibilidad'),
+    path('perfil_colaborador/', views.perfil_colaborador, name='perfil_colaborador'),
+    path('horas_reservadas/', horas_reservadas, name='horas_reservadas'),
+    path('eliminar-reserva/<int:reserva_id>/', views.eliminar_reserva, name='eliminar_reserva'),
+
     
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

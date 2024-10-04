@@ -42,9 +42,13 @@ INSTALLED_APPS = [
     'modulo.Usuario.apps.UsuarioConfig',
     'modulo.Compra.apps.CompraConfig',
     'modulo.principio.apps.PrincipioConfig',
-    'sweetify'
-    
+    'sweetify',
+    'crispy_forms',
+    'crispy_bootstrap5', 
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -79,6 +83,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'proyecto_web.wsgi.application'
 
+LOGIN_URL = 'iniciarsesionColaborador'  # O el nombre que uses para la vista de login de colaboradores
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -88,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'petsteam',#cambiar segun base de datos de mysql
         'USER':'root', #cambiar segun configuracion mysql
-        'PASSWORD':'root',#cambiar segun configuracion mysql
+        'PASSWORD':'admin',#cambiar segun configuracion mysql
         'HOST':'localhost',
         'PORT': 3306 #cambiar segun configuracion mysql
     }
@@ -146,8 +151,9 @@ STATICFILES_DIRS = [
 
 # Configuraciòn de media
 
-MEDIA_ROOT = join(BASE_DIR,'media')
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = join(BASE_DIR, 'media')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

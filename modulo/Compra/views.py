@@ -1,25 +1,19 @@
 import datetime
+import uuid
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-
 from django.contrib import messages
-from django.shortcuts import redirect, render
-
-from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions
 from django.conf import settings
-import uuid
-
-
-
 from django.contrib.auth.decorators import login_required
 
-from modulo.Compra.models import Carrito, Detalle_compra ,Habitacion, Historial,Seguimiento,Compra
+from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions
+
+from modulo.Compra.models import Carrito, Detalle_compra, Habitacion, Historial, Seguimiento, Compra
 from modulo.Usuario.models import Usuario
 
 
-from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions
-import uuid
+# Create your views here.
 
 def carroCompra(request):
     usuario = Usuario.objects.get(idUsuario__id=request.user.id)
@@ -33,7 +27,6 @@ def carroCompra(request):
     }
     return render(request, 'base/carro_compra.html', contexto)
 
-# Create your views here.
 def carroCompra(request):
     usuario = Usuario.objects.get(idUsuario__id =request.user.id )
     carrito = Carrito.objects.filter(idUsuario__id = usuario.id)
@@ -171,9 +164,9 @@ def menos(request,id_p):
 
 def iniciar_pago(request):
     if request.method == 'POST':
-        amount = request.POST['total']  # Asegúrate de que el total esté en el formulario
+        amount = request.POST['total']  
         session_id = request.session.session_key or "session_id"
-        buy_order = str(uuid.uuid4().hex[:12])  # Generar un buy_order único
+        buy_order = str(uuid.uuid4().hex[:12])  
         return_url = settings.WEBPAY_PLUS_RETURN_URL
         
         # Configuración de Transbank
@@ -207,7 +200,7 @@ def confirmar_pago(request):
             details = response.get('detail', response.get('response', response))
             messages.success(request, f'¡Pago Completado! Detalles: {details}')
             
-            return redirect('principalUsuario')  # Cambia 'home' por la vista que desees
+            return redirect('principalUsuario')  
         except Exception as e:
             print("Error:", e)
             messages.error(request, 'Ocurrió un error al confirmar el pago.')

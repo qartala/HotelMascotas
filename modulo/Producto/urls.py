@@ -8,6 +8,6 @@ urlpatterns = [
     path('crearOferta/', crearOferta, name='crearOferta'),
     path('agregarCategoria/', agregarCategoria, name='agregarCategoria'),
     path('Productos/', listar, name='listarProducto'),
-    path('modificar/<int:idHabitacion>/', modificar, name='modificarProducto'),  # Cambiado aquí
+    path('modificar/<int:idHabitacion>/', modificar, name='modificarProducto'),  
     path('eliminar/<int:idProducto>/', eliminar, name='eliminarProducto'),
 ]
