@@ -20,13 +20,14 @@ class LoginRequiredMiddleware:
             'principal',
             'iniciarsesion',
             'registrarse',
+            'colaborador',
+            'registro_colaborador',
+            'iniciarsesionColaborador'
         ]
          
         rutas_protegidas = [
             'principalUsuario', # URLs que quieras proteger
             'perfil',
-            'colaborador',
-            'registro_colaborador',
             'carroCompra',
             'compra',
             'cerrar_sesion',
@@ -47,9 +48,6 @@ class LoginRequiredMiddleware:
             'iniciar_pago',
             'confirmar_pago',
             'Realizar'
-
-
-
         ]
 
         rutas_protegidas_admin = [
@@ -63,6 +61,10 @@ class LoginRequiredMiddleware:
              'modificarProducto',
              'eliminarProducto',
              'cerrar_sesion',
+             'verificar_usuario',
+             'verificar_correo',
+             'eliminar_colaborador_aprobado',
+             'gestionar_solicitud'
         ]
 
         # Verifica si la URL solicitada es una de las protegidas

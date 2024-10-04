@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'proyecto_web.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'petsteam1',#cambiar segun base de datos de mysql
+        'NAME': 'petsteam',#cambiar segun base de datos de mysql
         'USER':'root', #cambiar segun configuracion mysql
         'PASSWORD':'root',#cambiar segun configuracion mysql
         'HOST':'localhost',

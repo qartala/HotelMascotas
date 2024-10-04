@@ -32,8 +32,6 @@ urlpatterns = [
     path('editar-ficha/<int:pk>/', editar_ficha_view, name='editar_ficha'),
     path('eliminar-ficha/<int:id>/', eliminar_ficha, name='eliminar_ficha'),
     path('perfil/',perfil, name='perfil'),
-
-
     
 ]
 
