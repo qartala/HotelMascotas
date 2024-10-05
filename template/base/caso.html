@@ -172,13 +172,11 @@
                   {% for producto in productos %}
                   <div class="col">
                       <div class="card h-100 shadow-sm">
-                          <img style="height: 200px; object-fit: cover;" src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.tipoPerro }}">
+                          <img style="height: 200px; object-fit: cover;" src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.numero_habitacion }}">
                           <div class="card-body text-center">
-                              <h5 class="card-title">{{ producto.tipoPerro }}</h5>
-                              <p class="card-text">Kilos: {{ producto.kilos }}</p>
-                              <p class="card-text">Servicio: {{ producto.servicio }}</p>
+                              <h5 class="card-title">{{ producto.numero_habitacion }}</h5>
+                              <p class="card-text">Kilos: {{ producto.tipo_habitacion }}</p>
                               <p class="card-text">Precio: CLP {{ producto.precio }}</p>
-                              <p class="card-text">Tiempo: {{ producto.tiempoText }}</p>
                               <a href="#" class="btn btn-warning reservar-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Reservar</a>
                           </div>
                       </div>

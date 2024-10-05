@@ -69,8 +69,6 @@
             <div class="sidebar-heading">Administrador</div>
             <div class="list-group list-group-flush">
                 <a href="{% url 'vistaAdmin' %}" class="list-group-item list-group-item-action">Inicio</a>
-                <a href="{% url 'crearOferta' %}" class="list-group-item list-group-item-action">Crear Oferta</a>
-                <a href="{% url 'agregarCategoria' %}" class="list-group-item list-group-item-action">Crear Categoría</a>
                 <a href="{% url 'agregarProductos' %}" class="list-group-item list-group-item-action">Agregar Habitación</a>
                 <a href="{% url 'listarProducto' %}" class="list-group-item list-group-item-action">Habitaciones</a>
                 <a href="{% url 'solicitudes_admin' %}" class="list-group-item list-group-item-action">Solicitudes</a>
@@ -82,25 +80,6 @@
             <main class="container py-5 text-center">
                 <h1 class="mb-4">Panel de Administrador</h1>
                 <div class="row justify-content-center g-4">
-                    <div class="col-md-4">
-                        <div class="card shadow border-light">
-                            <div class="card-body text-center">
-                                <i class="fas fa-tags fa-4x mb-3 text-warning"></i>
-                                <h5 class="card-title">Crear Oferta</h5>
-                                <a class="btn btn-primary" href="{% url 'crearOferta' %}">Crear</a>
-                            </div>
-                        </div>
-                    </div>
-        
-                    <div class="col-md-4">
-                        <div class="card shadow border-light">
-                            <div class="card-body text-center">
-                                <i class="fas fa-folder-plus fa-4x mb-3 text-success"></i>
-                                <h5 class="card-title">Crear Categoría</h5>
-                                <a class="btn btn-primary" href="{% url 'agregarCategoria' %}">Crear</a>
-                            </div>
-                        </div>
-                    </div>
         
                     <div class="col-md-4">
                         <div class="card shadow border-light">

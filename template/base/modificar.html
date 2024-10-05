@@ -60,40 +60,16 @@
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="mb-3">
-                    <label for="tipoPerro" class="form-label">Tipo de Perro</label>
-                    <input type="text" id="tipoPerro" name="tipoPerro" class="form-control" value="{{ producto.tipoPerro }}" required>
+                    <label for="numero_habitacion" class="form-label">Numero Habitacion</label>
+                    <input type="text" id="numero_habitacion" name="numero_habitacion" class="form-control" value="{{ producto.numero_habitacion }}" required>
                 </div>
                 <div class="mb-3">
-                    <label for="kilos" class="form-label">Kilos</label>
-                    <input type="number" id="kilos" name="kilos" class="form-control" value="{{ producto.kilos }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="servicio" class="form-label">Servicio</label>
-                    <input type="text" id="servicio" name="servicio" class="form-control" value="{{ producto.servicio }}" required>
+                    <label for="kilos" class="form-label">Tipo Habitacion</label>
+                    <input type="text" id="tipo_habitacion" name="tipo_habitacion" class="form-control" value="{{ producto.tipo_habitacion }}" required>
                 </div>
                 <div class="mb-3">
                     <label for="precio" class="form-label">Precio</label>
                     <input type="number" id="precio" name="precio" class="form-control" value="{{ producto.precio }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="tiempoText" class="form-label">Tiempo</label>
-                    <input type="text" id="tiempoText" name="tiempoText" class="form-control" value="{{ producto.tiempoText }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="idCategoria" class="form-label">Categoría</label>
-                    <select id="idCategoria" name="idCategoria" class="form-select" required>
-                        {% for categoria in categorias %}
-                            <option value="{{ categoria.id }}" {% if categoria.id == producto.id_categoria.id %}selected{% endif %}>{{ categoria.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="idPromocion" class="form-label">Promoción</label>
-                    <select id="idPromocion" name="idPromocion" class="form-select" required>
-                        {% for promocion in promociones %}
-                            <option value="{{ promocion.id }}" {% if promocion.id == producto.id_Promocion.id %}selected{% endif %}>{{ promocion.nombre }}</option>
-                        {% endfor %}
-                    </select>
                 </div>
                 <div class="mb-3">
                     <label for="imagen" class="form-label">Imagen</label>
@@ -148,21 +124,9 @@
 								<div class="col-12">
 									<form method="post" enctype="multipart/form-data">
 										{% csrf_token %}
-										<input type="text" name="tipoPerro" value="{{ producto.tipoPerro }}" required>
-										<input type="number" name="kilos" value="{{ producto.kilos }}" required>
-										<input type="text" name="servicio" value="{{ producto.servicio }}" required>
+										<input type="text" name="numero_habitacion" value="{{ producto.numero_habitacion }}" required>
+										<input type="text" name="tipo_habitacion" value="{{ producto.tipo_habitacion }}" required>
 										<input type="number" name="precio" value="{{ producto.precio }}" required>
-										<input type="text" name="tiempoText" value="{{ producto.tiempoText }}" required>
-										<select name="idCategoria" required>
-											{% for categoria in categorias %}
-												<option value="{{ categoria.id }}" {% if categoria.id == producto.id_categoria.id %}selected{% endif %}>{{ categoria.nombre }}</option>
-											{% endfor %}
-										</select>
-										<select name="idPromocion" required>
-											{% for promocion in promociones %}
-												<option value="{{ promocion.id }}" {% if promocion.id == producto.id_Promocion.id %}selected{% endif %}>{{ promocion.nombre }}</option>
-											{% endfor %}
-										</select>
 										<input type="file" name="imagen">
 										<button type="submit" class="btn btn-primary">Guardar Cambios</button>
 									</form>

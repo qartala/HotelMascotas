@@ -13,7 +13,7 @@
 <body>
 
     <div class="container">
-        <h3>¿Está seguro de que desea eliminar la habitación {{ producto.tipoPerro }}?</h3>
+        <h3>¿Está seguro de que desea eliminar la habitación {{ producto.numero_habitacion }}?</h3>
         <form method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Eliminar</button>

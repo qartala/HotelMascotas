@@ -115,8 +115,6 @@
             <div class="sidebar-heading">Administrador</div>
             <div class="list-group list-group-flush">
                 <a href="{% url 'principalUsuario' %}" class="list-group-item list-group-item-action">Inicio</a>
-                <a href="{% url 'crearOferta' %}" class="list-group-item list-group-item-action">Crear Oferta</a>
-                <a href="{% url 'agregarCategoria' %}" class="list-group-item list-group-item-action">Crear Categoría</a>
                 <a href="{% url 'agregarProductos' %}" class="list-group-item list-group-item-action">Agregar Habitación</a>
                 <a href="{% url 'listarProducto' %}" class="list-group-item list-group-item-action">Habitaciones</a>
                 <a href="{% url 'solicitudes_admin' %}" class="list-group-item list-group-item-action">Solicitudes</a>
@@ -139,10 +137,9 @@
                                     <tr>
                                         <th>ID Producto</th>
                                         <th>Imagen</th>
-                                        <th>Tipo de Habitación</th>
+                                        <th>Numero Habitación</th>
+                                        <th>Tipo Habitación</th>
                                         <th>Precio</th>
-                                        <th>Categoría</th>
-                                        <th>Promoción</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -154,10 +151,11 @@
                                                 <td>
                                                     <img style="height: 100px; width: 100px;" src="{{ producto.imagen.url }}" alt="Imagen del Producto">
                                                 </td>
-                                                <td>{{ producto.tipoPerro }}</td>
+                                                <td>{{ producto.numero_habitacion }}</td>
+                                                <td>{{ producto.tipo_habitacion }}</td>
                                                 <td>{{ producto.precio }} CLP</td>
-                                                <td>{{ producto.id_categoria.nombre }}</td>
-                                                <td>{{ producto.id_Promocion.nombre }}</td>
+                                                <!-- <td>{{ producto.id_categoria.nombre }}</td>
+                                                <td>{{ producto.id_Promocion.nombre }}</td> -->
                                                 <td>
                                                     <div class="d-flex justify-content-around">
                                                         <a href="{% url 'modificarProducto' producto.id %}" class="btn btn-custom btn-custom-edit">

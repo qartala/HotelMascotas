@@ -58,8 +58,6 @@ class LoginRequiredMiddleware:
         rutas_protegidas_admin = [
              'vistaAdmin',
              'listarProducto',
-             'crearOferta',
-             'agregarCategoria',
              'solicitudes_admin',
              'listar_colaboradores_aprobados',
              'agregarProductos',

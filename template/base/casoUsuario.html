@@ -126,14 +126,6 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
             </ul>
         </div>
-
-        {% if user.username == 'admin' %}
-            <div class="ms-3">
-                <a href="{% url 'vistaAdmin' %}" class="btn btn-primary">
-                    <i class="bi bi-person-square"></i>
-                </a>
-            </div>
-        {% else %}
         <div class="btn-group carro ms-3">
             <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-cart2"></i>
@@ -145,7 +137,6 @@
                 <li><a class="dropdown-item" href="{% url 'seguimiento' %}">Seguimiento de compra</a></li>
             </ul>
         </div>
-        {% endif %}
     </div>
 </nav>
 
@@ -190,10 +181,10 @@
         {% for producto in productos %}
         <div class="col">
             <div class="card h-100 shadow-sm">
-                <img style="height: 200px; object-fit: cover;" src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.tipoPerro }}">
+                <img style="height: 200px; object-fit: cover;" src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.numero_habitacion }}">
                 <div class="card-body text-center">
-                    <h5 class="card-title">{{ producto.tipoPerro }}</h5>
-                    <p class="card-text">Kilos: {{ producto.kilos }}</p>
+                    <h5 class="card-title">{{ producto.numero_habitacion }}</h5>
+                    <p class="card-text">Kilos: {{ producto.tipo_habitacion }}</p>
                     <p class="card-text">Servicio: {{ producto.servicio }}</p>
                     <p class="card-text">Precio: CLP {{ producto.precio }}</p>
                     <p class="card-text">Tiempo: {{ producto.tiempoText }}</p>

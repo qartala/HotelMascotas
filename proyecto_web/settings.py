@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'modulo.principio.apps.PrincipioConfig',
     'sweetify',
     'crispy_forms',
-    'crispy_bootstrap5', 
+    'crispy_bootstrap5',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -93,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'petsteam',#cambiar segun base de datos de mysql
         'USER':'root', #cambiar segun configuracion mysql
-        'PASSWORD':'admin',#cambiar segun configuracion mysql
+        'PASSWORD':'root',#cambiar segun configuracion mysql
         'HOST':'localhost',
         'PORT': 3306 #cambiar segun configuracion mysql
     }

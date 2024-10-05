@@ -26,7 +26,7 @@ def admin(request):
 
 def principal(request):
     buscar = request.GET.get("buscar", "")
-    productos = Habitacion.objects.filter(tipoPerro__icontains=buscar)
+    productos = Habitacion.objects.filter(numero_habitacion__icontains=buscar)
     contexto = {
         'productos': productos
     }
@@ -547,6 +547,6 @@ def principalUsuario (request):
         pass
     if request.method == "GET":
         
-        productos = Habitacion.objects.filter(tipoPerro__contains=buscar)
+        productos = Habitacion.objects.filter(numero_habitacion__contains=buscar)
         contexto["productos"] = productos
     return render(request,'base/casoUsuario.html',context = contexto)

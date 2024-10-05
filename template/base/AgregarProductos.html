@@ -12,6 +12,7 @@
     <link rel="icon" href="{% static 'assets/R.png' %}">
     <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
     <style>
+
         body {
             background-color: #f8f9fa;
         }
@@ -71,8 +72,6 @@
             <div class="sidebar-heading">Administrador</div>
             <div class="list-group list-group-flush">
                 <a href="{% url 'principalUsuario' %}" class="list-group-item list-group-item-action">Inicio</a>
-                <a href="{% url 'crearOferta' %}" class="list-group-item list-group-item-action">Crear Oferta</a>
-                <a href="{% url 'agregarCategoria' %}" class="list-group-item list-group-item-action">Crear Categoría</a>
                 <a href="{% url 'agregarProductos' %}" class="list-group-item list-group-item-action active">Agregar Habitación</a>
                 <a href="{% url 'listarProducto' %}" class="list-group-item list-group-item-action">Habitaciones</a>
                 <a href="{% url 'solicitudes_admin' %}" class="list-group-item list-group-item-action">Solicitudes</a>
@@ -89,19 +88,20 @@
                             {% csrf_token %}
 
                             <div class="form-group mb-3">
-                                <input type="file" name="imagen" id="imagen" class="form-control" required>
+                                <input type="file" name="imagen_habitacion" id="imagen_habitacion" class="form-control" required>
                             </div>
 
                             <div class="form-group mb-3">
-                                <input name="tipoPerro" id="tipoPerro" type="text" class="form-control" placeholder="Descripción de la habitación" required>
+                                <input name="numero_habitacion" id="numero_habitacion" type="text" class="form-control" placeholder="Numero habitacion" required>
                             </div>
-
+                            
                             <div class="form-group mb-3">
-                                <input name="kilos" id="kilos" type="number" class="form-control" placeholder="Kilos" required>
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <input name="servicio" id="servicio" type="text" class="form-control" placeholder="Servicio" required>
+                                <select class="form-select" aria-label="Default select example" name="tipo_habitacion" required>
+                                    <option selected disabled>Selecciona tipo de habitacion</option>
+                                    <option value="pequena">Pequeña</option>
+                                    <option value="mediana">Mediana</option>
+                                    <option value="grande">Grande</option>
+                                  </select>
                             </div>
 
                             <div class="input-group form-group mb-3">
@@ -109,31 +109,10 @@
                                 <span class="input-group-text">CLP</span>
                             </div>
 
-                            <div class="form-group mb-3">
-                                <input name="tiempoText" id="tiempoText" type="text" class="form-control" placeholder="Por noche o día" required>
-                            </div>
-
+                            
                             {% if mensaje %}
                                 <div class="alert alert-warning" role="alert">{{ mensaje }}</div>
                             {% endif %}
-
-                            <div class="form-group mb-3">
-                                <select class="form-control" name="idCategoria" id="idCategoria" required>
-                                    <option value="">Seleccione una categoría</option>
-                                    {% for cate in categorias %}
-                                        <option value="{{ cate.id }}">{{ cate.nombre }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <select class="form-control" name="idPromocion" id="idPromocion" required>
-                                    <option value="">Seleccione una promoción</option>
-                                    {% for promo in promociones %}
-                                        <option value="{{ promo.id }}">{{ promo.nombre }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
 
                             <button type="submit" class="btn btn-primary mt-4">Agregar Habitación</button>
                         </form>
