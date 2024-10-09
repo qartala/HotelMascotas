@@ -1,0 +1,249 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section text-center">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 text-start">
+        <h1>Bienvenido a PetsTeam</h1>
+        <p>Ofrecemos una experiencia de lujo para tu perro con un ambiente cómodo y seguro.</p>
+        <a href="#services" class="btn btn-light text-dark me-3">Ver Más</a>
+        <a href="#contacto" class="btn btn-dark text-light">Contactanos</a>
+      </div>
+      <div class="col-lg-6">
+        <img src="https://cdn.mos.cms.futurecdn.net/ASHH5bDmsp6wnK6mEfZdcU-1200-80.jpg" alt="Mascota cuidada" class="img-fluid">
+      </div>
+    </div>
+  </div>
+  <div class="circle one"></div>
+  <div class="circle two"></div>
+</section>
+
+<!-- Section Precios -->
+<section id="precios" class="precios section-padding">
+  <div class="separator-ribbon">
+    <div class="content "></div>
+  </div>
+
+  <div class="image-overlay">
+    <div class="container my-5">
+        <h2 class="text-center mb-5 title">Habitaciones</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% if productos %}
+                {% for producto in productos %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <img style="height: 200px; object-fit: cover;" src="/media/{{producto.imagen_habitacion}}" class="card-img-top" alt="{{ producto.numero_habitacion }}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ producto.numero_habitacion }}</h5>
+                            <p class="card-text">Kilos: {{ producto.tipo_habitacion }}</p>
+                            <p class="card-text">Precio: CLP {{ producto.precio }}</p>
+                            <a href="#" class="btn btn-warning reservar-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Reservar</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <h2 class="text-center">Sin Habitaciones disponibles</h2>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+</section>
+
+<section id="nosotros" class="nosotros section-padding">
+  <div class="separator-ribbon"></div>
+    <div class="content "></div>
+  </div>
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 col-md-12 mb-2 mb-lg-0">
+        <div class="nosotros-img">
+          <img src="/static/assets/icon-transformed.png" alt="Sobre Nosotros" class="img-fluid">
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-12 ps-lg-5">
+        <div class="nosotros-text">
+          <h2>El Mejor Hotel para Perros <br> en Chile</h2>
+          <p>En Pets Team, nos dedicamos a ofrecer una experiencia inigualable para tus mascotas. Nuestro hotel está diseñado para brindar confort, seguridad y diversión, asegurando que cada perro se sienta como en casa.</p>
+          <a href="#services" class="btn btn-warning">Ver Más</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services" class="services section-padding">
+  <div class="separator-ribbon"></div>
+    <div class="content "></div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-body">
+      <section id="services" class="services section-padding">
+        <div class="">
+          <div class="section-header text-center pb-5">
+            <h2 class="text-center mb-2 title">Servicios disponibles</h2>
+            <p>Ofrecemos los siguientes servicios, de acuerdo a las necesidades de tu mascota.</p>
+          </div>
+          <div class="row d-flex justify-content-center">
+            <div class="col-lg-2 col-md-6 mb-4">
+              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 " >
+                <img src="https://media.istockphoto.com/id/1008083248/vector/animal-first-aid-kit.jpg?s=612x612&w=0&k=20&c=sHwm0s-WcoSrnuNsaVCqINMzsAZsJ4i2H171-U81htA=" height="200px" class="card-img-top" alt="Servicio 1">
+                <div class="card-body">
+                  <h5 class="card-title">Baños</h5>
+                  <p class="card-text" style="font-size: medium;">Ofrecemos baños relajantes y cuidadosos para que tu mascota se sienta limpia, fresca y cómoda. Utilizamos productos hipoalergénicos y especializados según el tipo de pelaje y piel.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4">
+              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
+                <img src="https://cdn-icons-png.flaticon.com/512/5783/5783339.png" height="200px" class="card-img-top" alt="Servicio 2">
+                <div class="card-body">
+                  <h5 class="card-title">Spa</h5>
+                  <p class="card-text" style="font-size: medium;">Brindamos un tratamiento de spa exclusivo para tu mascota, que incluye masajes relajantes, baños terapéuticos y cuidados especiales para el pelaje, ofreciendo una experiencia de lujo y bienestar.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4">
+              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
+                <img src="https://www.nikonistas.com/digital/img2/2024/06/2rutcasanellas-harrycooper1-f_1200x800.jpg" height="200px" class="card-img-top" alt="Servicio 3">
+                <div class="card-body">
+                  <h5 class="card-title">Fotografía</h5>
+                  <p class="card-text" style="font-size: medium;">Capturamos momentos inolvidables de tu mascota con sesiones fotográficas profesionales. Llévate un hermoso recuerdo de su estadía en nuestro hotel.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4">
+              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
+                <img src="https://veterinariaelroble.cl/wp-content/uploads/2022/09/zz-yorkshire-peluqueria-dic-is_1.jpg" height="200px" class="card-img-top" alt="Servicio 3">
+                <div class="card-body">
+                  <h5 class="card-title">Peluquería</h5>
+                  <p class="card-text" style="font-size: medium;">Nuestro servicio de peluquería asegura que tu mascota siempre luzca impecable. Ofrecemos cortes y estilos adaptados a cada raza y preferencias del dueño.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4">
+              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
+                <img src="https://www.hogarmania.com/archivos/202307/empresas-servicio-transporte-animales-compania-1280x720x80xX.jpg" height="200px" class="card-img-top" alt="Servicio 3">
+                <div class="card-body">
+                  <h5 class="card-title">Transporte</h5>
+                  <p class="card-text" style="font-size: medium;">Disponemos de un servicio de transporte seguro y cómodo para recoger y entregar a tu mascota, asegurando su bienestar en todo momento durante el trayecto.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+</section>
+
+<section id="colaborador" class="colaborador section-padding" >
+  <div class="separator-ribbon">
+    <div class="content container"></div>
+  </div>
+  <div class="container">
+      <div class="row align-items-center">
+          <div class="col-lg-6 col-md-12 col-12 mb-4 mb-lg-0">
+              <div class="colaborador-img">
+                  <img src="/static/assets/ColaboradorPerro2.png"  alt="colaborador" class="img-fluid">
+              </div>
+          </div>
+          <div class="col-lg-6 col-md-12 col-12 ps-lg-5">
+              <div class="nosotros-text">
+                  <h2>¿Deseas ser Colaborador? <br> en PetsTeam</h2>
+                  <p>En Pets Team, ofrecemos oportunidades de empleo a personas certificadas en el cuidado de mascotas. Aquellos que cuenten con las certificaciones necesarias pueden inscribirse en nuestra plataforma para ofrecer sus servicios. Los usuarios pueden luego agendar una fecha y hora para contratar estos servicios de manera fácil y conveniente.</p>
+                  <a href="{% url 'colaborador' %}" class="btn btn-warning">¡Ingresa aquí!</a>
+              </div>
+          </div>
+      </div>
+  </div>
+  </section>
+</section>
+
+
+
+<section id="membresia" class="membresia section-padding bg-light" style="background-color: #f8f9fa; border: 1px solid #ddd; padding: 20px;">
+  <div class="separator-ribbon">
+    <div class="content"></div>
+  </div>
+  <div class="container">
+      <h2 class="text-center mb-5 title">Membresía</h2>
+      <p class="text-center">¡Únete a nuestro programa de membresías y obtén descuentos especiales en tus reservas!</p>
+      <div class="row">
+        <!-- Comprobación de que hay membresías -->
+        {% if membresias %}
+          {% for membresia in membresias %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ membresia.nombre }}</h5>
+                        <p class="card-text">Acceso a descuentos del {{ membresia.descuento }}% en todas las reservas.</p>
+                        <!-- Botón para unirse a la membresía -->
+                        <form method="POST" action="#">
+                            {% csrf_token %}
+                            <a href="#" class="btn btn-warning reservar-btn" data-bs-toggle="modal" data-bs-target="#loginModal">unirse</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-center">Debes Iniciar sesion para acceder a las membresias.</p>
+        {% endif %}
+      </div>
+  </div>
+</section>
+
+<section id="contacto" class="contacto section-padding" style="background-color: #f8f9fa; border: 1px solid #ddd;  padding: 20px;">
+
+<div class="separator-ribbon">
+  <div class="content "></div>
+</div>
+<div class="container">
+    <h2 class="text-center mb-5 title" style="color: #333;">Contacto</h2>
+    <form>
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" required style="border: 1px solid #ccc; border-radius: 5px;">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <input type="email" class="form-control" id="email" required style="border: 1px solid #ccc; border-radius: 5px;">
+        </div>
+        <div class="mb-3">
+            <label for="mensaje" class="form-label">Mensaje</label>
+            <textarea class="form-control" id="mensaje" rows="3" required style="border: 1px solid #ccc; border-radius: 5px;"></textarea>
+        </div>
+        <button type="submit" class="btn btn-warning" style="border-radius: 5px;">Enviar</button>
+    </form>
+</div>
+</section>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="loginModalLabel">Inicio de Sesión Requerido</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              Debes iniciar sesión para realizar una reserva.
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <a href="{% url 'iniciarsesion' %}" class="btn btn-warning">Iniciar Sesión</a>
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock %}

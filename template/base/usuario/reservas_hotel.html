@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          events: function(fetchInfo, successCallback, failureCallback) {
+                    $.ajax({
+                        url: '{% url "obtener_reservas_json" %}',  // URL de tu vista Django
+                        dataType: 'json',
+                        success: function(data) {
+                            successCallback(data);
+                        },
+                        error: function() {
+                            failureCallback();
+                        }
+                    });
+                },
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                eventColor: '#378006'
+        });
+        calendar.render();
+      });
+
+    </script>
+  </head>
+  <body>
+    <div id='calendar' class="card" style="padding: 20px;"></div>
+  </body>
+</html>

@@ -1,0 +1,200 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+<head>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+      color: #343a40;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #0d6efd;
+      padding: 15px;
+    }
+
+    .navbar-brand span {
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    .navbar-nav .nav-link {
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 1.1rem;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #ffc107;
+    }
+
+    /* Perfil */
+    .container-profile {
+      margin-top: 80px;
+      padding: 30px;
+      background-color: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      flex: 1;
+    }
+
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #dee2e6;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .profile-header h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #343a40;
+    }
+
+    .profile-avatar {
+      display: flex;
+      align-items: center;
+    }
+
+    .profile-avatar img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-right: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-info h5 {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .profile-info p {
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .profile-body {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      flex: 1;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border: none;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .btn-warning {
+      background-color: #ffc107;
+      border: none;
+      font-weight: bold;
+      padding: 10px 25px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-warning:hover {
+      background-color: #e0a800;
+    }
+
+    /* Sticky Footer */
+    footer {
+      background-color: #0d6efd;
+      color: #fff;
+      padding: 40px 0;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    footer .social-icons a {
+      color: #ffc107;
+      margin: 0 10px;
+      transition: color 0.3s ease-in-out;
+    }
+
+    footer .social-icons a:hover {
+      color: #fff;
+    }
+
+    footer p {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<br>
+<br>
+<div class="container container-profile shadow-sm bg-info bg-opacity-10 border border-info border-start-30 rounded-end ">
+
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <img src="https://cdn-icons-png.flaticon.com/512/4646/4646084.png" alt="Avatar">
+      <div class="profile-info">
+        <h5>{{ user.first_name }}</h5>
+        <p>{{ user.email }}</p>
+      </div>
+    </div>
+    
+  </div>
+
+  <div class="profile-body">
+    <!-- Ingresar Mascota -->
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-paw fa-3x mb-3" style="color: #0d6efd;"></i> <!-- Icono para Ingresar Mascota -->
+        <h5 class="card-title">Ingresar Mascota</h5>
+        <p class="card-text">Registra a tu mascota en el sistema para gestionar sus servicios.</p>
+        <a href="{% url 'ficha_salud' %}" class="btn btn-warning">Ingresar Mascota</a>
+      </div>
+    </div>
+    
+    <!-- Ver Mascotas -->
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-dog fa-3x mb-3" style="color: #0d6efd;"></i> <!-- Icono para Ver Mascotas -->
+        <h5 class="card-title">Ver Mascota</h5>
+        <p class="card-text">Consulta la lista de tu mascota registrada.</p>
+        <a href="{% url 'listar_fichas' %}" class="btn btn-warning">Ver Mascota</a>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-body text-center">
+        <i class="fas fa-dog fa-3x mb-3" style="color: #0d6efd;"></i> <!-- Icono para Ver Mascotas -->
+        <h5 class="card-title">Reservas</h5>
+        <p class="card-text">Consultar reservas.</p>
+        <a href="{% url 'listar_reservas' %}" class="btn btn-warning">Ver Reservas</a>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<br>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base/admin/Administrador.html' %}
+{% load static %}
+
+{% block title %}
+Admin - Membresia
+{% endblock %}
+
+{% block content %}
+{% if membresias %}
+<div class="container py-5">
+    <h2 class="mb-4">Gestionar Membresías</h2>
+    <hr>
+    
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Descuento (%)</th>
+                    <th scope="col">Duración (días)</th>
+                    <th scope="col">valor</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for membresia in membresias %}
+                <tr>
+                    <td>{{ membresia.nombre }}</td>
+                    <td>{{ membresia.descuento }}%</td>
+                    <td>{{ membresia.duracion_dias }} días</td>
+                    <td>{{ membresia.valor }}</td>
+                    <td>
+                        <a href="{% url 'editar_membresia' membresia.id %}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{% url 'eliminar_membresia' membresia.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

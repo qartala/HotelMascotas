@@ -1,0 +1,37 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+<div class="d-flex" style="height: 90px;">
+    <div class="vr"></div>
+  </div>
+<div class="container">
+    <div class="row d-flex justify-content-center pt-4">
+        <div class="col-6 ">
+            {% if reservas %}
+                {% for reserva in reservas %}
+                    <div class="card text-center">
+                        <img src="/media/{{reserva.habitacion.imagen_habitacion}}" alt="" height="300px" width="500px" class="mx-auto d-block">
+                        <div class="card-body">
+                            <h2>№ Habitacion: {{ reserva.habitacion.numero_habitacion }}</h2>
+                            <h2>Tipo de habitacion: {{ reserva.habitacion.tipo_habitacion }}</h2>
+                            <p><strong>Fecha inicio:</strong> {{ reserva.fecha_inicio }}</p>
+                            <p><strong>Fecha fin:</strong> {{ reserva.fecha_fin }}</p>
+                            <p><strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}</p>
+                            <p><strong>Precio total:</strong> {{ reserva.precio_total }} CLP</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-message">No hay reservas.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="d-flex" style="height: 50px;">
+    <div class="vr"></div>
+  </div>
+{% endblock %}

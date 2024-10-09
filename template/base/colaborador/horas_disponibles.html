@@ -1,0 +1,49 @@
+{% extends 'base/colaborador/basePerfil.html' %}
+
+{% load static %}
+
+{% block title %}
+Inicio - colab
+{% endblock %}
+
+{% block content %}
+
+<section class="text-center mb-5">
+    <h1 class="mb-4">Panel de {{ colaborador.fullname }}</h1>
+    <h4 class="mb-4">Servicio: {{ colaborador.servicio }}</h4>
+    <hr>
+</section>
+<div class="container py-5">
+<h1 class="mb-4 text-center">Horas disponibles - Próximos 30 días</h1>
+
+<table class="table table-striped">
+<thead>
+<tr>
+    <th>Fecha</th>
+    <th>Hora de Inicio</th>
+    <th>Hora de Fin</th>
+    <th>Acciones</th>
+</tr>
+</thead>
+<tbody>
+{% for reserva in reservas %}
+<tr>
+    <td>{{ reserva.fecha }}</td>
+    <td>{{ reserva.hora_inicio }}</td>
+    <td>{{ reserva.hora_fin }}</td>
+    <td>
+        <!-- Botón de eliminar con ícono -->
+        <a href="{% url 'eliminar_reserva' reserva.id %}" class="btn btn-danger">
+            <i class="fas fa-trash-alt"></i> Eliminar
+        </a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="4">No hay reservas en los próximos 30 días.</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base/admin/Administrador.html' %}
+{% load static %}
+
+{% block title %}
+Admin - Oferta
+{% endblock %}
+
+{% block content %}
+<div class="col-md-8 mx-auto">
+    <div class="modal-content">
+        <form action="" method="POST" class="p-4">
+            {% csrf_token %}
+            <h2 class="header-title text-center">Crear Oferta</h2>
+
+            <div class="mb-4">
+                <label for="porcentaje" class="text-sm-start">Porcentaje de oferta</label>
+                <input type="number" class="form-control" id="porcentaje" name="porcentaje" placeholder="Ej: 10"
+                    value="{{ porcentaje }}" required>
+            </div>
+
+            {% if mensaje %}
+                <div class="alert alert-info">{{ mensaje }}</div>
+            {% endif %}
+
+            <div class="mb-4">
+                <label for="nombre" class="text-sm-start">Nombre de la oferta</label>
+                <input name="nombre" id="nombre" type="text" class="form-control" placeholder="Nombre de la Oferta"
+                    value="{{ nombre }}" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="f_inicio" class="text-sm-start">Fecha de inicio</label>
+                <input type="date" class="form-control" id="f_inicio" name="f_inicio" value="{{ f_inicio }}" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="f_termino" class="text-sm-start">Fecha de término</label>
+                <input type="date" class="form-control" id="f_termino" name="f_termino" value="{{ f_termino }}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Crear Oferta</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

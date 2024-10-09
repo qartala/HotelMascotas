@@ -1,0 +1,61 @@
+{% extends 'base/admin/Administrador.html' %}
+
+{% block title %}
+Inicio - Admin
+{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Panel de Administrador</h1>
+
+<div class="row">  <!-- Agregamos la clase row aquí para organizar los elementos en una fila -->
+    <div class="col-md-4">
+        <div class="card shadow border-light">
+            <div class="card-body">
+                <i class="fas fa-bed fa-4x mb-3"></i>
+                <h5 class="card-title">Agregar Habitación</h5>
+                <a class="btn btn-primary" href="{% url 'agregarProductos' %}">Agregar</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow border-light">
+            <div class="card-body">
+                <i class="fas fa-hotel fa-4x mb-3"></i>
+                <h5 class="card-title">Habitaciones</h5>
+                <a class="btn btn-primary" href="{% url 'listarProducto' %}">Ver</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow border-light">
+            <div class="card-body">
+                <i class="fas fa-check-circle fa-4x mb-3"></i>
+                <h5 class="card-title">Solicitudes</h5>
+                <a class="btn btn-primary" href="{% url 'solicitudes_admin' %}">Ver</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mt-4">
+        <div class="card shadow border-light">
+            <div class="card-body">
+                <i class="fas fa-users fa-4x mb-3"></i>
+                <h5 class="card-title">Colaboradores</h5>
+                <a class="btn btn-primary" href="{% url 'listar_colaboradores_aprobados' %}">Ver</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mt-4">
+        <div class="card shadow border-light">
+            <div class="card-body">
+                <i class="fas fa-users fa-4x mb-3"></i>
+                <h5 class="card-title">Crear membresia</h5>
+                <a class="btn btn-primary" href="{% url 'crear_membresia' %}">Ver</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

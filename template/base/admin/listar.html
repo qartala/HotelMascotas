@@ -1,0 +1,63 @@
+{% extends 'base/admin/Administrador.html' %}
+
+{% block title %}
+Inicio - Admin
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+    <section class="text-center mb-5">
+        <h2 class="mb-4">Habitaciones</h2>
+        <hr>
+    </section>
+
+    <section class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <table class="table table-custom table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID Producto</th>
+                            <th>Imagen</th>
+                            <th>Tipo de Habitación</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if productos %}
+                            {% for producto in productos %}
+                                <tr>
+                                    <td>{{ producto.id }}</td>
+                                    <td>
+                                        <img style="height: 80px; width: 80px;" src="/media/{{producto.imagen_habitacion}}" alt="Imagen del Producto">
+                                    </td>
+                                    <td>{{ producto.tipo_habitacion }}</td>
+                                    <td>{{ producto.precio }} CLP</td>
+                                    <td>
+                                        <div class="d-flex justify-content-around">
+                                            <a href="{% url 'modificarProducto' producto.id %}" class="btn btn-custom btn-custom-edit">
+                                                <i class="fas fa-pencil-alt"></i> Modificar
+                                            </a>
+                                            <a href="{% url 'eliminarProducto' producto.id %}" class="btn btn-custom btn-custom-delete">
+                                                <i class="fas fa-trash-alt"></i> Eliminar
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7">
+                                    <h3 class="text-center">No hay productos</h3>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

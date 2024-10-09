@@ -1,0 +1,50 @@
+{% extends 'base/admin/Administrador.html' %}
+{% load static %}
+
+{% block title %}
+Admin - Habitaciones
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">Agregar Habitación</h1>
+                <div class="col-md-8 mx-auto">
+                    <div class="modal-content p-5">
+                        <form action="" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="form-group mb-3">
+                                <input type="file" name="imagen_habitacion" id="imagen_habitacion" class="form-control" required>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <input name="numero_habitacion" id="numero_habitacion" type="text" class="form-control" placeholder="Numero habitacion" required>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <select class="form-select" aria-label="Default select example" name="tipo_habitacion" required>
+                                    <option selected disabled>Selecciona tipo de habitacion</option>
+                                    <option value="pequena">Chica</option>
+                                    <option value="mediana">Mediana</option>
+                                    <option value="grande">Grande</option>
+                                  </select>
+                            </div>
+
+                            <div class="input-group form-group mb-3">
+                                <input name="precio" id="precio" type="number" class="form-control" min="0" placeholder="Precio" required>
+                                <span class="input-group-text">CLP</span>
+                            </div>
+
+                            
+                            {% if mensaje %}
+                                <div class="alert alert-warning" role="alert">{{ mensaje }}</div>
+                            {% endif %}
+
+                            <button type="submit" class="btn btn-primary mt-4">Agregar Habitación</button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+{% endblock %}

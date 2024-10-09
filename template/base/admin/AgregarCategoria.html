@@ -1,0 +1,25 @@
+{% extends 'base/admin/Administrador.html' %}
+{% load static %}
+
+{% block title %}
+Admin - Categoria
+{% endblock %}
+
+{% block content %}
+<div class="col-md-6 mx-auto">
+    <div class="modal-content p-4">
+        <h1 class="header-title">Crear Categoría</h1>
+        <form action="" method="POST" class="p-5">
+            {% csrf_token %}
+            
+
+            <div class="mb-4">
+                <input name="nombre" id="nombre" type="text" class="form-control" placeholder="Nombre de la Categoría"
+                    value="{{ nombre }}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-4">Agregar Categoría</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

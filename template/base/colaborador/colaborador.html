@@ -1,0 +1,154 @@
+{% extends 'base/colaborador/base.html' %}
+
+{% block title %}
+Inicio - colab
+{% endblock %}
+
+{% block content %}
+<section class="hero-section text-center">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 text-start">
+        <h1>Quieres colaborar y ser nuestro socio?</h1>
+        <p>Registrate como colaborador para que comiences a trabajar con nosotros, solo tienes que ingresar tus datos y eventualmente recibiras un correo con la confirmacion de nuestra parte.</p>
+        <p>
+          <a class="btn btn-warning mt-3" href="{% url 'iniciarsesionColaborador' %}">Iniciar sesión</a>
+          <a href="#" class="btn btn-warning mt-3" data-bs-toggle="modal" data-bs-target="#registroModal">¡Registrate aquí!</a>
+        </p>
+      </div>
+      <div class="col-lg-6 pb-4">
+        <img src="https://cdn.mos.cms.futurecdn.net/ASHH5bDmsp6wnK6mEfZdcU-1200-80.jpg" alt="Mascota cuidada" class="img-fluid">
+      </div>
+    </div>
+  </div>
+  <div class="circle one"></div>
+  <div class="circle two"></div>
+
+  <div class="card">
+    <div class="card-body">
+      <section id="services" class="services section-padding">
+        <div class="">
+          <div class="section-header text-center pb-5">
+            <h2 class="text-center mb-2 title">Servicios disponibles</h2>
+            <p>Ofrecemos los siguientes servicios, de acuerdo a las necesidades de tu mascota.</p>
+          </div>
+          <div class="row d-flex justify-content-center">
+            <div class="col-lg-2 col-md-6 mb-4">
+              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 " >
+                <img src="https://media.istockphoto.com/id/1008083248/vector/animal-first-aid-kit.jpg?s=612x612&w=0&k=20&c=sHwm0s-WcoSrnuNsaVCqINMzsAZsJ4i2H171-U81htA=" height="200px" class="card-img-top" alt="Servicio 1">
+                <div class="card-body">
+                  <h5 class="card-title">Baños</h5>
+                  <p class="card-text" style="font-size: medium;">Ofrecemos baños relajantes y cuidadosos para que tu mascota se sienta limpia, fresca y cómoda. Utilizamos productos hipoalergénicos y especializados según el tipo de pelaje y piel.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4">
+              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
+                <img src="https://cdn-icons-png.flaticon.com/512/5783/5783339.png" height="200px" class="card-img-top" alt="Servicio 2">
+                <div class="card-body">
+                  <h5 class="card-title">Spa</h5>
+                  <p class="card-text" style="font-size: medium;">Brindamos un tratamiento de spa exclusivo para tu mascota, que incluye masajes relajantes, baños terapéuticos y cuidados especiales para el pelaje, ofreciendo una experiencia de lujo y bienestar.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4">
+              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
+                <img src="https://www.nikonistas.com/digital/img2/2024/06/2rutcasanellas-harrycooper1-f_1200x800.jpg" height="200px" class="card-img-top" alt="Servicio 3">
+                <div class="card-body">
+                  <h5 class="card-title">Fotografía</h5>
+                  <p class="card-text" style="font-size: medium;">Capturamos momentos inolvidables de tu mascota con sesiones fotográficas profesionales. Llévate un hermoso recuerdo de su estadía en nuestro hotel.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4">
+              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
+                <img src="https://veterinariaelroble.cl/wp-content/uploads/2022/09/zz-yorkshire-peluqueria-dic-is_1.jpg" height="200px" class="card-img-top" alt="Servicio 3">
+                <div class="card-body">
+                  <h5 class="card-title">Peluquería</h5>
+                  <p class="card-text" style="font-size: medium;">Nuestro servicio de peluquería asegura que tu mascota siempre luzca impecable. Ofrecemos cortes y estilos adaptados a cada raza y preferencias del dueño.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4">
+              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
+                <img src="https://www.hogarmania.com/archivos/202307/empresas-servicio-transporte-animales-compania-1280x720x80xX.jpg" height="200px" class="card-img-top" alt="Servicio 3">
+                <div class="card-body">
+                  <h5 class="card-title">Transporte</h5>
+                  <p class="card-text" style="font-size: medium;">Disponemos de un servicio de transporte seguro y cómodo para recoger y entregar a tu mascota, asegurando su bienestar en todo momento durante el trayecto.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="registroModal" tabindex="-1" aria-labelledby="registroModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+  <div class="modal-content">
+    <div class="modal-header bg-primary text-white">
+      <h5 class="modal-title" id="registroModalLabel" style="text-align: center;">Registro de Colaboradores</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <form id="registroForm" method="POST" enctype="multipart/form-data" action="{% url 'registro_colaborador' %}">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="fullname" class="form-label">Nombre Completo:</label>
+            <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Nombre Completo" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Nombre de Usuario:</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Nombre de Usuario" required>
+            <div id="username-feedback" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3">
+          <label for="phone" class="form-label">Teléfono:</label>
+          <input type="tel" class="form-control" id="phone" name="phone" placeholder="+569" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Correo Electrónico:</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="usuario@gmail.com" required>
+            <div id="email-feedback" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña:</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="service" class="form-label">Servicios a postular:</label>
+            <select class="form-select" id="service" name="service" required>
+                <option value="" disabled selected>Seleccione un servicio:</option>
+                <option value="Baños">Baños</option>
+                <option value="Spa">Spa</option>
+                <option value="Fotografía">Fotografía</option>
+                <option value="Cortes de pelo">Cortes de pelo</option>
+                <option value="Servicio de transportes">Transportes</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="pdf-upload" class="form-label">Subir Archivo PDF</label>
+            <input type="file" class="form-control" id="pdf-upload" name="pdf_file" accept=".pdf" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Registrarse</button>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Volver</button>
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock %}

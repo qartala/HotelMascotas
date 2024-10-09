@@ -1,0 +1,49 @@
+{% extends 'base/admin/Administrador.html' %}
+{% load static %}
+
+{% block title %}
+Admin - Membresia
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-primary text-white">
+                    <h3 class="card-title">Editar Membresía</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="nombre" class="form-label">Nombre de la Membresía</label>
+                            <input type="text" name="nombre" value="{{ membresia.nombre }}" class="form-control" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="descuento" class="form-label">Descuento (%)</label>
+                            <input type="number" step="0.01" name="descuento" value="{{ membresia.descuento }}" class="form-control" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="duracion_dias" class="form-label">Duración (días)</label>
+                            <input type="number" name="duracion_dias" value="{{ membresia.duracion_dias }}" class="form-control" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="valor" class="form-label">Valor </label>
+                            <input type="number" step="0.01" name="valor" value="{{ membresia.valor }}" class="form-control" required>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary w-100">Actualizar Membresía</button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center back-btn">
+                        <a href="javascript:history.back()" class="btn btn-secondary w-100">Volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
