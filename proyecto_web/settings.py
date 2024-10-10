@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'modulo.Usuario.apps.UsuarioConfig',
     'modulo.Compra.apps.CompraConfig',
     'modulo.principio.apps.PrincipioConfig',
+    'modulo.Colaborador.apps.ColaboradorConfig',
     'sweetify',
     'crispy_forms',
     'crispy_bootstrap5', 
@@ -92,9 +93,9 @@ LOGIN_URL = 'iniciarsesionColaborador'  # O el nombre que uses para la vista de 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'petsteam2',#cambiar segun base de datos de mysql
+        'NAME': 'petsteam',#cambiar segun base de datos de mysql
         'USER':'root', #cambiar segun configuracion mysql
-        'PASSWORD':'admin',#cambiar segun configuracion mysql
+        'PASSWORD':'root',#cambiar segun configuracion mysql
         'HOST':'localhost',
         'PORT': 3306 #cambiar segun configuracion mysql
     }

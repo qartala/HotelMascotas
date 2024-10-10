@@ -1,11 +1,14 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from modulo.Usuario.models import Usuario
 from .models import Habitacion, Reserva
 from .forms import ReservaForm
 from django.http import JsonResponse
+from django.contrib import messages
 from datetime import timedelta
+from django.core.mail import send_mail
+from modulo.Producto.models import Membresia
+from modulo.Colaborador.models import Colaborador
 import sweetify
 
 
@@ -27,10 +30,6 @@ def listar(request):
         'productos': productos
     }
     return render(request, 'base/admin/listar.html', context=contexto)
-
-
-
-
 
 def modificar(request, idHabitacion):
     try:
@@ -71,24 +70,11 @@ def modificar(request, idHabitacion):
 
     
 
-# aqui  
-# def promociones(request):
-#     buscar = request.GET.get("buscar", "")
-#     productos = Habitacion.objects.filter(tipoPerro__icontains=buscar)
-#     usuario = Usuario.objects.get(idUsuario=request.user.id)
-#     contexto = {
-#         'productos': productos,
-#         'usuario': usuario
-#     }
-#     return render(request, 'base/Promociones.html', context=contexto)
+
 
 def agregarProductos(request):
-    # categorias = Categoria.objects.all()
-    # promociones = Promocion.objects.all()
     if request.method =='GET':
         contexto={
-            # 'categorias':categorias,
-            # 'promociones':promociones
         }
         return render(request,'base/admin/AgregarProductos.html',context = contexto)
 
@@ -97,12 +83,7 @@ def agregarProductos(request):
         nuevoProducto.imagen_habitacion = request.FILES.get('imagen_habitacion')
         nuevoProducto.numero_habitacion = request.POST['numero_habitacion']
         nuevoProducto.tipo_habitacion = request.POST['tipo_habitacion']
-        # nuevoProducto.servicio = request.POST['servicio']
         nuevoProducto.precio=request.POST['precio']
-        # categoriaFK = Categoria.objects.get(id = request.POST['idCategoria'])
-        # promoFK = Promocion.objects.get(id = request.POST['idPromocion'])
-        # nuevoProducto.id_categoria= categoriaFK
-        # nuevoProducto.id_Promocion =  promoFK
         try:
             nuevoProducto.save()
         except Exception as ex:
@@ -111,56 +92,11 @@ def agregarProductos(request):
                 print(ex)
                 contexto = {
                     'numero_habitacion':request.POST['numero_habitacion'],
-                    # 'idCategoria':int(request.POST['idCategoria']),
-                    # 'idPromocion':int(request.POST['idPromocion']),
-                    # 'categorias':categorias,
-                    # 'promociones':promociones
                 }
                 sweetify.warning(request, 'El numero de habitacion esta en uso')
                 return render(request,'base/admin/AgregarProductos.html',context = contexto)
         sweetify.success(request, 'Producto agregado con éxito!!!')    
         return HttpResponseRedirect(reverse('agregarProductos'))
-
-# def agregarCategoria(request):
-#     if request.method == 'GET':
-#         return render(request,'base/AgregarCategoria.html')
-
-    # elif request.method =='POST':
-        # nuevaCategoria = Categoria()
-        # nuevaCategoria.nombre = request.POST['nombre']
-        # nuevaCategoria.save()
-        # sweetify.success(request, 'Categoria creada con éxito!!!')
-    #     return HttpResponseRedirect(reverse('agregarCategoria'))
-        
-
-# def crearOferta(request):
-#     if request.method == 'GET':
-#         return render(request,'base/crear_oferta.html')
-
-#     elif request.method =='POST':
-#         nuevaPromo = Promocion()
-#         nuevaPromo.porc_descuento = request.POST['porcentaje']
-#         nuevaPromo.f_inicio = request.POST['f_inicio']
-#         nuevaPromo.f_termino = request.POST['f_termino']
-#         nuevaPromo.nombre = request.POST['nombre']
-        
-            
-#         try:
-#             nuevaPromo.save()
-#         except Exception as ex:
-#             codigo_error =int(ex.args[0])
-#             if codigo_error == 1264:
-#                 contexto = {
-#                     'porcentaje':request.POST['porcentaje'],
-#                     'f_inicio':request.POST['f_inicio'],
-#                     'f_termino':request.POST['f_termino'],
-#                     'nombre':request.POST['nombre'],
-                    
-#                 }
-#                 sweetify.warning(request, 'El porcentaje debe ser igual o mayor a cero')  
-#                 return render(request,'base/crear_oferta.html',contexto)
-#     sweetify.success(request, 'Oferta creada con éxito!!!')
-#     return HttpResponseRedirect(reverse('crearOferta'))
 
 def eliminar(request, idProducto):
     try:
@@ -225,5 +161,100 @@ def obtener_reservas_json(request):
 
     return JsonResponse(eventos, safe=False)  # Se envía JSON
 
-def reservas_hotel(request):
-        return render(request,'base/reservas_hotel.html')
+
+
+def crear_membresia(request):
+    if request.method == 'POST':
+        nombre = request.POST['nombre']
+        descuento = request.POST['descuento']
+        duracion = request.POST['duracion_dias']
+        valor = request.POST['valor']  # Captura el valor de la membresía desde el formulario
+
+        # Crear y guardar la membresía con el nuevo campo valor
+        nueva_membresia = Membresia(
+            nombre=nombre, 
+            descuento=descuento,
+            duracion_dias=duracion, 
+            valor=valor  # Guarda el valor
+        )
+        nueva_membresia.save()
+
+        sweetify.success(request, 'Membresía creada exitosamente.')
+        return redirect('crear_membresia')
+
+    return render(request, 'base/admin/crearMembresia.html')
+
+def gestionar_membresias(request):
+    membresias = Membresia.objects.all()  # Obtener todas las membresías
+
+    if request.method == 'POST':
+        membresia_id = request.POST.get('membresia_id')
+        accion = request.POST.get('accion')
+
+    return render(request, 'base/admin/gestionMembresia.html', {'membresias': membresias})
+
+def editar_membresia(request, membresia_id):
+    membresia = get_object_or_404(Membresia, id=membresia_id)
+    print("Descuento:", membresia.descuento)
+    print("Valor:", membresia.valor)
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        descuento = request.POST.get('descuento')
+        duracion_dias = request.POST.get('duracion_dias')
+        valor = request.POST.get('valor')
+
+        membresia.nombre = nombre
+        membresia.descuento = descuento
+        membresia.duracion_dias = duracion_dias
+        membresia.valor = valor
+        membresia.save()
+
+        sweetify.success(request, 'Membresía actualizada con éxito.')
+        return redirect('gestionar_membresias')
+
+    return render(request, 'base/admin/editarMembresia.html', {'membresia': membresia})
+
+def eliminar_membresia(request, membresia_id):
+    membresia = get_object_or_404(Membresia, id=membresia_id)
+    membresia.delete()
+    sweetify.success(request, 'Membresía eliminada con éxito.')
+    return redirect('gestionar_membresias')
+
+def solicitudes_admin(request):
+    storage = messages.get_messages(request)
+    for message in storage:
+        if "Inicio de sesión exitoso" in message.message:
+            message.used = True  
+
+    solicitudes = Colaborador.objects.filter(estado='pendiente')
+    
+    return render(request, 'base/admin/solicitudes.html', {'solicitudes': solicitudes})
+
+def gestionar_solicitud(request, colaborador_id, accion):
+    colaborador = get_object_or_404(Colaborador, id=colaborador_id)
+    
+    if accion == 'aprobar':
+        colaborador.estado = 'aprobado'
+        colaborador.save()
+        send_mail(
+            'Solicitud Aprobada',
+            '¡Felicidades! Tu solicitud ha sido aprobada.',
+            'petsteamcl@gmail.com',
+            [colaborador.email],
+            fail_silently=False,
+        )
+
+        messages.success(request, 'Colaborador aprobado con éxito.')
+    elif accion == 'rechazar':
+        colaborador.delete()
+        send_mail(
+            'Solicitud Rechazada',
+            'Lo sentimos, tu solicitud ha sido rechazada.',
+            'petsteamcl@gmail.com',
+            [colaborador.email],
+            fail_silently=False,
+        )
+
+        messages.error(request, 'Colaborador rechazado y eliminado.')
+
+    return redirect('solicitudes_admin')

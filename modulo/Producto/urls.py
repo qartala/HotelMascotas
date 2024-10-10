@@ -1,16 +1,18 @@
 from django.urls import path
-from .views import listar,admin, eliminar, agregarProductos, modificar, reservar_habitacion,obtener_reservas_json, reservas_hotel
+from .views import solicitudes_admin, gestionar_solicitud,eliminar_membresia,editar_membresia,gestionar_membresias,crear_membresia,listar,admin, eliminar, agregarProductos, modificar, reservar_habitacion,obtener_reservas_json
 
 urlpatterns = [
     path('panel/',admin, name='vistaAdmin'),
-    # path('promociones/', promociones, name='promociones'),
     path('agregarProductos/', agregarProductos, name='agregarProductos'),
-    # path('crearOferta/', crearOferta, name='crearOferta'),
-    # path('agregarCategoria/', agregarCategoria, name='agregarCategoria'),
     path('Productos/', listar, name='listarProducto'),
     path('modificar/<int:idHabitacion>/', modificar, name='modificarProducto'),  
     path('eliminar/<int:idProducto>/', eliminar, name='eliminarProducto'),
     path('reservar_habitacion/<int:habitacion_id>/', reservar_habitacion, name='reservar_habitacion'),
     path('obtener_reservas_json/', obtener_reservas_json, name='obtener_reservas_json'),
-    path('reservas_hotel/', reservas_hotel, name='reservas_hotel')
+    path('crear-membresia/', crear_membresia, name='crear_membresia'),
+    path('gestionar-membresias/', gestionar_membresias, name='gestionar_membresias'),
+    path('editar-membresia/<int:membresia_id>/', editar_membresia, name='editar_membresia'),
+    path('eliminar-membresia/<int:membresia_id>/', eliminar_membresia, name='eliminar_membresia'),
+    path('solicitudes/', solicitudes_admin, name='solicitudes_admin'),
+    path('gestionar_solicitud/<int:colaborador_id>/<str:accion>/', gestionar_solicitud, name='gestionar_solicitud'),
 ]

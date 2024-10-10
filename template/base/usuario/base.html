@@ -168,10 +168,10 @@
           {% endif %}
           <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
           {% if not request.user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'iniciarsesion' %}">Iniciar sesión</a></li>
+          <li class="nav-item"><a class="nav-link border border-white" href="{% url 'iniciarsesion' %}">Iniciar sesión</a></li>
           {% endif %}
           {% if request.user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
+          <li class="nav-item"><a class="nav-link border border-white" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
           {% endif %}
         </ul>
       </div>

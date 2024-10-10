@@ -7,11 +7,13 @@ from django.conf.urls.static import static
 from modulo.Usuario.urls import urlpatterns as urlusuario
 from modulo.Compra.urls import urlpatterns as urlcompra
 from modulo.Producto.urls import urlpatterns as urlhabitacion
+from modulo.Colaborador.urls import urlpatterns as urlcolaborador
 
 urlpatterns = [
     path('',include(urlusuario)),
     path('admin/',include(urlhabitacion)),
     path('compra/',include(urlcompra)),
+    path('colaborador/',include(urlcolaborador))
     #path('habitacion/',include(urlhabitacion))
 ]
 
