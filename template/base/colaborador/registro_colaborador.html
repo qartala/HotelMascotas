@@ -1,0 +1,191 @@
+{% extends 'base/colaborador/base.html' %}
+
+{% block title %}
+Inicio - colab
+{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+        #messages {
+            position: fixed;
+            top: 80%;
+            left: 50%;
+            z-index: 1000;
+            width: 300px; /* Puedes ajustar el ancho si lo deseas */
+            text-align: center;
+        }
+        .register-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1300px;
+            height: 600px;
+            margin: 0 auto;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 50px;
+        }
+
+        .register-left {
+            background: linear-gradient(to bottom right, #0066ff, #0099cc);
+            width: 100%;
+            height: 100%;
+            padding: 50px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            flex-direction: column;
+            text-align: center;
+            padding-bottom: 120px;
+        }
+
+        .register-left h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .register-left p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .register-right {
+            background-color: #fff;
+            width: 100%;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .register-right h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #0066ff;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-check-input {
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background-color: #0066ff;
+            border: none;
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #004db3;
+        }
+
+        /* Wave background */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: url('https://cdn.jsdelivr.net/gh/abrahamcalfie/svg-wave-top@master/wave.svg') no-repeat;
+            background-size: cover;
+            z-index: -1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .register-wrapper {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .register-left,
+            .register-right {
+                width: 100%;
+            }
+
+            .register-left {
+                padding: 30px;
+            }
+
+            .register-right {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+
+<div class="d-flex" style="height: 80px;">
+    <div class="vr"></div>
+  </div>
+<!-- Register Section -->
+<div class="register-wrapper">
+    <!-- Left section with wave and text -->
+     <div class="row">
+        <div class="col-4 ">
+            <div class="register-left">
+                <h1>¡Únete a Pets Team!</h1>
+                <p>Esta seccion es solo para colaboradores.</p>
+                <p>Si solo deseas reservar habitaciones y servicios, registrate normalmente en el siguiete link</p>
+                <div class="wave"></div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="register-right">
+                <h2 style="text-align: center;">Registro de colaboradores</h2>
+                <form method="POST" enctype="multipart/form-data" action="{% url 'registro_colaborador' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Nombre Completo" maxlength="255" required value="{{ fullname|default_if_none:'' }}">
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Nombre de Usuario" maxlength="255" required value="{{ username|default_if_none:'' }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="Teléfono (+56 9...)" maxlength="20" required value="{{ phone|default_if_none:'' }}">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="usuario@ejemplo.com" required value="{{ email|default_if_none:'' }}">
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="service" class="form-label">Servicios a postular:</label>
+                                <select class="form-select" id="service" name="service" required>
+                                    <option value="" disabled {% if not servicio %}selected{% endif %}>Seleccione un servicio:</option>
+                                    <option value="Baños" {% if servicio == "Baños" %}selected{% endif %}>Baños</option>
+                                    <option value="Spa" {% if servicio == "Spa" %}selected{% endif %}>Spa</option>
+                                    <option value="Fotografía" {% if servicio == "Fotografía" %}selected{% endif %}>Fotografía</option>
+                                    <option value="Cortes de pelo" {% if servicio == "Cortes de pelo" %}selected{% endif %}>Cortes de pelo</option>
+                                    <option value="Servicio de transportes" {% if servicio == "Servicio de transportes" %}selected{% endif %}>Transportes</option>
+                                </select>
+                            </div>
+                            <input type="file" class="form-control" id="pdf_file" name="pdf_file" accept=".pdf" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+                        </div>
+                        <div class="col-4 d-flex justify-content-center">
+                            <a href="{% url 'colaborador' %}" type="" class="btn btn-primary w-50">Regresar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+     </div>
+
+</div>
+<div class="d-flex" style="height: 80px;">
+    <div class="vr"></div>
+  </div>
+{% endblock %}

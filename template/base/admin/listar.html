@@ -20,6 +20,7 @@ Inicio - Admin
                         <tr>
                             <th>ID Producto</th>
                             <th>Imagen</th>
+                            <th>Numero</th>
                             <th>Tipo de Habitación</th>
                             <th>Precio</th>
                             <th>Acciones</th>
@@ -33,6 +34,7 @@ Inicio - Admin
                                     <td>
                                         <img style="height: 80px; width: 80px;" src="/media/{{producto.imagen_habitacion}}" alt="Imagen del Producto">
                                     </td>
+                                    <td>{{ producto.numero_habitacion }}</td>
                                     <td>{{ producto.tipo_habitacion }}</td>
                                     <td>{{ producto.precio }} CLP</td>
                                     <td>

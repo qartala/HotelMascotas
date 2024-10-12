@@ -9,15 +9,17 @@ urlpatterns = [
     path('',principal,name='principal'),
     path('registrarse',registrarse,name = 'registrarse'),
     path('iniciarsesion',iniciarsesion,name='iniciarsesion'),
-    path('principalUsuario', principalUsuario, name='principalUsuario'),
-    path('perfil/',perfil, name='perfil'),
     path('cerrar_sesion',cerrar_sesion,name='cerrar_sesion'),
+    path('principalUsuario', principalUsuario, name='principalUsuario'),
+
+    path('perfil/',perfil, name='perfil'),
     path('ficha-salud/',ficha_salud_view, name='ficha_salud'),
     path('listar-fichas/',listar_fichas_view, name='listar_fichas'),
     path('editar-ficha/<int:pk>/', editar_ficha_view, name='editar_ficha'),
     path('eliminar-ficha/<int:id>/', eliminar_ficha, name='eliminar_ficha'),
+
     path('listar-reservas/',listar_reservas_view, name='listar_reservas'),
-    path('reservas_hotel/', reservas_hotel, name='reservas_hotel'),
+    path('reservas_hotel/<int:habitacion_id>/', reservas_hotel, name='reservas_hotel')
 ]
 
 if settings.DEBUG:

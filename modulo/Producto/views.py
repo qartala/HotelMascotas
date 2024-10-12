@@ -9,6 +9,7 @@ from datetime import timedelta
 from django.core.mail import send_mail
 from modulo.Producto.models import Membresia
 from modulo.Colaborador.models import Colaborador
+import random
 import sweetify
 
 
@@ -119,7 +120,7 @@ def eliminar(request, idProducto):
     
 def reservar_habitacion(request, habitacion_id):
     habitacion = Habitacion.objects.get(id=habitacion_id)
-
+    print(habitacion_id)
     if request.method == 'POST':
         form = ReservaForm(request.POST)
         if form.is_valid():
@@ -139,24 +140,27 @@ def reservar_habitacion(request, habitacion_id):
                 sweetify.error(request, 'La habitación no está disponible en las fechas seleccionadas.')
         else:
             # Mostrar errores de formulario
-            sweetify.error(request, 'Error en el formulario: ' + str(form.errors))
+            sweetify.error(request, 'Debes ingresar una mascota para realizar reservas')
     else:
         form = ReservaForm()
 
     return redirect('principalUsuario')
 
 
-
-def obtener_reservas_json(request):
-    reservas = Reserva.objects.all()
+def obtener_reservas_json(request, habitacion_id):
+    habitacion = Habitacion.objects.get(id=habitacion_id)
+    reservas = Reserva.objects.filter(habitacion=habitacion)
     eventos = []
+
+    def generar_color_aleatorio():
+        return "#{:06x}".format(random.randint(0, 0xFFFFFF))
 
     for reserva in reservas:
         eventos.append({
             'title': f'Habitación {reserva.habitacion.numero_habitacion}',
             'start': reserva.fecha_inicio.strftime('%Y-%m-%d'),
             'end': (reserva.fecha_fin + timedelta(days=1)).strftime('%Y-%m-%d'),  # FullCalendar excluye la fecha final
-            'backgroundColor': 'red'  # Puedes cambiar el color para indicar que está reservada
+            'backgroundColor': generar_color_aleatorio()  # Puedes cambiar el color para indicar que está reservada
         })
 
     return JsonResponse(eventos, safe=False)  # Se envía JSON
@@ -224,7 +228,7 @@ def solicitudes_admin(request):
     storage = messages.get_messages(request)
     for message in storage:
         if "Inicio de sesión exitoso" in message.message:
-            message.used = True  
+            message.used = True 
 
     solicitudes = Colaborador.objects.filter(estado='pendiente')
     
@@ -258,3 +262,7 @@ def gestionar_solicitud(request, colaborador_id, accion):
         messages.error(request, 'Colaborador rechazado y eliminado.')
 
     return redirect('solicitudes_admin')
+
+def listar_colaboradores_aprobados(request):
+    colaboradores_aprobados = Colaborador.objects.filter(estado='aprobado')
+    return render(request, 'base/admin/colaboradores_aprobados.html', {'colaboradores': colaboradores_aprobados})

@@ -40,6 +40,7 @@ def principalUsuario (request):
     buscar = request.GET.get("buscar", "")
     if request.method == "GET" and buscar:
         productos = Habitacion.objects.filter(numero_habitacion__contains=buscar)
+        
         membresias = Membresia.objects.all()
         contexto["productos"] = productos
         contexto["membresias"] = membresias
@@ -51,9 +52,7 @@ def perfil (request):
         return render(request, 'base/usuario/perfil.html')
 
 def listar_reservas_view(request):
-    print(request.user)
     reservas = Reserva.objects.filter(cliente=request.user)
-    print(reservas)
     return render(request, 'base/usuario/listar_reservas.html', {'reservas': reservas})
     
 def ficha_salud_view(request):
@@ -64,7 +63,7 @@ def ficha_salud_view(request):
             usuario = Usuario.objects.get(idUsuario=request.user)  
             form.id_usuario = usuario  
             form.save()
-            return render(request,'base/perfil.html')  
+            return render(request,'base/usuario/perfil.html')  
     else:
         form = FichaSaludForm()
     return render(request, 'base/usuario/ficha.html', {'form': form})
@@ -114,7 +113,7 @@ def registrarse(request):
             )
             
             if not se_creo:
-                sweetify.warning(request, 'Usuario ya existe, no se creó :C')
+                sweetify.warning(request, 'El usuario ya existe')
                 return render(request, 'base/Registrarse.html')
 
             usuario_creado.set_password(contrasenia)
@@ -124,7 +123,7 @@ def registrarse(request):
             nuevoUsuario.idUsuario = usuario_creado
             nuevoUsuario.tipo_cuenta = 'Usuario'
             nuevoUsuario.save()
-
+            sweetify.success(request, f"Usuario registrado correctamente")
             return HttpResponseRedirect(reverse('iniciarsesion'))
 
         except Exception as ex:
@@ -143,13 +142,14 @@ def iniciarsesion(request):
         usuario_encontrado = authenticate(username=usuario, password=contrasenia)
         if usuario_encontrado is not None:
             login(request, usuario_encontrado)
-            
             if usuario_encontrado.is_superuser:
-                return redirect('vistaAdmin')  
+                sweetify.toast(request,f'Bienvenido {usuario_encontrado.first_name}')
+                return redirect('vistaAdmin') 
             else:
+                sweetify.toast(request,f'Bienvenido {usuario_encontrado.first_name}')
                 return redirect('principalUsuario')  
         else:
-            messages.error(request, 'Usuario y contraseña no existen :C')
+            sweetify.error(request, 'Usuario o Contraseña incorrecto')
             return render(request, 'base/IniciarSesion.html')
 
 def cerrar_sesion(request):
@@ -162,5 +162,8 @@ def cerrar_sesion(request):
 
     return HttpResponseRedirect(reverse('principal'))
 
-def reservas_hotel(request):
-        return render(request,'base/usuario/reservas_hotel.html')
+def reservas_hotel(request, habitacion_id):
+        contexto = {
+            'habitacion_id': habitacion_id,
+        }
+        return render(request,'base/usuario/reservas_hotel.html', contexto)

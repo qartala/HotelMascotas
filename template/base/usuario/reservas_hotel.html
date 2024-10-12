@@ -8,15 +8,18 @@ Inicio - cliente
 
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/locale/es.js'></script>
     <script>
 
       document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
+        
         var calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'dayGridMonth',
+          locales: 'es',
           events: function(fetchInfo, successCallback, failureCallback) {
                     $.ajax({
-                        url: '{% url "obtener_reservas_json" %}',  // URL de tu vista Django
+                        url: '{% url "obtener_reservas_json" habitacion_id %}',  // URL de tu vista Django
                         dataType: 'json',
                         success: function(data) {
                             successCallback(data);
@@ -31,7 +34,20 @@ Inicio - cliente
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                eventColor: '#378006'
+                eventColor: '#378006',
+                buttonText: {
+                    prev: "Ant",
+                    next: "Sig",
+                    today: "Hoy",
+                    month: "Mes",
+                    week: "Semana",
+                    day: "Día",
+                    list: "Agenda"
+                },
+                weekText: "Sm",
+                allDayText: "Todo el día",
+                moreLinkText: "más",
+                noEventsText: "No hay eventos para mostrar"
         });
         calendar.render();
       });
