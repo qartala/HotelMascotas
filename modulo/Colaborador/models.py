@@ -9,11 +9,12 @@ class Colaborador(models.Model):
     email = models.EmailField(unique=True)
     servicio = models.CharField(max_length=100)
     pdf_file = models.FileField(upload_to='pdf_colaboradores/')
-    password = models.CharField(max_length=255)  # Almacenar contraseñas encriptadas
-    descripcion = models.TextField(null=True, blank=True)  # Nuevo campo de descripción
-    foto_perfil = models.ImageField(upload_to='fotos_perfil/', null=True, blank=True)  # Campo para la foto de perfil
-
+    password = models.CharField(max_length=255) 
+    descripcion = models.TextField(null=True, blank=True)  
+    foto_perfil = models.ImageField(upload_to='fotos_perfil/', null=True, blank=True)  
     
+    precio_por_hora = models.IntegerField(null=True, blank=True)
+
     ESTADOS = [
         ('pendiente', 'Pendiente'),
         ('aprobado', 'Aprobado'),
@@ -36,10 +37,11 @@ class Colaborador(models.Model):
 
 class Disponibilidad(models.Model):
     colaborador = models.ForeignKey(Colaborador, on_delete=models.CASCADE)
-    servicio = models.CharField(max_length=100)  # Registrar el servicio
+    servicio = models.CharField(max_length=100)
     fecha = models.DateField()
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
+    disponible = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ('colaborador', 'servicio', 'fecha', 'hora_inicio')

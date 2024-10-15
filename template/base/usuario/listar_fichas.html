@@ -7,132 +7,214 @@ Inicio - cliente
 {% block content %}
 <head>
     <style>
+        /* Fondo con degradado */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #d9e8fc);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
         h1 {
             text-align: center;
-            color: #4CAF50;
+            color: #2c3e50;
             margin-bottom: 20px;
         }
 
-        .card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Diseño en columnas tipo CMS/Software de escritorio */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
             margin-bottom: 20px;
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
+        }
+
+        .col-7 {
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para las tarjetas */
+        .card {
+            display: flex;
+            flex-direction: row;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .card:hover {
-            transform: scale(1.02);
+            transform: scale(1.03);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
         }
 
-        .card h2 {
-            margin: 0 0 10px 0;
-            font-size: 18px;
+        .card img {
+            border-radius: 12px;
+            margin-right: 20px;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
         }
 
-        .card p {
-            margin: 5px 0;
+        .card-body {
+            flex: 2;
+            padding: 10px;
         }
 
+        .card-body h2 {
+            font-size: 22px;
+            color: #34495e;
+        }
+
+        .card-body p {
+            margin: 8px 0;
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+
+        /* Estilos para los botones */
         .actions {
             margin-top: 15px;
+            display: flex;
+            gap: 10px;
         }
 
         .actions a {
             text-decoration: none;
-            color: #fff;
-            background-color: #e4a700f3;
             padding: 10px 15px;
-            border-radius: 5px;
-            margin-right: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .actions a:hover {
-            background-color: #ffe600;
+        .actions a.edit {
+            background-color: #28a745;
+            color: white;
         }
 
+        .actions a.edit:hover {
+            background-color: #218838;
+        }
+
+        .actions a.delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .actions a.delete:hover {
+            background-color: #c0392b;
+        }
+
+        /* Mensajes vacíos */
         .empty-message {
             text-align: center;
             font-style: italic;
+            color: #666;
+        }
+
+        /* Efecto en el modal de eliminación */
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Footer en la parte inferior */
+        footer {
+            background-color: #0d6efd;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: relative;
+            width: 100%;
+            bottom: 0;
         }
     </style>
 </head>
-<div class="d-flex" style="height: 100px;">
-    <div class="vr"></div>
-  </div>
+
 <div class="container">
     <div class="row d-flex justify-content-center pt-4">
         <div class="col-7">
             <h1>Lista de Fichas de Salud</h1>
+            <div class="row d-flex justify-content-center">
+                <div class="col-4 pb-3">
+
+                    <a href="{% url 'descargar_fichas' %}" class="btn btn-success">Descargar PDF</a>
+                </div>
+
+            </div>
             {% if fichas %}
                 {% for ficha in fichas %}
-                    <div class="card ">
+                    <div class="card">
                         {% if ficha.imagen_mascota %}
-                            <img src="/media/{{ficha.imagen_mascota}}" alt="Imagen de {{ ficha.nombre_perro }}" width="200" height="200">
+                            <img src="/media/{{ficha.imagen_mascota}}" alt="Imagen de {{ ficha.nombre_perro }}">
                         {% else %}
-                            <p>No hay imagen disponible.</p>
+                            <img src="https://via.placeholder.com/150" alt="Sin imagen">
                         {% endif %}
                         <div class="card-body">
-
-                            <h2><strong>Tu mascota:</strong> {{ ficha.nombre_perro }}</h2>
+                            <h2>{{ ficha.nombre_perro }}</h2>
                             <p><strong>Dueño:</strong> {{ ficha.nombre_dueno }}</p>
                             <p><strong>Raza:</strong> {{ ficha.raza }}</p>
-                            <p><strong>Peso:</strong> {{ ficha.peso }}</p>
-                            <p><strong>Alimentacion:</strong> {{ ficha.comida }}</p>
-                            <p><strong>Contiene chip:</strong> {{ ficha.chip }}</p>
+                            <p><strong>Peso:</strong> {{ ficha.peso }} kg</p>
+                            <p><strong>Alimentación:</strong> {{ ficha.comida }}</p>
+                            <p><strong>Contiene chip:</strong> {{ ficha.chip|yesno:"Sí,No" }}</p>
                             <div class="actions">
-                                <a href="{% url 'editar_ficha' ficha.pk %}">Editar</a>
-                                <a style="background-color: rgba(255, 0, 0, 0.747);" href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-url="{% url 'eliminar_ficha' ficha.id %}">Eliminar</a>
+                                <a class="edit" href="{% url 'editar_ficha' ficha.pk %}">Editar</a>
+                                <a class="delete" href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-url="{% url 'eliminar_ficha' ficha.id %}">Eliminar</a>
                             </div>
                         </div>
                     </div>
-
                 {% endfor %}
             {% else %}
                 <p class="empty-message">No hay fichas registradas.</p>
             {% endif %}
         </div>
-        
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
+    </div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Confirmar eliminación</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  ¿Estás seguro de que deseas eliminar esta ficha?
+                    ¿Estás seguro de que deseas eliminar esta ficha?
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                  <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Eliminar</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Eliminar</a>
                 </div>
-              </div>
             </div>
-          </div>
+        </div>
     </div>
-    
-    
 </div>
 
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {% load sweetify %}
-    {% sweetify %}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var confirmDeleteModal = document.getElementById('confirmDeleteModal');
-            var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-    
-            confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
-                // Botón de eliminar que disparó el modal
-                var button = event.relatedTarget;
-                // Extraer la URL del atributo data-url
-                var url = button.getAttribute('data-url');
-                // Actualizar el href del botón de confirmación de eliminación
-                confirmDeleteBtn.setAttribute('href', url);
-            });
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var url = button.getAttribute('data-url');
+            confirmDeleteBtn.setAttribute('href', url);
         });
-    </script>
+    });
+</script>
 
 {% endblock %}

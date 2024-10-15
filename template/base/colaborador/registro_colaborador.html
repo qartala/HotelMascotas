@@ -121,6 +121,7 @@ Inicio - colab
                 padding: 30px;
             }
         }
+        
     </style>
 </head>
 
@@ -153,7 +154,10 @@ Inicio - colab
                     <div class="row">
                         <div class="col-6">
                             <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
-                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="Teléfono (+56 9...)" maxlength="20" required value="{{ phone|default_if_none:'' }}">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1" style="background-color: #f8f9fa; padding-right: 12px; padding-left: 12px; display: flex; align-items: center; height: 60px; line-height: 3;">+569</span>
+                                <input type="text" style="height: 60px;" class="form-control" id="phone" name="phone" placeholder="12345678" maxlength="8" pattern="\d{8}" required value="{{ phone|default_if_none:'' }} ">
+                            </div>                            
                             <input type="email" class="form-control" id="email" name="email" placeholder="usuario@ejemplo.com" required value="{{ email|default_if_none:'' }}">
                         </div>
                         <div class="col-6">

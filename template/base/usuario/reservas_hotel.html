@@ -58,8 +58,12 @@ Inicio - cliente
     <div class="vr"></div>
   </div>
 <div class="card">
-    <div class="card-body">
-        <div id='calendar' class="card" style="padding: 20px;"></div>
-    </div>
+  <div class="card-title text-center pt-3">
+    <h2>Horarios de la habitacion {{habitacion.numero_habitacion}}</h2>
+  </div>
+  <div class="card-body">
+    <p class="text-center">En el siguiente calendario puedes revisar todos los dias en que la habitacion se encuentra ocupada</p>
+      <div id='calendar' class="card" style="padding: 20px;"></div>
+  </div>
 </div>
 {% endblock %}

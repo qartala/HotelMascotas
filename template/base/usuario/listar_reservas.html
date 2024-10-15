@@ -5,33 +5,221 @@ Inicio - cliente
 {% endblock %}
 
 {% block content %}
-<div class="d-flex" style="height: 90px;">
+<head>
+    <style>
+        /* Ajustar el tamaño general del contenedor del carrusel */
+        .carousel {
+            max-width: 600px;  /* Ajusta el ancho máximo del carrusel */
+            margin: 0 auto;    /* Centrar el carrusel horizontalmente */
+        }
+      
+        /* Ajustar el tamaño de las imágenes dentro del carrusel */
+        .carousel-item img {
+            height: 220px;  /* Reducir la altura de las imágenes */
+            width: 70%;    /* Mantener el ancho de la imagen al 100% del contenedor */
+            object-fit: cover;  /* Asegura que las imágenes se ajusten bien en el espacio disponible */
+        }
+      
+        /* Ajustar el tamaño de los controles del carrusel */
+        .carousel-control-prev, .carousel-control-next {
+            width: 30px;  /* Reducir el tamaño de los controles del carrusel */
+        }
+      
+        /* Ajustes adicionales para pantallas pequeñas */
+        @media (max-width: 576px) {
+            .carousel {
+                max-width: 400px;  /* Reducir aún más el tamaño del carrusel en pantallas pequeñas */
+            }
+      
+            .carousel-item img {
+                height: 150px;  /* Reducir la altura de las imágenes para pantallas pequeñas */
+            }
+        }
+      </style>
+</head>
+<div class="d-flex" style="height: 100px; visibility: hidden;">
     <div class="vr"></div>
   </div>
 <div class="container">
-    <div class="row d-flex justify-content-center pt-4">
-        <div class="col-6 ">
-            {% if reservas %}
-                {% for reserva in reservas %}
-                    <div class="card text-center">
-                        <img src="/media/{{reserva.habitacion.imagen_habitacion}}" alt="" height="300px" width="500px" class="mx-auto d-block">
-                        <div class="card-body">
-                            <h2>№ Habitacion: {{ reserva.habitacion.numero_habitacion }}</h2>
-                            <h2>Tipo de habitacion: {{ reserva.habitacion.tipo_habitacion }}</h2>
-                            <p><strong>Fecha inicio:</strong> {{ reserva.fecha_inicio }}</p>
-                            <p><strong>Fecha fin:</strong> {{ reserva.fecha_fin }}</p>
-                            <p><strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}</p>
-                            <p><strong>Precio total:</strong> {{ reserva.precio_total }} CLP</p>
+    <!-- Carrusel de Reservas por Pagar -->
+            <div class="row d-flex justify-content-center pt-4">
+                <div class="col-12 justify-content-center">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-6">
+                            <h2 class="text-center pb-3" style="color: rgb(0, 0, 0);">
+                                Reservas por pagar ({{ reservas_por_pagar|length }})
+                            </h2>
                         </div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <p class="empty-message">No hay reservas.</p>
-            {% endif %}
-        </div>
-    </div>
+
+                    {% if reservas_por_pagar %}
+                        <div id="reservasPorPagarCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for reserva in reservas_por_pagar %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <div class="card text-center bg-warning bg-opacity-10 border border-warning border-start rounded-end pt-3">
+                                            <img src="/media/{{reserva.habitacion.imagen_habitacion}}" alt="" height="300px" width="500px" class="mx-auto d-block">
+                                            <div class="card-body">
+                                                <h2>№ Habitación: {{ reserva.habitacion.numero_habitacion }}</h2>
+                                                <h2>Tipo de habitación: {{ reserva.habitacion.tipo_habitacion }}</h2>
+                                                <p><strong>№ de reserva:</strong> {{ reserva.id }}</p>
+                                                <p><strong>Fecha inicio:</strong> {{ reserva.fecha_inicio }}</p>
+                                                <p><strong>Fecha fin:</strong> {{ reserva.fecha_fin }}</p>
+                                                <p><strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}</p>
+                                                <p><strong>Precio total:</strong> {{ reserva.precio_total }} CLP</p>
+                                                <a class="btn btn-warning" href="#" data-bs-toggle="modal" data-bs-target="#confirmPagoModal-{{reserva.id}}">Pagar</a>
+                                                <a class="delete btn btn-danger" href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteReservasModal-{{reserva.id}}" data-url="{% url 'eliminar_reserva_habitacion' reserva.id %}">Cancelar reserva</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="confirmPagoModal-{{reserva.id}}" tabindex="-1" aria-labelledby="pagoModalLabel-{{reserva.id}}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="pagoModalLabel-{{reserva.id}}">Confirmar Pago</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Detalles de tu reserva:
+                                                    <td>
+                                                        <li>
+                                                            № de habitacion: {{ reserva.habitacion.numero_habitacion }} 
+                                                        </li>
+                                                        <li>
+                                                            Dia ingreso: {{ reserva.fecha_inicio }}
+                                                        </li>
+                                                        <li>
+                                                            Dia retiro: {{reserva.fecha_fin}}
+                                                        </li>
+                                                        <li>
+                                                            Valor: {{ reserva.precio_total }} CLP
+                                                        </li>
+                                                    </td>
+                                                    <p class="fs-6" style="color: rgb(238, 33, 33);">*Una vez que pagues, solo podras cancelar la reserva comunicandote directamente con la administracion del hotel</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <a id="confirmPagoBtnReservas-{{reserva.id}}" href="{% url 'iniciar_pago' reserva.id 'habitacion'%}" class="btn btn-success">Pagar</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="confirmDeleteReservasModal-{{reserva.id}}" tabindex="-1" aria-labelledby="confirmDeleteReservasModal-{{reserva.id}}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Confirmar cancelación</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    ¿Estás seguro de que deseas cancelar esta reserva?
+                                                    <td>
+                                                        <li>
+                                                            № de habitacion: {{ reserva.habitacion.numero_habitacion }} 
+                                                        </li>
+                                                        <li>
+                                                            Dia ingreso: {{ reserva.fecha_inicio }}
+                                                        </li>
+                                                        <li>
+                                                            Dia retiro: {{reserva.fecha_fin}}
+                                                        </li>
+                                                        <li>
+                                                            Valor: {{ reserva.precio_total }} CLP
+                                                        </li>
+                                                    </td>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
+                                                    <a id="confirmDeleteBtnReservas-{{reserva.id}}" href="#" class="btn btn-danger">Eliminar reserva</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function () {
+                                            var confirmDeleteReservasModal = document.getElementById('confirmDeleteReservasModal-{{reserva.id}}');
+                                            var confirmDeleteBtnReservas = document.getElementById('confirmDeleteBtnReservas-{{reserva.id}}');
+                                    
+                                            confirmDeleteReservasModal.addEventListener('show.bs.modal', function (event) {
+                                                var button = event.relatedTarget;
+                                                var url = button.getAttribute('data-url');
+                                                confirmDeleteBtnReservas.setAttribute('href', url);
+                                            });
+                                        });
+                                    </script>
+                                {% endfor %}
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#reservasPorPagarCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#reservasPorPagarCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    {% else %}
+                        <p class="empty-message text-center">No hay reservas por pagar</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            
+
+            <div class="d-flex" style="height: 80px; visibility: hidden;">
+                <div class="vr"></div>
+              </div>
+        
+
+    <!-- Carrusel de Reservas Pagadas -->
+            <div class="row d-flex justify-content-center pt-4">
+                <div class="col-12 justify-content-center">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-6">
+                            <h2 class="text-center pb-3" style="color:rgb(0, 0, 0)">
+                                Reservas pagadas ({{ reservas_pagadas|length }})
+                            </h2>
+                        </div>
+                    </div>
+
+                    {% if reservas_pagadas %}
+                        <div id="reservasPagadasCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for reserva in reservas_pagadas %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <div class="card text-center bg-success bg-opacity-10 border border-success border-start rounded-end pt-3">
+                                            <img src="/media/{{reserva.habitacion.imagen_habitacion}}" alt="" height="300px" width="500px" class="mx-auto d-block">
+                                            <div class="card-body">
+                                                <h2>№ Habitación: {{ reserva.habitacion.numero_habitacion }}</h2>
+                                                <h2>Tipo de habitación: {{ reserva.habitacion.tipo_habitacion }}</h2>
+                                                <p><strong>№ de reserva:</strong> {{ reserva.id }}</p>
+                                                <p><strong>Fecha inicio:</strong> {{ reserva.fecha_inicio }}</p>
+                                                <p><strong>Fecha fin:</strong> {{ reserva.fecha_fin }}</p>
+                                                <p><strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}</p>
+                                                <p><strong>Esta reserva fue pagada por un monto de:</strong> {{ reserva.precio_total }} CLP</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#reservasPagadasCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#reservasPagadasCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    {% else %}
+                        <p class="empty-message text-center">No tiene reservas pagadas</p>
+                    {% endif %}
+                </div>
+            </div>
+        
 </div>
-<div class="d-flex" style="height: 50px;">
+<div class="d-flex" style="height: 170px;">
     <div class="vr"></div>
   </div>
 {% endblock %}

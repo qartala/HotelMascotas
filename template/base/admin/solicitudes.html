@@ -5,91 +5,140 @@ Inicio - Admin
 {% endblock %}
 
 {% block content %}
-            <div id="messages" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; text-align: center; width: 300px;">
-                {% if messages %}
-                    <div>
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-            <div class="container py-5">
-                <section class="text-center mb-5">
-                    <h2 class="mb-4">Gestión de Solicitudes</h2>
-                    <hr>
-                </section>
+<div class="container py-5">
+    <section class="text-center mb-5">
+        <h1 class="mb-4">Gestión de Solicitudes</h1>
+        <hr>
+    </section>
 
-                <section class="container-fluid">
-                    <div class="row justify-content-center">
-                        <div class="col-12">
-                            <table class="table table-custom table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>ID Solicitud</th>
-                                        <th>Nombre del Solicitante</th>
-                                        <th>Teléfono</th>
-                                        <th>Correo Electrónico</th>
-                                        <th>Servicio Solicitado</th>
-                                        <th>Estado</th>
-                                        <th>Archivo PDF</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% if solicitudes %}
-                                        {% for solicitud in solicitudes %}
-                                            <tr>
-                                                <td>{{ solicitud.id }}</td>
-                                                <td>{{ solicitud.fullname }}</td>
-                                                <td>{{ solicitud.phone }}</td>
-                                                <td>{{ solicitud.email }}</td>
-                                                <td>{{ solicitud.servicio }}</td>
-                                                <td>{{ solicitud.estado }}</td>
-                                                <td>
-                                                    {% if solicitud.pdf_file %}
-                                                        <a href="{{ solicitud.pdf_file.url }}" class="btn btn-custom btn-custom-download text-dark" target="_blank">
-                                                            <i class="fas fa-download text-dark"></i> Descargar PDF
-                                                        </a>
-                                                    {% else %}
-                                                        Sin archivo
-                                                    {% endif %}
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex justify-content-around">
-                                                        <a href="{% url 'gestionar_solicitud' solicitud.id 'aprobar' %}" class="btn btn-custom btn-custom-edit">
-                                                            <i class="fas fa-check"></i> Aprobar
-                                                        </a>
-                                                        <a href="{% url 'gestionar_solicitud' solicitud.id 'rechazar' %}" class="btn btn-custom btn-custom-delete">
-                                                            <i class="fas fa-times"></i> Rechazar
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% else %}
-                                        <tr>
-                                            <td colspan="8">
-                                                <h3 class="text-center">No hay solicitudes</h3>
-                                            </td>
-                                        </tr>
-                                    {% endif %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-            </div>
-            <script>
-                setTimeout(function() {
-                    var messageDiv = document.getElementById('messages');
-                    if (messageDiv) {
-                        messageDiv.style.display = 'none';
-                    }
-                }, 3000);  
-            </script>
+    <section class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <table class="table table-custom table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID Solicitud</th>
+                            <th>Nombre del Solicitante</th>
+                            <th>Teléfono</th>
+                            <th>Correo Electrónico</th>
+                            <th>Servicio Solicitado</th>
+                            <th>Estado</th>
+                            <th>Archivo PDF</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if solicitudes %}
+                            {% for solicitud in solicitudes %}
+                                <tr>
+                                    <td>{{ solicitud.id }}</td>
+                                    <td>{{ solicitud.fullname }}</td>
+                                    <td>{{ solicitud.phone }}</td>
+                                    <td>{{ solicitud.email }}</td>
+                                    <td>{{ solicitud.servicio }}</td>
+                                    <td>{{ solicitud.estado }}</td>
+                                    <td>
+                                        {% if solicitud.pdf_file %}
+                                            <a href="{{ solicitud.pdf_file.url }}" class="btn btn-custom btn-custom-download text-dark" target="_blank">
+                                                <i class="fas fa-download text-dark"></i> Descargar PDF
+                                            </a>
+                                        {% else %}
+                                            Sin archivo
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="row d-flex justify-content-center">
+                                            <div class="col-5">
+                                                <!-- Botón Aprobar con Modal -->
+                                                <a href="#" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#confirmAprobarModal-{{ solicitud.id }}" data-url="{% url 'gestionar_solicitud' solicitud.id 'aprobar' %}">
+                                                    Aprobar
+                                                </a>
+                                            </div>
+                                            <div class="col-7">
+                                                <!-- Botón Rechazar con Modal -->
+                                                <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmRechazarModal-{{ solicitud.id }}" data-url="{% url 'gestionar_solicitud' solicitud.id 'rechazar' %}">
+                                                    Rechazar
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
 
+                                <!-- Modal para Aprobar Solicitud -->
+                                <div class="modal fade" id="confirmAprobarModal-{{ solicitud.id }}" tabindex="-1" aria-labelledby="aprobarModalLabel-{{ solicitud.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="aprobarModalLabel-{{ solicitud.id }}">Confirmar Aprobación</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ¿Estás seguro de que deseas aprobar esta solicitud?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <a id="confirmAprobarBtn-{{ solicitud.id }}" href="#" class="btn btn-success">Aprobar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal para Rechazar Solicitud -->
+                                <div class="modal fade" id="confirmRechazarModal-{{ solicitud.id }}" tabindex="-1" aria-labelledby="rechazarModalLabel-{{ solicitud.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="rechazarModalLabel-{{ solicitud.id }}">Confirmar Rechazo</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ¿Estás seguro de que deseas rechazar esta solicitud?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <a id="confirmRechazarBtn-{{ solicitud.id }}" href="#" class="btn btn-danger">Rechazar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Scripts para manejar dinámicamente las URLs de los botones en los modales -->
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        // Modal Aprobar
+                                        var confirmAprobarModal = document.getElementById('confirmAprobarModal-{{ solicitud.id }}');
+                                        var confirmAprobarBtn = document.getElementById('confirmAprobarBtn-{{ solicitud.id }}');
+
+                                        confirmAprobarModal.addEventListener('show.bs.modal', function (event) {
+                                            var button = event.relatedTarget;
+                                            var url = button.getAttribute('data-url');
+                                            confirmAprobarBtn.setAttribute('href', url);
+                                        });
+
+                                        // Modal Rechazar
+                                        var confirmRechazarModal = document.getElementById('confirmRechazarModal-{{ solicitud.id }}');
+                                        var confirmRechazarBtn = document.getElementById('confirmRechazarBtn-{{ solicitud.id }}');
+
+                                        confirmRechazarModal.addEventListener('show.bs.modal', function (event) {
+                                            var button = event.relatedTarget;
+                                            var url = button.getAttribute('data-url');
+                                            confirmRechazarBtn.setAttribute('href', url);
+                                        });
+                                    });
+                                </script>
+
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8">
+                                    <h3 class="text-center">No hay solicitudes</h3>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
 {% endblock %}

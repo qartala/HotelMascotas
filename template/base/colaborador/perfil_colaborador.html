@@ -22,7 +22,7 @@ Inicio - colab
                 <div class="card-body text-center">
                     <div class="mb-3">
                         {% if colaborador.foto_perfil %}
-                            <img src="{{ colaborador.foto_perfil.url }}" alt="Foto de perfil" class="img-thumbnail mb-3">
+                            <img src="{{ colaborador.foto_perfil.url }}" alt="Foto de perfil" class="img-thumbnail mb-3" height="200px" width="200px">
                         {% else %}
                             <img src="{% static 'assets/perfilll.png' %}" width="200px" alt="Sin imagen" class="img-thumbnail mb-3">
                         {% endif %}
@@ -33,6 +33,7 @@ Inicio - colab
                     <p><strong>Teléfono:</strong> {{ colaborador.phone }}</p>
                     <p><strong>Servicio:</strong> {{ colaborador.servicio }}</p>
                     <p><strong>Descripción:</strong> {{ colaborador.descripcion }}</p>
+                    <p><strong>Precio por Hora:</strong> {{ colaborador.precio_por_hora }}</p>
                 </div>
             </div>
         </div>
@@ -55,6 +56,11 @@ Inicio - colab
                             <label for="id_foto_perfil" class="form-label">Foto de Perfil:</label>
                             {{ form.foto_perfil }} 
                         </div>
+
+                        <div class="mb-3">
+                            <label for="id_precio_por_hora" class="form-label">Precio por Hora:</label>
+                            {{ form.precio_por_hora }} 
+                        </div>
         
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     </form>
@@ -63,5 +69,7 @@ Inicio - colab
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 {% endblock %}

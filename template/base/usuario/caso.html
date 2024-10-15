@@ -39,7 +39,7 @@ Inicio - cliente
             {% if productos %}
                 {% for producto in productos %}
                 <div class="col">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card bg-info bg-opacity-10 border border-info border-start rounded-end h-100 shadow-sm">
                         <img style="height: 200px; object-fit: cover;" src="/media/{{producto.imagen_habitacion}}" class="card-img-top" alt="{{ producto.numero_habitacion }}">
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ producto.numero_habitacion }}</h5>
@@ -56,19 +56,13 @@ Inicio - cliente
         </div>
     </div>
 </div>
-
 </section>
+<hr>
 
-<section id="nosotros" class="nosotros section-padding">
-  <div class="separator-ribbon"></div>
-    <div class="content "></div>
-  </div>
-  <div class="container">
+  <div class="container" id="nosotros">
     <div class="row align-items-center">
-      <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
-        <div class="nosotros-img">
+      <div class="col-lg-4 col-md-12 mb-lg-0">
           <img src="/static/assets/icon-transformed.png" width="400px" alt="Sobre Nosotros" class="img-fluid">
-        </div>
       </div>
       <div class="col-lg-8 col-md-12 ps-lg-5">
         <div class="nosotros-text">
@@ -79,8 +73,7 @@ Inicio - cliente
       </div>
     </div>
   </div>
-</section>
-
+<hr>
 
 
       <section id="services" class="services section-padding">
@@ -138,6 +131,7 @@ Inicio - cliente
           </div>
         </div>
 </section>
+<hr>
 
 <section id="colaborador" class="colaborador section-padding" >
   <div class="separator-ribbon">

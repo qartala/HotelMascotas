@@ -155,13 +155,12 @@ Inicio - cliente
 
   <div class="profile-header">
     <div class="profile-avatar">
-      <img src="https://cdn-icons-png.flaticon.com/512/4646/4646084.png" alt="Avatar">
+      <i class="fa-solid fa-user-tie fa-6x"></i>
       <div class="profile-info">
         <h5>{{ user.first_name }}</h5>
         <p>{{ user.email }}</p>
       </div>
     </div>
-    
   </div>
 
   <div class="profile-body">
@@ -185,14 +184,33 @@ Inicio - cliente
       </div>
     </div>
     
+    <!-- Ver Reservas -->
     <div class="card">
       <div class="card-body text-center">
-        <i class="fas fa-dog fa-3x mb-3" style="color: #0d6efd;"></i> <!-- Icono para Ver Mascotas -->
-        <h5 class="card-title">Reservas</h5>
+        <i class="fa-regular fa-calendar-days fa-3x mb-3" style="color: #0d6efd;"></i> <!-- Icono para Ver Mascotas -->
+        <h5 class="card-title">Reservas Habitaciones</h5>
         <p class="card-text">Consultar reservas.</p>
         <a href="{% url 'listar_reservas' %}" class="btn btn-warning">Ver Reservas</a>
       </div>
     </div>
+
+    <!-- Ver Servicios -->
+    <div class="card text-center">
+      <div class="card-body">
+        <i class="fas fa-concierge-bell fa-3x mb-3" style="color: #0d6efd;"></i> <!-- Icono para Ver Servicios -->
+        <h5 class="card-title">Reservas Servicios</h5>
+        <p class="card-text">Consultar reservas.</p>
+        <a href="{% url 'listar_reservas_servicios' %}" class="btn btn-warning">Ver Reservas</a>
+      </div>
+    </div>
+    <!-- <div class="card text-center">
+      <div class="card-body">
+        <i class="fas fa-concierge-bell fa-3x mb-3" style="color: #0d6efd;"></i> 
+        <h5 class="card-title">prueba</h5>
+        <p class="card-text">prueba</p>
+        <a href="{% url 'prueba' %}" class="btn btn-warning">ir</a>
+      </div>
+    </div> -->
   </div>
 </div>
 <br>

@@ -30,21 +30,21 @@ Inicio - cliente
     <div class="content "></div>
   </div>
 
-  <div class="container my-5">
-    <h2 class="text-center mb-5 title">Habitaciones</h2>
+  <div class="container my-3">
+    <h2 class="text-center mb-2 title">Habitaciones</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
       {% if productos %}
       {% for producto in productos %}
       <div class="col">
-          <div class="card h-100 shadow-sm">
+          <div class="card h-100 bg-info bg-opacity-10 border border-info border-start rounded-end shadow-sm">
               <img style="height: 200px; object-fit: cover;" src="/media/{{producto.imagen_habitacion}}" class="card-img-top" alt="{{ producto.numero_habitacion }}">
               <div class="card-body text-center">
                   <h5 class="card-title">№ Habitacion: {{ producto.numero_habitacion }}</h5>
                   <p class="card-text">Tipo: {{ producto.tipo_habitacion }}</p>
                   <p class="card-text">Precio por noche: CLP {{ producto.precio }}</p>
                   <p><a href="#" class="btn btn-warning mt-3" data-bs-toggle="modal" data-bs-target="#fechasModal-{{producto.id}}">Reservar</a></p>
-                  <p class="card-text pt-1">Ve las reservas y horarios de esta habitacion</p>
-                  <p><a href="{% url 'reservas_hotel' producto.id %}" >Ver reservas</a></p>
+                  <p class="card-text pt-1">Ve todas las reservas y horarios de esta habitacion</p>
+                  <p><a href="{% url 'reservas_hotel' producto.id %}" >Ver horarios disponibles</a></p>
                 </div>
               </div>
               <div class="modal fade" id="fechasModal-{{producto.id}}" tabindex="-1" aria-labelledby="fechasModalLabel" aria-hidden="true">
@@ -98,8 +98,8 @@ Inicio - cliente
       {% endif %}
     </div>
   </div>
-
 </section>
+<hr>
 
 <section id="nosotros" class="nosotros section-padding">
   <div class="separator-ribbon"></div>
@@ -122,14 +122,17 @@ Inicio - cliente
     </div>
   </div>
 </section>
+<hr>
 
 
       <section id="services" class="services section-padding">
-        <div class="">
           <div class="section-header text-center pb-5">
-            <h2 class="text-center mb-2 title">Servicios disponibles</h2>
-            <p>Ofrecemos los siguientes servicios, de acuerdo a las necesidades de tu mascota.</p>
-          </div>
+            <div class="d-flex justify-content-center align-items-center mb-3">
+                <h2 class="title mb-0 me-3">Servicios disponibles</h2> 
+              </div>
+              <a href="{% url 'servicios_disponibles' %}" class="btn btn-primary">Ver todos los servicios</a>
+            <p class="pt-2">Ofrecemos los siguientes servicios, de acuerdo a las necesidades de tu mascota.</p>
+          </div> 
           <div class="row d-flex justify-content-center">
             <div class="col-lg-2 col-md-6 mb-4">
               <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 " >
@@ -177,7 +180,6 @@ Inicio - cliente
               </div>
             </div>
           </div>
-        </div>
 </section>
 
 

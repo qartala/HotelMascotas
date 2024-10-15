@@ -33,43 +33,22 @@ def listar(request):
     return render(request, 'base/admin/listar.html', context=contexto)
 
 def modificar(request, idHabitacion):
-    try:
-        productoEncontrado = Habitacion.objects.get(id=idHabitacion)
-    except Habitacion.DoesNotExist:
-        return HttpResponseRedirect(reverse('listarProducto'))
+    habitacion = get_object_or_404(Habitacion, id=idHabitacion)
+    
     if request.method == 'GET':
-        # categorias = Categoria.objects.all()
-        # promociones = Promocion.objects.all()
         contexto = {
-            'producto': productoEncontrado,
-            # 'categorias': categorias,
-            # 'promociones': promociones
+            'habitacion': habitacion,
         }
         return render(request, 'base/admin/modificar.html', contexto)
+
     elif request.method == 'POST':
-        productoEncontrado.imagen_habitacion = request.FILES.get('imagen_habitacion', productoEncontrado.imagen_habitacion)
-        productoEncontrado.numero_habitacion = request.POST.get('numero_habitacion', productoEncontrado.numero_habitacion)
-        productoEncontrado.tipo_habitacion = request.POST.get('tipo_habitacion', productoEncontrado.tipo_habitacion)
-        # productoEncontrado.servicio = request.POST.get('servicio', productoEncontrado.servicio)
-        productoEncontrado.precio = request.POST.get('precio', productoEncontrado.precio)
-        # productoEncontrado.tiempoText = request.POST.get('tiempoText', productoEncontrado.tiempoText)
-        
-        # categoriaId = request.POST.get('idCategoria')
-        # promocionId = request.POST.get('idPromocion')
-        
-        # if categoriaId:
-        #     categoriaEncontrada = Categoria.objects.get(id=categoriaId)
-        #     productoEncontrado.id_categoria = categoriaEncontrada
-            
-        # if promocionId:
-        #     promocionEncontrada = Promocion.objects.get(id=promocionId)
-        #     productoEncontrado.id_Promocion = promocionEncontrada
-        
-        productoEncontrado.save()
+        habitacion.imagen_habitacion = request.FILES.get('imagen_habitacion', habitacion.imagen_habitacion)
+        habitacion.numero_habitacion = request.POST.get('numero_habitacion', habitacion.numero_habitacion)
+        habitacion.tipo_habitacion = request.POST.get('tipo_habitacion', habitacion.tipo_habitacion)
+        habitacion.precio = request.POST.get('precio', habitacion.precio)
+        habitacion.save()
+        sweetify.success(request, 'La habitacion se modifico correctamente')
         return HttpResponseRedirect(reverse('listarProducto'))
-
-
-    
 
 
 
@@ -96,24 +75,17 @@ def agregarProductos(request):
                 }
                 sweetify.warning(request, 'El numero de habitacion esta en uso')
                 return render(request,'base/admin/AgregarProductos.html',context = contexto)
-        sweetify.success(request, 'Producto agregado con éxito!!!')    
+        sweetify.success(request, 'Habitacion agregada con éxito!')    
         return HttpResponseRedirect(reverse('agregarProductos'))
 
 def eliminar(request, idProducto):
     try:
         productoEncontrado = Habitacion.objects.get(id=idProducto)
-    except Habitacion.DoesNotExist:
-        return HttpResponseRedirect(reverse('listarProducto'))
-
-    if request.method == 'GET':
-        contexto = {
-            'producto': productoEncontrado
-        }
-        return render(request, 'base/admin/eliminarProducto.html', contexto)
-
-    elif request.method == 'POST':
         productoEncontrado.delete()
-        sweetify.success(request, 'Producto Eliminado con éxito!!!')
+        sweetify.success(request, 'La habitacion y sus reservas asociadas se eliminaron con éxito!')
+        return HttpResponseRedirect(reverse('listarProducto'))
+    except Habitacion.DoesNotExist:
+        sweetify.error(request, 'Error al eliminar la habitacion')
         return HttpResponseRedirect(reverse('listarProducto'))
 
 
@@ -236,7 +208,7 @@ def solicitudes_admin(request):
 
 def gestionar_solicitud(request, colaborador_id, accion):
     colaborador = get_object_or_404(Colaborador, id=colaborador_id)
-    
+    print(colaborador)
     if accion == 'aprobar':
         colaborador.estado = 'aprobado'
         colaborador.save()
@@ -248,7 +220,9 @@ def gestionar_solicitud(request, colaborador_id, accion):
             fail_silently=False,
         )
 
-        messages.success(request, 'Colaborador aprobado con éxito.')
+        sweetify.success(request, 'Colaborador aprobado con éxito.')
+        return redirect('solicitudes_admin')
+
     elif accion == 'rechazar':
         colaborador.delete()
         send_mail(
@@ -259,9 +233,8 @@ def gestionar_solicitud(request, colaborador_id, accion):
             fail_silently=False,
         )
 
-        messages.error(request, 'Colaborador rechazado y eliminado.')
-
-    return redirect('solicitudes_admin')
+        sweetify.error(request, 'Colaborador rechazado y eliminado.')
+        return redirect('solicitudes_admin')
 
 def listar_colaboradores_aprobados(request):
     colaboradores_aprobados = Colaborador.objects.filter(estado='aprobado')

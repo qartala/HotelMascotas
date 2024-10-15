@@ -2,13 +2,13 @@
 {% load static %}
 
 {% block title %}
-Admin - Membresia
+Admin - Membresía
 {% endblock %}
 
 {% block content %}
 {% if membresias %}
 <div class="container py-5">
-    <h2 class="mb-4">Gestionar Membresías</h2>
+    <h1 class="mb-4">Gestionar Membresías</h1>
     <hr>
     
     <div class="table-responsive">
@@ -18,7 +18,7 @@ Admin - Membresia
                     <th scope="col">Nombre</th>
                     <th scope="col">Descuento (%)</th>
                     <th scope="col">Duración (días)</th>
-                    <th scope="col">valor</th>
+                    <th scope="col">Valor</th>
                     <th scope="col">Acciones</th>
                 </tr>
             </thead>
@@ -31,9 +31,44 @@ Admin - Membresia
                     <td>{{ membresia.valor }}</td>
                     <td>
                         <a href="{% url 'editar_membresia' membresia.id %}" class="btn btn-warning btn-sm">Editar</a>
-                        <a href="{% url 'eliminar_membresia' membresia.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                        <!-- Botón para abrir el modal de eliminación -->
+                        <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteMembresiaModal-{{ membresia.id }}" data-url="{% url 'eliminar_membresia' membresia.id %}">Eliminar</a>
                     </td>
                 </tr>
+
+                <!-- Modal para confirmar la eliminación de la membresía -->
+                <div class="modal fade" id="confirmDeleteMembresiaModal-{{ membresia.id }}" tabindex="-1" aria-labelledby="deleteMembresiaModalLabel-{{ membresia.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteMembresiaModalLabel-{{ membresia.id }}">Confirmar eliminación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Estás seguro de que deseas eliminar la membresía <strong>{{ membresia.nombre }}</strong>?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <a id="confirmDeleteBtn-{{ membresia.id }}" href="#" class="btn btn-danger">Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Script para gestionar el modal dinámicamente -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var confirmDeleteMembresiaModal = document.getElementById('confirmDeleteMembresiaModal-{{ membresia.id }}');
+                        var confirmDeleteBtn = document.getElementById('confirmDeleteBtn-{{ membresia.id }}');
+
+                        confirmDeleteMembresiaModal.addEventListener('show.bs.modal', function (event) {
+                            var button = event.relatedTarget;
+                            var url = button.getAttribute('data-url');
+                            confirmDeleteBtn.setAttribute('href', url);
+                        });
+                    });
+                </script>
+
                 {% endfor %}
             </tbody>
         </table>

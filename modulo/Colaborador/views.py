@@ -4,17 +4,18 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
-from modulo.Colaborador.models import Colaborador
+from modulo.Colaborador.models import Colaborador, Disponibilidad
 import re
 import sweetify
 from django.core.exceptions import ValidationError
 from .forms import DisponibilidadForm, PerfilColaboradorForm
 from .models import Disponibilidad
+from .decorators import colaborador_required
 
 # Create your views here.
 
 def colaborador(request):
-    return render(request,'base/colaborador/colaborador.html')
+        return render(request, 'base/colaborador/colaborador.html')
 
 def listar_colaboradores(request):
     colaborador = Colaborador.objects.all()
@@ -23,6 +24,7 @@ def listar_colaboradores(request):
     }
     return render(request, 'base/solicitudes.html', context=contexto)
 
+@colaborador_required
 def horas_disponibles(request):
     colaborador_id = request.session.get('colaborador_id')
     
@@ -44,7 +46,7 @@ def horas_disponibles(request):
     return render(request, 'base/colaborador/horas_disponibles.html', contexto)
 
 
-
+@colaborador_required
 def registrar_disponibilidad(request):
     colaborador_id = request.session.get('colaborador_id')
 
@@ -58,20 +60,27 @@ def registrar_disponibilidad(request):
         if form.is_valid():
             disponibilidad = form.save(commit=False)
             disponibilidad.colaborador = colaborador
-            disponibilidad.servicio = colaborador.servicio  
 
-            conflicto = Disponibilidad.objects.filter(
-                colaborador=colaborador,
-                servicio=disponibilidad.servicio,
-                fecha=disponibilidad.fecha,
-                hora_inicio=disponibilidad.hora_inicio
-            ).exists()
-
-            if conflicto:
-                form.add_error(None, "Ya has registrado una disponibilidad para este servicio en este horario.")
+            if not colaborador.servicio:
+                form.add_error(None, "El colaborador no tiene un servicio asignado.")
             else:
-                disponibilidad.save()
-                return redirect('horas_disponibles') 
+                disponibilidad.servicio = colaborador.servicio  
+
+                # Verificación de conflicto con el rango de horas
+                conflicto = Disponibilidad.objects.filter(
+                    colaborador=colaborador,
+                    servicio=disponibilidad.servicio,
+                    fecha=disponibilidad.fecha
+                ).filter(
+                    hora_inicio__lt=disponibilidad.hora_fin,  # Verificar si la hora de inicio es menor que la hora de fin de otra disponibilidad
+                    hora_fin__gt=disponibilidad.hora_inicio   # Verificar si la hora de fin es mayor que la hora de inicio de otra disponibilidad
+                ).exists()
+
+                if conflicto:
+                    form.add_error(None, "Ya has registrado una disponibilidad para este servicio en este horario.")
+                else:
+                    disponibilidad.save()
+                    return redirect('horas_disponibles') 
     else:
         form = DisponibilidadForm()
 
@@ -82,10 +91,11 @@ def registrar_disponibilidad(request):
 
     return render(request, 'base/colaborador/horario_disponible.html', contexto)
 
+@colaborador_required
 def perfil_colaborador(request):
     colaborador_id = request.session.get('colaborador_id')
 
-    if not colaborador_id: 
+    if not colaborador_id:
         return redirect('iniciarsesionColaborador')
 
     colaborador = Colaborador.objects.get(id=colaborador_id)
@@ -94,15 +104,18 @@ def perfil_colaborador(request):
         form = PerfilColaboradorForm(request.POST, request.FILES, instance=colaborador)
         if form.is_valid():
             form.save()
+            sweetify.success(request, 'Perfil actualizado correctamente.', icon='success', timer=3000)
             return redirect('perfil_colaborador')  
+        else:
+            sweetify.error(request, 'Por favor, corrige los errores en el formulario.', icon='error', timer=3000)
     else:
         form = PerfilColaboradorForm(instance=colaborador)
 
     contexto = {
-        'colaborador': colaborador,  
-        'form': form  
+        'colaborador': colaborador,
+        'form': form
     }
-    
+
     return render(request, 'base/colaborador/perfil_colaborador.html', contexto)
 
 
@@ -110,14 +123,16 @@ def registro_colaborador(request):
     if request.method == 'POST':
         fullname = request.POST.get('fullname')
         username = request.POST.get('username')
-        phone = request.POST.get('phone')
+        phone_digits = request.POST.get('phone')  
         email = request.POST.get('email')
         password = request.POST.get('password')
         servicio = request.POST.get('service')
         pdf_file = request.FILES.get('pdf_file')
 
+        phone = '+569' + phone_digits
+
         if len(fullname) > 100:
-            messages.error(request, 'El nombre completo no puede tener más de 100 caracteres.')
+            sweetify.toast(request, 'El nombre completo no puede tener más de 100 caracteres.',icon='error', position='center', timer=5000)
             return render(request, 'base/colaborador/registro_colaborador.html', {
                 'fullname': fullname,
                 'username': username,
@@ -127,8 +142,7 @@ def registro_colaborador(request):
             })
 
         if len(username) > 15:
-            sweetify.toast(request, 'El nombre de usuario debe contener al menos una mayúscula, un número y un punto o guion.',icon='error', position='center', timer=5000)
-            messages.error(request, 'El nombre de usuario no puede tener más de 15 caracteres.')
+            sweetify.toast(request, 'El nombre de usuario no puede tener más de 15 caracteres.',icon='error', position='center', timer=5000)
             return render(request, 'base/colaborador/registro_colaborador.html', {
                 'fullname': fullname,
                 'username': username,
@@ -157,7 +171,7 @@ def registro_colaborador(request):
                 'servicio': servicio
             })
 
-        if not re.match(r'^\+569\d{8}$', phone):
+        if not re.match(r'^\d{8}$', phone_digits):
             sweetify.toast(request, 'El número de teléfono debe tener el formato +56 9 y luego 8 dígitos.',icon='error', position='center', timer=5000)
             return render(request, 'base/colaborador/registro_colaborador.html', {
                 'fullname': fullname,
@@ -218,7 +232,7 @@ def registro_colaborador(request):
             )
 
             colaborador.set_password(password)
-            colaborador.save()  
+            colaborador.save()
             sweetify.success(request, 'Registro exitoso. Espera la confirmación del administrador.')
             return redirect('colaborador')
         except ValidationError as e:
@@ -245,11 +259,8 @@ def verificar_usuario(request):
 
 def eliminar_colaborador_aprobado(request, colaborador_id):
     colaborador = get_object_or_404(Colaborador, id=colaborador_id)
-    
     colaborador.delete()
-    
-    messages.success(request, 'Colaborador eliminado con éxito.')
-    
+    sweetify.success(request, 'Colaborador eliminado con éxito.')
     return redirect('listar_colaboradores_aprobados')
 
 
@@ -262,21 +273,32 @@ def iniciarsesionColaborador(request):
         try:
            
             colaborador = Colaborador.objects.get(username=username, estado='aprobado')
+            print(colaborador)
             if colaborador.check_password(password):
             
                 request.session['colaborador_id'] = colaborador.id
-                messages.success(request, 'Inicio de sesión exitoso.')
-                return redirect('inicio_colaborador')  
+                print(request.session['colaborador_id'])
+                sweetify.success(request, 'Inicio de sesión exitoso.')
+                return redirect('inicio_colaborador')
             else:
-                messages.error(request, 'Contraseña incorrecta.')
+                sweetify.error(request, 'Contraseña incorrecta.')
                 return redirect('iniciarsesionColaborador')
         except Colaborador.DoesNotExist:
            
-            messages.error(request, 'Colaborador no registrado. Regístrate para continuar.')
-            return redirect('registro_colaborador')  
+            sweetify.error(request, 'Colaborador no registrado. Regístrate para continuar.')
+            return redirect('iniciarsesionColaborador')
 
     return render(request, 'base/colaborador/iniciarsesionColaborador.html')
- 
+
+@colaborador_required
+def cerrar_sesion_colaborador(request):
+    if 'colaborador_id' in request.session:
+        request.session.flush()
+
+    sweetify.success(request, 'Sesión cerrada exitosamente.')
+    return redirect('colaborador')
+
+@colaborador_required
 def inicio_colaborador(request):
     colaborador_id = request.session.get('colaborador_id')
     
@@ -290,6 +312,7 @@ def inicio_colaborador(request):
     }
     return render(request, 'base/colaborador/inicio_colaborador.html', contexto)
 
+@colaborador_required
 def eliminar_reserva(request, reserva_id):
     colaborador_id = request.session.get('colaborador_id')
     if not colaborador_id:
@@ -297,4 +320,4 @@ def eliminar_reserva(request, reserva_id):
     reserva = get_object_or_404(Disponibilidad, id=reserva_id, colaborador_id=colaborador_id)
     reserva.delete()
 
-    return redirect('horas_disponibles')    
+    return redirect('horas_disponibles')

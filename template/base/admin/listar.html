@@ -8,7 +8,7 @@ Inicio - Admin
 
 <div class="container py-5">
     <section class="text-center mb-5">
-        <h2 class="mb-4">Habitaciones</h2>
+        <h1 class="mb-4">Habitaciones</h1>
         <hr>
     </section>
 
@@ -39,15 +39,48 @@ Inicio - Admin
                                     <td>{{ producto.precio }} CLP</td>
                                     <td>
                                         <div class="d-flex justify-content-around">
-                                            <a href="{% url 'modificarProducto' producto.id %}" class="btn btn-custom btn-custom-edit">
+                                            <a href="{% url 'modificarProducto' producto.id %}" class="btn btn-warning">
                                                 <i class="fas fa-pencil-alt"></i> Modificar
                                             </a>
-                                            <a href="{% url 'eliminarProducto' producto.id %}" class="btn btn-custom btn-custom-delete">
-                                                <i class="fas fa-trash-alt"></i> Eliminar
-                                            </a>
+                                            <a class="delete btn btn-danger" href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteProductoModal-{{producto.id}}" data-url="{% url 'eliminarProducto' producto.id %}">Eliminar</a>
                                         </div>
                                     </td>
                                 </tr>
+
+                                <!-- Modal para confirmar la eliminación de la habitación -->
+                                <div class="modal fade" id="confirmDeleteProductoModal-{{producto.id}}" tabindex="-1" aria-labelledby="exampleModalLabel-{{producto.id}}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel-{{producto.id}}">Confirmar eliminación</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ¿Estás seguro de que deseas eliminar esta habitación?
+                                                <p style="color: red;">Las reservas que estén asociadas a esta habitación también se eliminarán.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <a id="confirmDeleteBtn-{{producto.id}}" href="#" class="btn btn-danger">Eliminar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Script para gestionar el modal de eliminación de forma dinámica -->
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        var confirmDeleteProductoModal = document.getElementById('confirmDeleteProductoModal-{{ producto.id }}');
+                                        var confirmDeleteBtn = document.getElementById('confirmDeleteBtn-{{ producto.id }}');
+
+                                        confirmDeleteProductoModal.addEventListener('show.bs.modal', function (event) {
+                                            var button = event.relatedTarget;
+                                            var url = button.getAttribute('data-url');
+                                            confirmDeleteBtn.setAttribute('href', url);
+                                        });
+                                    });
+                                </script>
+
                             {% endfor %}
                         {% else %}
                             <tr>
@@ -61,5 +94,5 @@ Inicio - Admin
             </div>
         </div>
     </section>
-</div>
+
 {% endblock %}

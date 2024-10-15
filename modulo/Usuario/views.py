@@ -1,14 +1,16 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from modulo.Producto.models import Habitacion, Reserva
-from modulo.Colaborador.models import Colaborador
-from modulo.Usuario.models import Usuario
+from modulo.Colaborador.models import Colaborador, Disponibilidad
+from modulo.Usuario.models import Usuario, ReservaServicio
 from modulo.Producto.models import Membresia
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 import re
 import sweetify
 from .forms import FichaSaludForm
@@ -51,9 +53,27 @@ def perfil (request):
         print(tipo)
         return render(request, 'base/usuario/perfil.html')
 
+
 def listar_reservas_view(request):
-    reservas = Reserva.objects.filter(cliente=request.user)
-    return render(request, 'base/usuario/listar_reservas.html', {'reservas': reservas})
+    reservas = Reserva.objects.filter(cliente=request.user)  # O como obtengas las reservas
+
+    # Filtrar reservas por pagado y no pagado
+    reservas_por_pagar = reservas.filter(pagado=False)
+    reservas_pagadas = reservas.filter(pagado=True)
+
+    # Pasar los resultados al contexto
+    context = {
+        'reservas_por_pagar': reservas_por_pagar,
+        'reservas_pagadas': reservas_pagadas,
+    }
+    return render(request, 'base/usuario/listar_reservas.html', context)
+
+def eliminar_reserva_habitacion(request, reserva_id):
+    reserva = get_object_or_404(Reserva, id=reserva_id, cliente=request.user)
+    reserva.delete()
+    sweetify.success(request, 'Reserva eliminada con éxito')
+    return redirect('listar_reservas')
+
     
 def ficha_salud_view(request):
     if request.method == 'POST':
@@ -63,6 +83,7 @@ def ficha_salud_view(request):
             usuario = Usuario.objects.get(idUsuario=request.user)  
             form.id_usuario = usuario  
             form.save()
+            sweetify.success(request, 'Se guardo la ficha de su mascota correctamente')
             return render(request,'base/usuario/perfil.html')  
     else:
         form = FichaSaludForm()
@@ -71,6 +92,7 @@ def ficha_salud_view(request):
 def listar_fichas_view(request):
     usuario = Usuario.objects.get(idUsuario=request.user)
     fichas = Ficha.objects.filter(id_usuario=usuario)
+    print(fichas)
     return render(request, 'base/usuario/listar_fichas.html', {'fichas': fichas})
 
 def editar_ficha_view(request, pk):
@@ -89,6 +111,28 @@ def eliminar_ficha(request, id):
     ficha = get_object_or_404(Ficha, id=id)
     ficha.delete()
     return redirect('perfil')  
+
+def generar_pdf_fichas(request):
+    usuario = Usuario.objects.get(idUsuario=request.user)
+    fichas = Ficha.objects.filter(id_usuario=usuario)
+
+    # Genera las URLs absolutas para las imágenes
+    for ficha in fichas:
+        if ficha.imagen_mascota:
+            ficha.imagen_mascota_url = request.build_absolute_uri(ficha.imagen_mascota.url)
+        else:
+            ficha.imagen_mascota_url = None
+
+    template = get_template('base/usuario/pdf_ficha.html')
+    html = template.render({'fichas': fichas})
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="fichas_mascotas.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('Error al generar el PDF', status=400)
+    return response
 
 def registrarse(request):
     if request.method == 'GET':
@@ -143,10 +187,10 @@ def iniciarsesion(request):
         if usuario_encontrado is not None:
             login(request, usuario_encontrado)
             if usuario_encontrado.is_superuser:
-                sweetify.toast(request,f'Bienvenido {usuario_encontrado.first_name}')
+                sweetify.toast(request,f'Bienvenido {usuario_encontrado.first_name}',position='top-start')
                 return redirect('vistaAdmin') 
             else:
-                sweetify.toast(request,f'Bienvenido {usuario_encontrado.first_name}')
+                sweetify.toast(request,f'Bienvenido {usuario_encontrado.first_name}',position='top-start')
                 return redirect('principalUsuario')  
         else:
             sweetify.error(request, 'Usuario o Contraseña incorrecto')
@@ -158,12 +202,162 @@ def cerrar_sesion(request):
 
     storage = messages.get_messages(request)
     for message in storage:
-        message.used = True  
-
+        message.used = True
+    sweetify.toast(request,'Sesion cerrada con exito',position='top-start')
     return HttpResponseRedirect(reverse('principal'))
 
 def reservas_hotel(request, habitacion_id):
+        habitacion = get_object_or_404(Habitacion, id=habitacion_id)
+        print(habitacion)
         contexto = {
             'habitacion_id': habitacion_id,
+            'habitacion': habitacion
         }
         return render(request,'base/usuario/reservas_hotel.html', contexto)
+
+def ver_horas_colaborador(request, colaborador_id):
+    colaborador = get_object_or_404(Colaborador, id=colaborador_id)
+    disponibilidades = Disponibilidad.objects.filter(colaborador=colaborador, disponible=True)
+    usuario = Usuario.objects.get(idUsuario=request.user)
+    mascotas = Ficha.objects.filter(id_usuario=usuario)
+    contexto = {
+        'colaborador': colaborador,
+        'disponibilidades': disponibilidades,
+        'mascotas':mascotas
+    }
+    return render(request, 'base/usuario/ver_horas_colaborador.html', contexto)
+
+
+
+def servicios_disponibles(request):
+    servicio_filtrado = request.GET.get('servicio')  
+    if servicio_filtrado:
+        servicios = Colaborador.objects.filter(servicio=servicio_filtrado)
+    else:
+        servicios = Colaborador.objects.all()
+    contexto = {
+        'servicios': servicios
+    }
+
+    return render(request, 'base/usuario/servicios_disponibles.html', contexto)
+
+from datetime import datetime, time
+
+def reservar_servicio(request):
+    if request.method == 'POST':
+        mascota_id = request.POST.get('mascota_id')
+        colaborador_id = request.POST.get('colaborador_id')
+        servicio = request.POST.get('servicio')
+        fecha = request.POST.get('fecha')  # Se obtiene como string, lo convertimos a fecha
+        hora_inicio_str = request.POST.get('hora_inicio')
+        hora_fin_str = request.POST.get('hora_fin')
+
+        # Convertir fecha y hora a objetos datetime y time
+        fecha_reservada = datetime.strptime(fecha, '%Y-%m-%d').date()
+        hora_inicio = datetime.strptime(hora_inicio_str, '%H:%M').time()
+        hora_fin = datetime.strptime(hora_fin_str, '%H:%M').time()
+
+        # Obtener el colaborador y la mascota
+        colaborador = get_object_or_404(Colaborador, id=colaborador_id)
+        mascota = get_object_or_404(Ficha, id=mascota_id)
+
+        # Verificar si existe una reserva de habitación para esa mascota y fecha
+        reserva_habitacion = Reserva.objects.filter(
+            mascota=mascota,
+            fecha_inicio__lte=fecha_reservada,  # Fecha reservada debe estar entre fecha_inicio y fecha_fin
+            fecha_fin__gte=fecha_reservada
+        ).first()  # Usamos .first() para obtener una sola reserva, si existe
+
+        if not reserva_habitacion:
+            # Si no existe una reserva de habitación, mostramos un mensaje de error
+            sweetify.error(request, f'El horario del colaborador no coincide con tus reservas realizadas para {mascota.nombre_perro}(mascota)')
+            return redirect('servicios_disponibles')    
+
+        # Verificar si ya existe una reserva de servicio para el mismo colaborador, servicio, fecha y mascota
+        reserva_existente = ReservaServicio.objects.filter(
+            colaborador=colaborador,
+            servicio=servicio,
+            fecha_reservada=fecha_reservada,
+            mascota=mascota,
+            hora_inicio=hora_inicio,
+            hora_fin=hora_fin
+        ).exists()
+
+        if reserva_existente:
+            sweetify.error(request, f'Ya existe una reserva de servicio para {mascota.nombre_perro} en esa fecha y hora.')
+            return redirect('servicios_disponibles')
+
+        # Crear la reserva de servicio
+        nueva_reserva = ReservaServicio.objects.create(
+            colaborador=colaborador,
+            servicio=servicio,
+            fecha_reservada=fecha_reservada,
+            mascota=mascota,
+            precio=colaborador.precio_por_hora,
+            hora_inicio=hora_inicio,
+            hora_fin=hora_fin
+        )
+
+        # Marcar la disponibilidad como no disponible
+        disponibilidad = Disponibilidad.objects.filter(
+            colaborador=colaborador,
+            servicio=servicio,
+            fecha=fecha_reservada,
+            hora_inicio=hora_inicio,
+            hora_fin=hora_fin
+        ).first()
+
+        if disponibilidad:
+            disponibilidad.disponible = False
+            disponibilidad.save()
+
+        sweetify.success(request, f"¡Reserva de servicio realizada con éxito para el {nueva_reserva.fecha_reservada}!")
+        return redirect('servicios_disponibles')
+    
+    return redirect('servicios_disponibles')
+
+
+
+def listar_reservas_servicios(request):
+    # Filtrar las reservas según si fueron pagadas o no
+    reservas_pagadas = ReservaServicio.objects.filter(pagado=True)
+    reservas_no_pagadas = ReservaServicio.objects.filter(pagado=False)
+
+    contexto = {
+        'reservas_pagadas': reservas_pagadas,
+        'reservas_no_pagadas': reservas_no_pagadas
+    }
+
+    return render(request, 'base/usuario/listar_reservas_servicio.html', contexto)
+
+def eliminar_reserva_servicio(request, reserva_id):
+    # Obtener la instancia del modelo Usuario relacionado con el usuario autenticado
+    usuario = get_object_or_404(Usuario, idUsuario=request.user)
+
+    # Obtener las fichas (mascotas) asociadas al usuario autenticado
+    mascotas_usuario = Ficha.objects.filter(id_usuario=usuario)
+
+    # Buscar la reserva que pertenece a una de las mascotas del usuario
+    reserva = get_object_or_404(ReservaServicio, id=reserva_id, mascota__in=mascotas_usuario)
+
+    # Buscar la disponibilidad asociada a la reserva y marcarla como disponible nuevamente
+    disponibilidad = Disponibilidad.objects.filter(
+        colaborador=reserva.colaborador,
+        servicio=reserva.servicio,
+        fecha=reserva.fecha_reservada,
+        hora_inicio=reserva.hora_inicio,
+        hora_fin=reserva.hora_fin
+    ).first()
+
+    if disponibilidad:
+        disponibilidad.disponible = True
+        disponibilidad.save()
+
+    # Eliminar la reserva
+    reserva.delete()
+    sweetify.success(request, 'Reserva de servicio eliminada con éxito')
+    return redirect('listar_reservas_servicios')
+
+
+def prueba(request):
+    return render(request, 'base/prueba.html')

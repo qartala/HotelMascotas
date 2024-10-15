@@ -157,26 +157,42 @@
           <li class="nav-item"><a class="nav-link" href="{% url 'principal' %}">Inicio</a></li>
           <li class="nav-item"><a class="nav-link" href="#precios">Precios</a></li>
           <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
-          <li class="nav-item"><a class="nav-link" href="#services">Servicios</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'servicios_disponibles' %}">Servicios</a></li>
           {% if not request.user.is_authenticated %}
           <li class="nav-item"><a class="nav-link" href="#colaborador">Colaborador</a></li>
           {% endif %}
           {% if request.user.is_authenticated %}
           <li class="nav-item"><a class="nav-link" href="#membresia">Membresía</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'perfil' %}">Perfil</a></li>
           {% endif %}
           <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
           {% if not request.user.is_authenticated %}
           <li class="nav-item"><a class="nav-link border border-white" href="{% url 'iniciarsesion' %}">Iniciar sesión</a></li>
           {% endif %}
           {% if request.user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link border border-white" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'perfil' %}">Perfil</a></li>
+          <li class="nav-item"><a class="nav-link border border-white" href="#" data-bs-toggle="modal" data-bs-target="#confirmCerrarSesionModal" data-url="{% url 'cerrar_sesion' %}">Cerrar sesion</a></li>
           {% endif %}
         </ul>
       </div>
     </div>
   </nav>
-
+  <div class="modal fade" id="confirmCerrarSesionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cerrando sesion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas Cerrar sesion?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a id="confirmCerrarSesionBtn" href="#" class="btn btn-danger">Cerrar sesion</a>
+            </div>
+        </div>
+    </div>
+</div>
   {% block content %}
 
   {% endblock %}
@@ -196,5 +212,16 @@
   {% load sweetify %}
   {% sweetify %}
 </body>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      var confirmCerrarSesionModal = document.getElementById('confirmCerrarSesionModal');
+      var confirmCerrarSesionBtn = document.getElementById('confirmCerrarSesionBtn');
 
+      confirmCerrarSesionModal.addEventListener('show.bs.modal', function (event) {
+          var button = event.relatedTarget;
+          var url = button.getAttribute('data-url');
+          confirmCerrarSesionBtn.setAttribute('href', url);
+      });
+  });
+</script>
 </html>

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from modulo.Colaborador.models import Colaborador
 from django.apps import apps
 
 
@@ -40,4 +41,18 @@ class Ficha(models.Model):
     def get_enfermedades(self):
         return self.enfermedades.split(',')
     
+class ReservaServicio(models.Model):
+    colaborador = models.ForeignKey(Colaborador, on_delete=models.CASCADE)
+    servicio = models.CharField(max_length=100)
+    fecha_reservada = models.DateField()
+    mascota = models.ForeignKey(Ficha, on_delete=models.CASCADE)  # Relación con el modelo de mascotas
+    precio = models.PositiveIntegerField()  # Precio del servicio
+    hora_inicio = models.TimeField(blank=True,null=True)
+    hora_fin = models.TimeField(blank=True,null=True)
+    pagado = models.BooleanField(default=False)
+    
+    class Meta:
+        unique_together = ('colaborador', 'servicio', 'fecha_reservada', 'mascota')
 
+    def __str__(self):
+        return f"Reserva de {self.mascota.nombre_perro} para el servicio {self.servicio} el {self.fecha_reservada}"

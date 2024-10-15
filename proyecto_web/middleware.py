@@ -24,12 +24,13 @@ class LoginRequiredMiddleware:
             'registro_colaborador',
             'iniciarsesionColaborador',
             'inicio_colaborador',
-            'iniciarsesionColaborador',
             'registrar_disponibilidad',
             'perfil_colaborador',
+            'horas_disponibles',
+            'cerrar_sesion_colaborador',
             'horas_disponibles'
         ]
-         
+        
         rutas_protegidas = [
             'principalUsuario', # URLs que quieras proteger
             'perfil',
@@ -40,24 +41,22 @@ class LoginRequiredMiddleware:
             'listar_fichas',
             'editar_ficha',
             'eliminar_ficha',
-            'carroCompra',
-            'agregar',
-            'agregar2',
             'eliminar',
-            'histoCompra',
-            'seguimiento',
-            'compra',
-            'vaciar',
-            'mas',
-            'menos',
-            'iniciar_pago',
-            'confirmar_pago',
-            'Realizar',
-            'Realizar',
             'reservar_habitacion',
             'listar_reservas',
             'obtener_reservas_json',
-            'reservas_hotel'
+            'reservas_hotel',
+            'descargar_fichas',
+            'iniciar_pago',
+            'pago_exitoso',
+            'eliminar_reserva_habitacion',
+            'servicios_disponibles',
+            'horas_disponibles',
+            'ver_horas_colaborador',
+            'reservar_servicio',
+            'listar_reservas_servicios',
+            'eliminar_reserva_servicio',
+            'prueba'
         ]
 
         rutas_protegidas_admin = [

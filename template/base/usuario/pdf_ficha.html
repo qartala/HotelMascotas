@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Fichas de Salud de Mascotas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #ffffff;
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            color: #1abc9c;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            float: left;
+            width: 100px;
+            height: auto;
+        }
+        .ficha {
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .ficha img {
+            float: right;
+            border-radius: 10px;
+            margin-left: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .ficha h2 {
+            color: #34495e;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .ficha-info {
+            font-size: 14px;
+            color: #34495e;
+            line-height: 1.6;
+        }
+        .ficha-info p {
+            margin: 5px 0;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="/media/perro_4hcw0hl.png" alt="Logo de PetsTeam">
+        <h1>Lista de Fichas de Salud de Mascotas</h1>
+    </div>
+    
+    {% for ficha in fichas %}
+        <div class="ficha">
+            <h2>{{ ficha.nombre_perro }}</h2>
+            <img src="{{ ficha.imagen_mascota_url }}" width="150" height="150" alt="Imagen de {{ ficha.nombre_perro }}">
+            <div class="ficha-info">
+                <p><strong>Dueño:</strong> {{ ficha.nombre_dueno }}</p>
+                <p><strong>Raza:</strong> {{ ficha.raza }}</p>
+                <p><strong>Peso:</strong> {{ ficha.peso }} kg</p>
+                <p><strong>Alimentación:</strong> {{ ficha.comida }}</p>
+                <p><strong>Chip:</strong> {{ ficha.chip|yesno:"Sí,No" }}</p>
+                <p><strong>Vacunas:</strong> {{ ficha.vacunas }}</p>
+                <p><strong>Alergias:</strong> {{ ficha.alergias }}</p>
+                <p><strong>Enfermedades:</strong> {{ ficha.enfermedades }}</p>
+            </div>
+        </div>
+    {% endfor %}
+    
+    <div class="footer">
+        <p>Generado por el sistema de salud de mascotas - PetsTeam</p>
+    </div>
+</body>
+</html>

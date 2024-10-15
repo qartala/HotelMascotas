@@ -1,0 +1,20 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-title">
+        <h1>¡Pago Exitoso!</h1>
+    </div>
+    <div class="card-body">
+        <p>El pago de la reserva ha sido realizado con éxito.</p>
+        <p>Monto pagado:  {{ response.amount }} CLP</p>
+        <p>Orden de compra: {{ response.buy_order }}</p>
+        <a href="{% url 'listar_reservas' %}" class="btn btn-primary">Volver</a>
+    </div>
+</div>
+{% endblock %}
