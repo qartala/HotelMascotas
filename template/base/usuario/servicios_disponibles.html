@@ -77,22 +77,31 @@ Servicios Disponibles
 <div class="container container-profile shadow-sm bg-info bg-opacity-10 border border-info border-start-30 rounded-end">
   <div class="section-header">
     <h2>Servicios Disponibles</h2>
-    <p>Explora los servicios que ofrecemos para tu mascota.</p>
+    <p>Explora los servicios y elige al colaborador que mas se ajuste a tus necesidades.</p>
   </div>
 
   
   <div class="mb-4">
-    <form method="GET" action="{% url 'servicios_disponibles' %}">
-      <select name="servicio" class="form-select">
-        <option value="">Todos los servicios</option>
-        <option value="Baños" {% if request.GET.servicio == 'Baños' %}selected{% endif %}>Baños</option>
-        <option value="Spa" {% if request.GET.servicio == 'Spa' %}selected{% endif %}>Spa</option>
-        <option value="Transporte" {% if request.GET.servicio == 'Transporte' %}selected{% endif %}>Transporte</option>
-        <option value="Peluqueria" {% if request.GET.servicio == 'Peluqueria' %}selected{% endif %}>Peluquería</option>
-        <option value="Fotografia" {% if request.GET.servicio == 'Fotografia' %}selected{% endif %}>Fotografía</option>
-      </select>
-      <button type="submit" class="btn btn-warning mt-2">Filtrar</button>
-    </form>
+    <div class="row d-flex justify-content-center">
+      <div class="col-4">
+        <form method="GET" action="{% url 'servicios_disponibles' %}">
+          <select name="servicio" class="form-select">
+            <option value="">Todos los servicios</option>
+            <option value="Baños" {% if request.GET.servicio == 'Baños' %}selected{% endif %}>Baños</option>
+            <option value="Spa" {% if request.GET.servicio == 'Spa' %}selected{% endif %}>Spa</option>
+            <option value="Transporte" {% if request.GET.servicio == 'Transporte' %}selected{% endif %}>Transporte</option>
+            <option value="Peluqueria" {% if request.GET.servicio == 'Peluqueria' %}selected{% endif %}>Peluquería</option>
+            <option value="Fotografia" {% if request.GET.servicio == 'Fotografia' %}selected{% endif %}>Fotografía</option>
+          </select>
+          <div class="row d-flex justify-content-center">
+            <div class="col-4">
+              <button type="submit" class="btn btn-warning mt-2">Filtrar</button>
+
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 
   <div class="profile-body row">

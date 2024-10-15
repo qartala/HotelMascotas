@@ -9,6 +9,7 @@ from datetime import timedelta
 from django.core.mail import send_mail
 from modulo.Producto.models import Membresia
 from modulo.Colaborador.models import Colaborador
+from modulo.Usuario.models import Usuario
 import random
 import sweetify
 
@@ -92,19 +93,36 @@ def eliminar(request, idProducto):
     
 def reservar_habitacion(request, habitacion_id):
     habitacion = Habitacion.objects.get(id=habitacion_id)
-    print(habitacion_id)
+    
+    # Obtener el usuario y su perfil
+    perfil_usuario = Usuario.objects.get(idUsuario=request.user)
+    
+    # Obtener la membresía del usuario, si tiene una
+    membresia = perfil_usuario.membresia
+    
     if request.method == 'POST':
         form = ReservaForm(request.POST)
         if form.is_valid():
             fecha_inicio = form.cleaned_data['fecha_inicio']
             fecha_fin = form.cleaned_data['fecha_fin']
-
+            
             # Verificar si la habitación está disponible
             if Reserva.verificar_disponibilidad(habitacion, fecha_inicio, fecha_fin):
                 nueva_reserva = form.save(commit=False)
                 nueva_reserva.habitacion = habitacion
                 nueva_reserva.cliente = request.user  # Asigna el cliente actual
-                nueva_reserva.precio_total = nueva_reserva.calcular_precio_total()
+                
+                # Calcular el precio total original
+                precio_original = nueva_reserva.calcular_precio_total()
+                
+                # Aplicar descuento si el usuario tiene una membresía
+                if membresia:
+                    descuento = float(membresia.descuento) / 100  # Convertir porcentaje a decimal
+                    precio_con_descuento = precio_original * (1 - descuento)
+                    nueva_reserva.precio_total = round(precio_con_descuento, 2)  # Redondear a 2 decimales
+                else:
+                    nueva_reserva.precio_total = precio_original  # Sin descuento
+
                 nueva_reserva.save()
                 sweetify.success(request, 'Reserva realizada con éxito')
                 return redirect('principalUsuario')  # Redirigir a una página de confirmación
@@ -117,6 +135,7 @@ def reservar_habitacion(request, habitacion_id):
         form = ReservaForm()
 
     return redirect('principalUsuario')
+
 
 
 def obtener_reservas_json(request, habitacion_id):
@@ -141,18 +160,16 @@ def obtener_reservas_json(request, habitacion_id):
 
 def crear_membresia(request):
     if request.method == 'POST':
-        nombre = request.POST['nombre']
-        descuento = request.POST['descuento']
-        duracion = request.POST['duracion_dias']
-        valor = request.POST['valor']  # Captura el valor de la membresía desde el formulario
+        nombre = request.POST.get('nombre')
+        descuento = request.POST.get('descuento')
+        duracion = request.POST.get('duracion_dias')
+        valor = request.POST.get('valor')  # Asegúrate de capturar el campo 'valor'
 
-        # Crear y guardar la membresía con el nuevo campo valor
-        nueva_membresia = Membresia(
-            nombre=nombre, 
-            descuento=descuento,
-            duracion_dias=duracion, 
-            valor=valor  # Guarda el valor
-        )
+        if valor:  # Asegúrate de que el valor no sea nulo o vacío
+            valor = float(valor)
+
+        # Crear y guardar la membresía
+        nueva_membresia = Membresia(nombre=nombre, descuento=descuento, duracion_dias=duracion, valor=valor)
         nueva_membresia.save()
 
         sweetify.success(request, 'Membresía creada exitosamente.')

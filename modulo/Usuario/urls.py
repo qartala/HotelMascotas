@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-from .views import prueba,eliminar_reserva_servicio,listar_reservas_servicios,reservar_servicio,ver_horas_colaborador,servicios_disponibles, eliminar_reserva_habitacion,generar_pdf_fichas, reservas_hotel,listar_reservas_view,principal,eliminar_ficha,editar_ficha_view,listar_fichas_view,ficha_salud_view,perfil,registrarse,iniciarsesion,principalUsuario,cerrar_sesion
+from .views import cancelar_membresia,cambiar_membresia,gestionar_membresia_usuario,unirse_membresia,prueba,eliminar_reserva_servicio,listar_reservas_servicios,reservar_servicio,ver_horas_colaborador,servicios_disponibles, eliminar_reserva_habitacion,generar_pdf_fichas, reservas_hotel,listar_reservas_view,principal,eliminar_ficha,editar_ficha_view,listar_fichas_view,ficha_salud_view,perfil,registrarse,iniciarsesion,principalUsuario,cerrar_sesion
 
 urlpatterns = [
     path('',principal,name='principal'),
@@ -28,6 +28,13 @@ urlpatterns = [
     path('reservar_servicio/', reservar_servicio, name='reservar_servicio'),
     path('listar-reservas-servicios/',listar_reservas_servicios, name='listar_reservas_servicios'),
     path('eliminar-reserva-servicio/<int:reserva_id>/',eliminar_reserva_servicio, name='eliminar_reserva_servicio'),
+
+    path('unirse-membresia/<int:membresia_id>/', unirse_membresia, name='unirse_membresia'),
+    path('gestionar-membresia/',gestionar_membresia_usuario, name='gestionar_membresia_usuario'),
+    path('cambiar-membresia/', cambiar_membresia, name='cambiar_membresia'),
+    path('cancelar-membresia/', cancelar_membresia, name='cancelar_membresia'),
+
+
 
 
     path('prueba/',prueba, name='prueba'),

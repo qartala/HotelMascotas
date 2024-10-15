@@ -29,88 +29,96 @@ Reservas de Servicios
             <!-- Reservas No Pagadas -->
             <h3 class="text-center text-warning">Reservas No Pagadas</h3>
             {% if reservas_no_pagadas %}
-                <ul class="list-group mt-3">
-                    {% for reserva in reservas_no_pagadas %}
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-8">
-                                    <strong>Servicio:</strong> {{ reserva.servicio }}<br>
-                                    <strong>Fecha Reservada:</strong> {{ reserva.fecha_reservada }}<br>
-                                    <strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}<br>
-                                    <strong>Precio:</strong> {{ reserva.precio }} CLP<br>
-                                    <strong>Colaborador:</strong> {{ reserva.colaborador.fullname }}
+                <div class="row d-flex justify-content-center">
+                    <div class="col-7">
+                        <ul class="list-group mt-3">
+                            {% for reserva in reservas_no_pagadas %}
+                                <li class="list-group-item">
+                                    <div class="row d-flex align-items-center">
+                                        <div class="col-6">
+        
+                                        </div>
+                                        <div class="col-8">
+                                            <strong>Servicio:</strong> {{ reserva.servicio }}<br>
+                                            <strong>Fecha Reservada:</strong> {{ reserva.fecha_reservada }}<br>
+                                            <strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}<br>
+                                            <strong>Precio:</strong> {{ reserva.precio }} CLP<br>
+                                            <strong>Colaborador:</strong> {{ reserva.colaborador.fullname }}
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <a class="btn btn-warning" href="#" data-bs-toggle="modal" data-bs-target="#confirmPagoModal-{{reserva.id}}">Pagar</a>
+                                            <a class="delete btn btn-danger" href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteReservaModal-{{reserva.id}}" data-url="{% url 'eliminar_reserva_servicio' reserva.id %}">Cancelar</a>
+                                        </div>
+                                    </div>
+                                </li>
+        
+                                <!-- Modal Confirmar Pago -->
+                                <div class="modal fade" id="confirmPagoModal-{{reserva.id}}" tabindex="-1" aria-labelledby="pagoModalLabel-{{reserva.id}}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="pagoModalLabel-{{reserva.id}}">Confirmar Pago</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Detalles de tu reserva:
+                                                <ul>
+                                                    <li>Servicio: {{ reserva.servicio }}</li>
+                                                    <li>Fecha: {{ reserva.fecha_reservada }}</li>
+                                                    <li>Mascota: {{ reserva.mascota.nombre_perro }}</li>
+                                                    <li>Precio: {{ reserva.precio }} CLP</li>
+                                                </ul>
+                                                <p class="text-danger">*Una vez que pagues, no podrás cancelar el servicio por este medio.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <a id="confirmPagoBtn-{{reserva.id}}" href="{% url 'iniciar_pago' reserva.id 'servicio'%}" class="btn btn-success">Pagar</a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-4 text-right">
-                                    <a class="btn btn-warning" href="#" data-bs-toggle="modal" data-bs-target="#confirmPagoModal-{{reserva.id}}">Pagar</a>
-                                    <a class="delete btn btn-danger" href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteReservaModal-{{reserva.id}}" data-url="{% url 'eliminar_reserva_servicio' reserva.id %}">Cancelar</a>
+        
+                                <!-- Modal Confirmar Cancelación -->
+                                <div class="modal fade" id="confirmDeleteReservaModal-{{reserva.id}}" tabindex="-1" aria-labelledby="confirmDeleteReservaModalLabel-{{reserva.id}}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="confirmDeleteReservaModalLabel-{{reserva.id}}">Confirmar Cancelación</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ¿Estás seguro de que deseas cancelar esta reserva?
+                                                <ul>
+                                                    <li>Servicio: {{ reserva.servicio }}</li>
+                                                    <li>Fecha: {{ reserva.fecha_reservada }}</li>
+                                                    <li>Mascota: {{ reserva.mascota.nombre_perro }}</li>
+                                                </ul>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
+                                                <a id="confirmDeleteBtn-{{reserva.id}}" href="#" class="btn btn-danger">Eliminar reserva</a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
+        
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        var confirmDeleteReservaModal = document.getElementById('confirmDeleteReservaModal-{{reserva.id}}');
+                                        var confirmDeleteBtnReserva = document.getElementById('confirmDeleteBtn-{{reserva.id}}');
+                                
+                                        confirmDeleteReservaModal.addEventListener('show.bs.modal', function (event) {
+                                            var button = event.relatedTarget;
+                                            var url = button.getAttribute('data-url');
+                                            confirmDeleteBtnReserva.setAttribute('href', url);
+                                        });
+                                    });
+                                </script>
+                            {% endfor %}
+                        </ul>
 
-                        <!-- Modal Confirmar Pago -->
-                        <div class="modal fade" id="confirmPagoModal-{{reserva.id}}" tabindex="-1" aria-labelledby="pagoModalLabel-{{reserva.id}}" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="pagoModalLabel-{{reserva.id}}">Confirmar Pago</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Detalles de tu reserva:
-                                        <ul>
-                                            <li>Servicio: {{ reserva.servicio }}</li>
-                                            <li>Fecha: {{ reserva.fecha_reservada }}</li>
-                                            <li>Mascota: {{ reserva.mascota.nombre_perro }}</li>
-                                            <li>Precio: {{ reserva.precio }} CLP</li>
-                                        </ul>
-                                        <p class="text-danger">*Una vez que pagues, no podrás cancelar el servicio por este medio.</p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                        <a id="confirmPagoBtn-{{reserva.id}}" href="{% url 'iniciar_pago' reserva.id 'servicio'%}" class="btn btn-success">Pagar</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Modal Confirmar Cancelación -->
-                        <div class="modal fade" id="confirmDeleteReservaModal-{{reserva.id}}" tabindex="-1" aria-labelledby="confirmDeleteReservaModalLabel-{{reserva.id}}" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="confirmDeleteReservaModalLabel-{{reserva.id}}">Confirmar Cancelación</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        ¿Estás seguro de que deseas cancelar esta reserva?
-                                        <ul>
-                                            <li>Servicio: {{ reserva.servicio }}</li>
-                                            <li>Fecha: {{ reserva.fecha_reservada }}</li>
-                                            <li>Mascota: {{ reserva.mascota.nombre_perro }}</li>
-                                        </ul>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
-                                        <a id="confirmDeleteBtn-{{reserva.id}}" href="#" class="btn btn-danger">Eliminar reserva</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                var confirmDeleteReservaModal = document.getElementById('confirmDeleteReservaModal-{{reserva.id}}');
-                                var confirmDeleteBtnReserva = document.getElementById('confirmDeleteBtn-{{reserva.id}}');
-                        
-                                confirmDeleteReservaModal.addEventListener('show.bs.modal', function (event) {
-                                    var button = event.relatedTarget;
-                                    var url = button.getAttribute('data-url');
-                                    confirmDeleteBtnReserva.setAttribute('href', url);
-                                });
-                            });
-                        </script>
-                    {% endfor %}
-                </ul>
+                    </div>
+                </div>
             {% else %}
                 <p class="text-center text-muted">No hay reservas no pagadas.</p>
             {% endif %}
@@ -120,24 +128,39 @@ Reservas de Servicios
             <!-- Reservas Pagadas -->
             <h3 class="text-center text-success">Reservas Pagadas</h3>
             {% if reservas_pagadas %}
-                <ul class="list-group mt-3">
-                    {% for reserva in reservas_pagadas %}
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-8">
-                                    <strong>Servicio:</strong> {{ reserva.servicio }}<br>
-                                    <strong>Fecha Reservada:</strong> {{ reserva.fecha_reservada }}<br>
-                                    <strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}<br>
-                                    <strong>Precio:</strong> {{ reserva.precio }} CLP<br>
-                                    <strong>Colaborador:</strong> {{ reserva.colaborador.fullname }}
-                                </div>
-                                <div class="col-4 text-right">
-                                    <span class="badge badge-success">Pagado</span>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+            <div class="row d-flex justify-content-center">
+                <div class="col-5">
+                    <ul class="list-group mt-3">
+                        {% for reserva in reservas_pagadas %}
+                            <li class="list-group-item">
+                                <strong>№ Reserva:</strong> {{ reserva.id }}<br>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Servicio:</strong> {{ reserva.servicio }}<br> 
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Fecha Reservada:</strong> {{ reserva.fecha_reservada }}<br>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}<br>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Precio:</strong> {{ reserva.precio }} CLP<br>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Colaborador:</strong> {{ reserva.colaborador.fullname }}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Estado:</strong> Pagado
+                            </li>
+                            <li class="list-group-item">
+                                *Para cancelar esta reserva comunicate con el hotel
+                            </li>
+                            <br>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
             {% else %}
                 <p class="text-center text-muted">No hay reservas pagadas.</p>
             {% endif %}

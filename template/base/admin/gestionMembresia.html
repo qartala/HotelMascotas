@@ -26,9 +26,9 @@ Admin - Membresía
                 {% for membresia in membresias %}
                 <tr>
                     <td>{{ membresia.nombre }}</td>
-                    <td>{{ membresia.descuento }}%</td>
+                    <td>{{ membresia.descuento |stringformat:"d" }}%</td>
                     <td>{{ membresia.duracion_dias }} días</td>
-                    <td>{{ membresia.valor }}</td>
+                    <td>{{ membresia.valor |stringformat:"d" }}</td>
                     <td>
                         <a href="{% url 'editar_membresia' membresia.id %}" class="btn btn-warning btn-sm">Editar</a>
                         <!-- Botón para abrir el modal de eliminación -->

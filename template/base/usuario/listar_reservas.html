@@ -35,6 +35,14 @@ Inicio - cliente
                 height: 150px;  /* Reducir la altura de las imágenes para pantallas pequeñas */
             }
         }
+        footer {
+        margin-top: auto;
+            }
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
       </style>
 </head>
 <div class="d-flex" style="height: 100px; visibility: hidden;">
@@ -46,7 +54,7 @@ Inicio - cliente
                 <div class="col-12 justify-content-center">
                     <div class="row d-flex justify-content-center">
                         <div class="col-6">
-                            <h2 class="text-center pb-3" style="color: rgb(0, 0, 0);">
+                            <h2 class="text-center text-warning" style="color: rgb(0, 0, 0);">
                                 Reservas por pagar ({{ reservas_por_pagar|length }})
                             </h2>
                         </div>
@@ -177,7 +185,7 @@ Inicio - cliente
                 <div class="col-12 justify-content-center">
                     <div class="row d-flex justify-content-center">
                         <div class="col-6">
-                            <h2 class="text-center pb-3" style="color:rgb(0, 0, 0)">
+                            <h2 class="text-center text-success" style="color:rgb(0, 0, 0)">
                                 Reservas pagadas ({{ reservas_pagadas|length }})
                             </h2>
                         </div>
@@ -198,6 +206,7 @@ Inicio - cliente
                                                 <p><strong>Fecha fin:</strong> {{ reserva.fecha_fin }}</p>
                                                 <p><strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}</p>
                                                 <p><strong>Esta reserva fue pagada por un monto de:</strong> {{ reserva.precio_total }} CLP</p>
+                                                <p>*Para cancelar esta reserva comunicate con el hotel</p>
                                             </div>
                                         </div>
                                     </div>

@@ -48,10 +48,30 @@ def principalUsuario (request):
         contexto["membresias"] = membresias
     return render(request,'base/usuario/casoUsuario.html',context = contexto)
 
-def perfil (request):
-        tipo = request.user
-        print(tipo)
-        return render(request, 'base/usuario/perfil.html')
+def perfil(request):
+    # Obtener el usuario autenticado
+    user = request.user
+    
+    # Obtener el objeto Usuario asociado al User
+    usuario = get_object_or_404(Usuario, idUsuario=user)
+
+    # Contar las reservas de servicios asociadas a las fichas del usuario
+    fichas_usuario = Ficha.objects.filter(id_usuario=usuario)
+    reservas_servicio_count = ReservaServicio.objects.filter(mascota__in=fichas_usuario).count()
+
+    # Contar las reservas de habitaciones asociadas al usuario
+    reservas_habitacion_count = Reserva.objects.filter(cliente=user).count()
+
+    # Contar las fichas de animales asociadas al usuario
+    fichas_count = fichas_usuario.count()
+
+    contexto = {
+        'reservas_servicio_count': reservas_servicio_count,
+        'reservas_habitacion_count': reservas_habitacion_count,
+        'fichas_count': fichas_count,
+    }
+
+    return render(request, 'base/usuario/perfil.html', contexto)
 
 
 def listar_reservas_view(request):
@@ -108,9 +128,21 @@ def editar_ficha_view(request, pk):
     return render(request, 'base/usuario/editar_ficha.html', {'form': form})
 
 def eliminar_ficha(request, id):
+    # Obtener la ficha de la mascota
     ficha = get_object_or_404(Ficha, id=id)
+
+    # Verificar si la mascota está asociada a una reserva de habitación
+    reservas_asociadas = Reserva.objects.filter(mascota=ficha).exists()
+
+    if reservas_asociadas:
+        # Si hay reservas asociadas, mostrar un mensaje de error y evitar la eliminación
+        sweetify.error(request, 'Cancela la reserva asociada a la mascota para poder eliminarla')
+        return redirect('perfil')
+
+    # Si no hay reservas asociadas, se puede eliminar la ficha
     ficha.delete()
-    return redirect('perfil')  
+    sweetify.success(request, 'Ficha eliminada con éxito.')
+    return redirect('perfil')
 
 def generar_pdf_fichas(request):
     usuario = Usuario.objects.get(idUsuario=request.user)
@@ -317,12 +349,18 @@ def reservar_servicio(request):
     return redirect('servicios_disponibles')
 
 
-
 def listar_reservas_servicios(request):
-    # Filtrar las reservas según si fueron pagadas o no
-    reservas_pagadas = ReservaServicio.objects.filter(pagado=True)
-    reservas_no_pagadas = ReservaServicio.objects.filter(pagado=False)
+    # Obtener el usuario autenticado
+    usuario = request.user
 
+    # Obtener las mascotas asociadas al usuario
+    mascotas_usuario = Ficha.objects.filter(id_usuario__idUsuario=usuario)
+
+    # Filtrar las reservas de servicio asociadas a las mascotas del usuario
+    reservas_pagadas = ReservaServicio.objects.filter(mascota__in=mascotas_usuario, pagado=True)
+    reservas_no_pagadas = ReservaServicio.objects.filter(mascota__in=mascotas_usuario, pagado=False)
+
+    # Contexto para pasar al template
     contexto = {
         'reservas_pagadas': reservas_pagadas,
         'reservas_no_pagadas': reservas_no_pagadas
@@ -357,6 +395,68 @@ def eliminar_reserva_servicio(request, reserva_id):
     reserva.delete()
     sweetify.success(request, 'Reserva de servicio eliminada con éxito')
     return redirect('listar_reservas_servicios')
+
+
+def unirse_membresia(request, membresia_id):
+    membresia = get_object_or_404(Membresia, id=membresia_id)
+    perfil_usuario = Usuario.objects.get(idUsuario=request.user)
+
+    if perfil_usuario.membresia:
+        # Redirigir a la página de gestión de membresías si ya tiene una activa
+        sweetify.warning(request, 'Ya tienes una membresía activa. Por favor, cancélala antes de unirte a otra.')
+        return redirect('gestionar_membresia_usuario')  # O cualquier página de gestión de membresías
+
+    if request.method == 'POST':
+        # Iniciar el proceso de pago de la membresía
+        return redirect('iniciar_pago', item_id=membresia.id, tipo_pago='membresia')
+
+    # Si es un GET o el usuario aún no ha confirmado, mostramos la página de confirmación
+    return render(request, 'base/usuario/membresia_confirmacion.html', {'membresia': membresia})
+
+
+def gestionar_membresia_usuario(request):
+    try:
+        perfil_usuario = Usuario.objects.get(idUsuario=request.user)
+        membresia = perfil_usuario.membresia  # Membresía confirmada del usuario
+    except Usuario.DoesNotExist:
+        membresia = None
+
+    return render(request, 'base/usuario/listar_membresia.html', {
+        'membresia': membresia,
+    })
+
+def cambiar_membresia(request):
+    membresias = Membresia.objects.all()  # Listar todas las membresías disponibles
+
+    if request.method == 'POST':
+        nueva_membresia_id = request.POST.get('membresia_id')
+        nueva_membresia = Membresia.objects.get(id=nueva_membresia_id)
+
+        perfil_usuario = Usuario.objects.get(idUsuario=request.user)
+        perfil_usuario.membresia = nueva_membresia
+        perfil_usuario.save()
+
+        messages.success(request, 'Has cambiado de membresía exitosamente.')
+        return redirect('gestionar_membresia_usuario')
+
+    return render(request, 'base/usuario/cambiar_membresia.html', {
+        'membresias': membresias,
+    })
+
+
+def cancelar_membresia(request):
+    perfil_usuario = Usuario.objects.get(idUsuario=request.user)
+    perfil_usuario.membresia = None  # Cancelar la membresía actual
+    perfil_usuario.save()
+
+    sweetify.success(request, 'Has cancelado tu membresía.')
+    return redirect('gestionar_membresia_usuario')
+
+
+
+
+
+
 
 
 def prueba(request):

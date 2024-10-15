@@ -56,6 +56,10 @@ class LoginRequiredMiddleware:
             'reservar_servicio',
             'listar_reservas_servicios',
             'eliminar_reserva_servicio',
+            'unirse_membresia',
+            'gestionar_membresia_usuario',
+            'cambiar_membresia',
+            'cancelar_membresia',
             'prueba'
         ]
 

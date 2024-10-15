@@ -7,202 +7,322 @@ Inicio - cliente
 {% block content %}
 <head>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f8f9fa;
-      color: #343a40;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&display=swap');
 
-    /* Navbar */
-    .navbar {
-      background-color: #0d6efd;
-      padding: 15px;
-    }
+        * {
+          box-sizing: border-box;
+        }
 
-    .navbar-brand span {
-      color: #ffffff;
-      font-weight: bold;
-    }
+        
 
-    .navbar-nav .nav-link {
-      color: #fff;
-      padding: 10px 20px;
-      font-size: 1.1rem;
-    }
+        .data-card {
+          font-family: 'Open Sans', sans-serif;
+          display: flex;
+          flex-direction: column;
+          max-width: 20.75em;
+          min-height: 10.75em;
+          overflow: hidden;
+          border-radius: .5em;
+          text-decoration: none;
+          background: rgb(255, 255, 255);
+          margin: 1em;
+          padding: 2.75em 2.5em;
+          box-shadow: 0 1.5em 2.5em -.5em rgba(#000000, .1);
+          transition: transform .45s ease, background .45s ease;
+          
+          h3 {
+            color: #005ae2;
+            font-size: 3.5em;
+            font-weight: 600;
+            line-height: 1;
+            padding-bottom: .5em;
+            margin: 0 0 0.142857143em;
+            border-bottom: 2px solid #0059ff;
+            transition: color .45s ease, border .45s ease;
+          }
 
-    .navbar-nav .nav-link:hover {
-      color: #ffc107;
-    }
+          h4 {
+            color: #000000;
+            text-transform: uppercase;
+            font-size: 1.125em;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0.1em;
+            margin: 0 0 1.777777778em;
+            transition: color .45s ease;
+          }
 
-    /* Perfil */
-    .container-profile {
-      margin-top: 80px;
-      padding: 30px;
-      background-color: #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      border-radius: 15px;
-      flex: 1;
-    }
+          p {
+            opacity: 0;
+            color: #FFFFFF;
+            font-weight: 600;
+            line-height: 1.8;
+            margin: 0 0 1.25em;
+            transform: translateY(-1em);
+            transition: opacity .45s ease, transform .5s ease;
+          }
 
-    .profile-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #dee2e6;
-      padding-bottom: 20px;
-      margin-bottom: 30px;
-    }
+          .link-text {
+            display: block;
+            color: #006aff;
+            font-size: 1.125em;
+            font-weight: 600;
+            line-height: 1.2;
+            margin: auto 0 0;
+            transition: color .45s ease;
 
-    .profile-header h2 {
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: #343a40;
-    }
+            svg {
+              margin-left: .5em;
+              transition: transform .6s ease;
+              
+              path {
+                transition: fill .45s ease;
+              }
+            }
+          }
+          
+          &:hover {
+            background: rgb(20, 71, 255);
+            transform: scale(1.02);
+            
+            h3 {
+              color: #FFFFFF;
+              border-bottom-color: #005eff;
+            }
 
-    .profile-avatar {
-      display: flex;
-      align-items: center;
-    }
+            h4 {
+              color: #FFFFFF;
+            }
 
-    .profile-avatar img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      margin-right: 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
+            p {
+              opacity: 1;
+              transform: none;
+            }
 
-    .profile-info h5 {
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
+            .link-text {
+              color: #FFFFFF;
 
-    .profile-info p {
-      font-size: 1rem;
-      margin: 0;
-    }
+              svg {
+                animation: point 1.25s infinite alternate;
+                
+                path {
+                  fill: #FFFFFF;
+                }
+              }
+            }
+          }
+        }
 
-    .profile-body {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
+        @keyframes point {
+          0% {
+          transform: translateX(0);
+          }
+          100% {
+            transform: translateX(.125em);
+          }
+        }
 
-    .card {
-      flex: 1;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border: none;
-      transition: transform 0.3s ease;
-    }
+        #card2 {
+          width: 350px;
+          height: 375px;
+          background-image: url("images/bg-pattern-card.svg");
+          background-position: top;
+          background-repeat: no-repeat;
+          background-color: white;
+          border-radius: 5%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
 
-    .card:hover {
-      transform: translateY(-10px);
-    }
+        #userInfo2 {
+          height: 75%;
+          width: 40%;
+          display: flex;
+          justify-content: space-between;
+          flex-direction: column;
+          align-items: center;
+          padding: 15px;
+          text-align: center;
+          margin-bottom: 5px;
+        }
 
-    .card-title {
-      font-size: 1.3rem;
-      font-weight: bold;
-    }
+        #userStats2 {
+          height: 20%;
+          width: 100%;
+          display: flex;
+          justify-content: space-around;
+          flex-direction: row;
+          align-content: center;
+          align-items: center;
+          border-top: 1px solid rgba(150, 150, 150, 0.2);
+          text-align: center;
+          padding-top: 15px;
+        }
 
-    .card-body {
-      padding: 20px;
-    }
+        #location2 {
+          margin: 10px 5px 5px 5px;
+          font-size: 14px;
+        }
 
-    .btn-warning {
-      background-color: #ffc107;
-      border: none;
-      font-weight: bold;
-      padding: 10px 25px;
-      transition: background-color 0.3s ease;
-    }
+        #portrait2 {
+          border-radius: 50%;
+          border: 5px solid white;
+          margin-bottom: 15px;
+          object-fit: contain;
+          transform: translate(0, 70px);
+          height: 96px;
+          width: 96px;
+        }
 
-    .btn-warning:hover {
-      background-color: #e0a800;
-    }
+        .attribution2 {
+          margin-top: 10px;
+          font-size: 10px;
+          text-align: center;
+        }
 
-    /* Sticky Footer */
-    footer {
-      background-color: #0d6efd;
-      color: #fff;
-      padding: 40px 0;
-      text-align: center;
-      margin-top: auto;
-    }
+        .numberOf,
+        #name2 {
+          font-weight: 700;
+          color: hsl(229, 23%, 23%);
+        }
 
-    footer .social-icons a {
-      color: #ffc107;
-      margin: 0 10px;
-      transition: color 0.3s ease-in-out;
-    }
+        .numberType2 {
+          font-size: 11px;
+          margin: 5px;
+        }
 
-    footer .social-icons a:hover {
-      color: #fff;
-    }
-
-    footer p {
-      font-size: 1rem;
-      font-weight: 500;
-    }
+        #name2 {
+          margin-right: 4px;
+        }
   </style>
 </head>
 <br>
 <br>
-<div class="container container-profile shadow-sm bg-info bg-opacity-10 border border-info border-start-30 rounded-end ">
-
-  <div class="profile-header">
-    <div class="profile-avatar">
-      <i class="fa-solid fa-user-tie fa-6x"></i>
-      <div class="profile-info">
-        <h5>{{ user.first_name }}</h5>
-        <p>{{ user.email }}</p>
-      </div>
-    </div>
+<div class="container">
+  <div class="d-flex" style="height: 80px; visibility: hidden;">
+    <div class="vr"></div>
   </div>
 
-  <div class="profile-body">
-    <!-- Ingresar Mascota -->
-    <div class="card">
-      <div class="card-body text-center">
-        <i class="fas fa-paw fa-3x mb-3" style="color: #0d6efd;"></i> <!-- Icono para Ingresar Mascota -->
-        <h5 class="card-title">Ingresar Mascota</h5>
-        <p class="card-text">Registra a tu mascota en el sistema para gestionar sus servicios.</p>
-        <a href="{% url 'ficha_salud' %}" class="btn btn-warning">Ingresar Mascota</a>
-      </div>
+<div class="row">
+  
+  <div class="card-body bg-light">
+    <div class="d-flex" style="height: 20px; visibility: hidden;">
+      <div class="vr"></div>
     </div>
-    
-    <!-- Ver Mascotas -->
-    <div class="card">
-      <div class="card-body text-center">
-        <i class="fas fa-dog fa-3x mb-3" style="color: #0d6efd;"></i> <!-- Icono para Ver Mascotas -->
-        <h5 class="card-title">Ver Mascota</h5>
-        <p class="card-text">Consulta la lista de tu mascota registrada.</p>
-        <a href="{% url 'listar_fichas' %}" class="btn btn-warning">Ver Mascota</a>
+    <div class="row d-flex">
+      <div class="col-4 pt-3">
+        <div class="row d-flex justify-content-center">
+            <div id="card2" class="border border-dark">
+              <div id="userInfo2">
+                <img
+                  src="/static/assets/perfil.webp"
+                  alt="Imagen"
+                  height="180px"
+                />
+                <div id="person2">
+                  <span id="name2">{{ user.first_name }}</span>
+                  <div id="location2">{{ user.email }}</div>
+                </div>
+              </div>
+              <div id="userStats2">
+                <span>
+                  <div class="numberOf2">{{fichas_count}}</div>
+                  <div class="numberType2">Tus mascotas</div>
+                </span>
+                <span>
+                  <div class="numberOf2">{{reservas_habitacion_count}}</div>
+                  <div class="numberType2">Tus reservas</div>
+                </span>
+                <span>
+                  <div class="numberOf2">{{reservas_servicio_count}}</div>
+                  <div class="numberType2">Tus servicios</div>
+                </span>
+              </div>
+            </div>
+        </div>
       </div>
-    </div>
-    
-    <!-- Ver Reservas -->
-    <div class="card">
-      <div class="card-body text-center">
-        <i class="fa-regular fa-calendar-days fa-3x mb-3" style="color: #0d6efd;"></i> <!-- Icono para Ver Mascotas -->
-        <h5 class="card-title">Reservas Habitaciones</h5>
-        <p class="card-text">Consultar reservas.</p>
-        <a href="{% url 'listar_reservas' %}" class="btn btn-warning">Ver Reservas</a>
-      </div>
-    </div>
+      <div class="col-8">
 
-    <!-- Ver Servicios -->
-    <div class="card text-center">
-      <div class="card-body">
-        <i class="fas fa-concierge-bell fa-3x mb-3" style="color: #0d6efd;"></i> <!-- Icono para Ver Servicios -->
-        <h5 class="card-title">Reservas Servicios</h5>
-        <p class="card-text">Consultar reservas.</p>
-        <a href="{% url 'listar_reservas_servicios' %}" class="btn btn-warning">Ver Reservas</a>
+        <div class="row d-flex justify-content-center">
+          <div class="col-6 d-flex align-items-center">
+            <a href="{% url 'ficha_salud' %}" class="data-card border border-dark">
+              <h3 class="text-center"><i class="fas fa-paw fa-3x" style="font-size: 120px; width: 120px; height: 120px;"></i></h3>
+              <h4>Ingresar Mascota</h4>
+              <p>Registra a tu mascota en el sistema para gestionar sus servicios.</p>
+              <span class="link-text">
+                Agrega una mascota
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'listar_fichas' %}" class="data-card border border-dark">
+              <h3 class="text-center"><i class="fas fa-dog fa-3x" style="font-size: 120px; width: 120px; height: 120px;"></i></h3>
+              <h4>Listado de Mascotas</h4>
+              <p>Consulta los detalles de todas tus mascotas registradas.</p>
+              <span class="link-text">
+                Ve tus mascotas
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'listar_reservas' %}" class="data-card border border-dark">
+              <h3 class="text-center"><i class="fa-regular fa-calendar-days fa-3x" style="font-size: 120px; width: 120px; height: 120px;"></i></h3>
+              <h4>Reservas de habitaciones</h4>
+              <p>Visualiza todas las reservas de habitaciones que realizaste</p>
+              <span class="link-text">
+                Ve tus reservas
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'listar_reservas_servicios' %}" class="data-card border border-dark">
+              <h3 class="text-center"><i class="fa-regular fa-calendar-days fa-3x " style="font-size: 120px; width: 120px; height: 120px;"></i></h3>
+              <h4>Reservas Servicios</h4>
+              <p>Visualiza todas las reservas de servicios que realizaste</p>
+              <span class="link-text">
+                Ve tus reservas
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'gestionar_membresia_usuario' %}" class="data-card border border-dark">
+              <h3 class="text-center"><i class="fa-regular fa-calendar-days fa-3x " style="font-size: 120px; width: 120px; height: 120px;"></i></h3>
+              <h4>Membresias</h4>
+              <p>A</p>
+              <span class="link-text">
+                A
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
+  
+  </div>
+  
+</div>
+<div class="d-flex" style="height: 80px; visibility: hidden;">
+  <div class="vr"></div>
+</div>
+
+    
     <!-- <div class="card text-center">
       <div class="card-body">
         <i class="fas fa-concierge-bell fa-3x mb-3" style="color: #0d6efd;"></i> 
@@ -211,8 +331,5 @@ Inicio - cliente
         <a href="{% url 'prueba' %}" class="btn btn-warning">ir</a>
       </div>
     </div> -->
-  </div>
 </div>
-<br>
-<br>
 {% endblock %}

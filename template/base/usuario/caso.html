@@ -6,7 +6,242 @@ Inicio - cliente
 {% endblock %}
 
 {% block content %}
+<head>
+  <style>
+        .nft{
+        user-select:none;
+        max-width: 400px;
+        margin: 5rem auto;
+        border: 1px solid #ffffff22;
+        background-color: #74bad8;
+        background: linear-gradient(0deg, rgba(216, 247, 255, 0.667) 0%, rgb(0, 166, 255) 100%);
+        box-shadow: 0 7px 20px 5px #0e4d91;
+        border-radius: .7rem;
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+        overflow: hidden;
+        transition: .5s all;
+        hr{
+          width: 100%;
+          border: none;
+          border-bottom: 1px solid #1496a455;
+          margin-top: 0;
+        }
+        ins{
+          text-decoration: none;
+        }
+        .main{
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          padding: 1rem;
 
+          .tokenImage{
+            border-radius: 1rem;
+            max-width: 100%;
+            height: 250px;
+            width: 360px;
+            object-fit: cover;
+          }
+          .description{
+            margin-left: 1rem;
+            color: #000000;
+          }
+          .tokenInfo{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .price{
+              display: flex;
+              align-items: center;
+              color: #ba64c0;
+              font-weight: 700;
+              ins{
+                margin-left: 1rem;
+                margin-right: .5rem;
+              }
+            }
+            .duration{
+              display: flex;
+              align-items: center;
+              color: #83bddb;
+              margin-right: .2rem;
+              ins{
+                margin: .5rem;
+                margin-bottom: .4rem;
+              }
+            }
+          }
+          .creator{
+            display: flex;
+            align-items: center;
+            margin-top: .2rem;
+            margin-bottom: -.3rem;
+            font-weight: 700;
+            ins{
+              color: #a89ec9;
+              text-decoration: none;
+            }
+            .wrapper{
+              display: flex;
+              align-items: center;
+              border: 1px solid #ffffff22;
+              padding: .3rem;
+              margin: 0;
+              margin-right: .5rem;
+              border-radius: 100%;
+              box-shadow: inset 0 0 0 4px #000000aa;
+              img{
+                border-radius: 100%;
+                border: 1px solid #ffffff22;
+                width: 2rem;
+                height: 2rem;
+                object-fit: cover;
+                margin: 0;
+              }
+            }
+          }
+        }
+        ::before{
+          position: fixed;
+          content: "";
+          box-shadow: 0 0 100px 40px #ffffff08;
+          top: -10%;
+          left: -100%;
+          transform: rotate(-45deg);
+          height: 60rem;
+          transition: .7s all;
+        }
+        &:hover{
+          border: 1px solid #ffffff;
+          box-shadow: 0 7px 50px 10px #065da5;
+          transform: scale(1.015);
+          filter: brightness(1);
+          ::before{
+            filter: brightness(1);
+            top: -100%;
+            left: 200%;
+          }
+        }
+}
+    .nft2{
+        user-select:none;
+        max-width: 400px;
+        margin-top: 2rem;
+        border: 1px solid #ffffff22;
+        background-color: #c5780c;
+        background: linear-gradient(0deg, rgb(231, 255, 122) 0%, rgb(255, 208, 0) 100%);
+        box-shadow: 0 7px 20px 5px #c0910f;
+        border-radius: .7rem;
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+        overflow: hidden;
+        transition: .5s all;
+        hr{
+          width: 100%;
+          border: none;
+          border-bottom: 1px solid #1496a455;
+          margin-top: 0;
+        }
+        ins{
+          text-decoration: none;
+        }
+        .main{
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          padding: 1rem;
+
+          .tokenImage{
+            border-radius: 1rem;
+            max-width: 100%;
+            height: 250px;
+            width: 360px;
+            object-fit: cover;
+          }
+          .description{
+            margin-left: 1rem;
+            color: #000000;
+          }
+          .tokenInfo{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .price{
+              display: flex;
+              align-items: center;
+              color: #e53e0c;
+              font-weight: 700;
+              ins{
+                margin-left: 1rem;
+                margin-right: .5rem;
+              }
+            }
+            .duration{
+              display: flex;
+              align-items: center;
+              color: #83bddb;
+              margin-right: .2rem;
+              ins{
+                margin: .5rem;
+                margin-bottom: .4rem;
+              }
+            }
+          }
+          .creator{
+            display: flex;
+            align-items: center;
+            margin-top: .2rem;
+            margin-bottom: -.3rem;
+            font-weight: 700;
+            ins{
+              color: #a89ec9;
+              text-decoration: none;
+            }
+            .wrapper{
+              display: flex;
+              align-items: center;
+              border: 1px solid #ffffff22;
+              padding: .3rem;
+              margin: 0;
+              margin-right: .5rem;
+              border-radius: 100%;
+              box-shadow: inset 0 0 0 4px #000000aa;
+              img{
+                border-radius: 100%;
+                border: 1px solid #ffffff22;
+                width: 2rem;
+                height: 2rem;
+                object-fit: cover;
+                margin: 0;
+              }
+            }
+          }
+        }
+        ::before{
+          position: fixed;
+          content: "";
+          box-shadow: 0 0 100px 40px #ffffff08;
+          top: -10%;
+          left: -100%;
+          transform: rotate(-45deg);
+          height: 60rem;
+          transition: .7s all;
+        }
+        &:hover{
+          border: 1px solid #ffffff;
+          box-shadow: 0 7px 50px 10px #b79500;
+          transform: scale(1.015);
+          filter: brightness(1);
+          ::before{
+            filter: brightness(1);
+            top: -100%;
+            left: 200%;
+          }
+        }
+}
+  </style>
+</head>
 <!-- Hero Section -->
 <section class="hero-section text-center">
   <div class="container">
@@ -27,10 +262,7 @@ Inicio - cliente
 </section>
 
 <!-- Section Precios -->
-<section id="precios" class="precios section-padding">
-  <div class="separator-ribbon">
-    <div class="content "></div>
-  </div>
+<section id="precios" class="precios section-padding bg-light">
 
   <div class="image-overlay">
     <div class="container my-5">
@@ -39,15 +271,23 @@ Inicio - cliente
             {% if productos %}
                 {% for producto in productos %}
                 <div class="col">
-                    <div class="card bg-info bg-opacity-10 border border-info border-start rounded-end h-100 shadow-sm">
-                        <img style="height: 200px; object-fit: cover;" src="/media/{{producto.imagen_habitacion}}" class="card-img-top" alt="{{ producto.numero_habitacion }}">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">{{ producto.numero_habitacion }}</h5>
-                            <p class="card-text">Kilos: {{ producto.tipo_habitacion }}</p>
-                            <p class="card-text">Precio: CLP {{ producto.precio }}</p>
-                            <a href="#" class="btn btn-warning reservar-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Reservar</a>
+                  <div class="nft">
+                    <div class='main'>
+                      <img class='tokenImage' src="/media/{{producto.imagen_habitacion}}" alt="" />
+                      <h2 class="pt-3" style="text-align: center; font-weight: 700;">№ {{ producto.numero_habitacion }}</h2>
+                      <strong><p class='description'>Tipo: {{ producto.tipo_habitacion }}</p></strong>
+                      <div class='tokenInfo'>
+                        <div class="price">
+                          <ins>Valor noche</ins>
+                          <p class="card-text"> ${{ producto.precio }} (CLP)</p>
                         </div>
+                      </div>
+                      <hr />
+                    <div class='creator d-flex justify-content-center'>
+                      <p><a href="#" class="btn btn-warning reservar-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Reservar</a></p>
                     </div>
+                    </div>
+                  </div>
                 </div>
                 {% endfor %}
             {% else %}
@@ -56,10 +296,11 @@ Inicio - cliente
         </div>
     </div>
 </div>
-</section>
 <hr>
+</section>
 
-  <div class="container" id="nosotros">
+<section id="nosotros" class="services  bg-light">
+  <div class="container">
     <div class="row align-items-center">
       <div class="col-lg-4 col-md-12 mb-lg-0">
           <img src="/static/assets/icon-transformed.png" width="400px" alt="Sobre Nosotros" class="img-fluid">
@@ -71,72 +312,111 @@ Inicio - cliente
           <a href="#services" class="btn btn-warning">Ver Más</a>
         </div>
       </div>
+      <hr>
     </div>
   </div>
-<hr>
+</section>
 
 
-      <section id="services" class="services section-padding">
-        <div class="">
-          <div class="section-header text-center pb-5">
-            <h2 class="text-center mb-2 title">Servicios disponibles</h2>
-            <p>Ofrecemos los siguientes servicios, de acuerdo a las necesidades de tu mascota.</p>
-          </div>
-          <div class="row d-flex justify-content-center">
-            <div class="col-lg-2 col-md-6 mb-4">
-              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 " >
-                <img src="https://media.istockphoto.com/id/1008083248/vector/animal-first-aid-kit.jpg?s=612x612&w=0&k=20&c=sHwm0s-WcoSrnuNsaVCqINMzsAZsJ4i2H171-U81htA=" height="200px" class="card-img-top" alt="Servicio 1">
-                <div class="card-body">
-                  <h5 class="card-title">Baños</h5>
-                  <p class="card-text" style="font-size: medium;">Ofrecemos baños relajantes y cuidadosos para que tu mascota se sienta limpia, fresca y cómoda. Utilizamos productos hipoalergénicos y especializados según el tipo de pelaje y piel.</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-2 col-md-6 mb-4">
-              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
-                <img src="https://cdn-icons-png.flaticon.com/512/5783/5783339.png" height="200px" class="card-img-top" alt="Servicio 2">
-                <div class="card-body">
-                  <h5 class="card-title">Spa</h5>
-                  <p class="card-text" style="font-size: medium;">Brindamos un tratamiento de spa exclusivo para tu mascota, que incluye masajes relajantes, baños terapéuticos y cuidados especiales para el pelaje, ofreciendo una experiencia de lujo y bienestar.</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-2 col-md-6 mb-4">
-              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
-                <img src="https://www.nikonistas.com/digital/img2/2024/06/2rutcasanellas-harrycooper1-f_1200x800.jpg" height="200px" class="card-img-top" alt="Servicio 3">
-                <div class="card-body">
-                  <h5 class="card-title">Fotografía</h5>
-                  <p class="card-text" style="font-size: medium;">Capturamos momentos inolvidables de tu mascota con sesiones fotográficas profesionales. Llévate un hermoso recuerdo de su estadía en nuestro hotel.</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-2 col-md-6 mb-4">
-              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
-                <img src="https://veterinariaelroble.cl/wp-content/uploads/2022/09/zz-yorkshire-peluqueria-dic-is_1.jpg" height="200px" class="card-img-top" alt="Servicio 3">
-                <div class="card-body">
-                  <h5 class="card-title">Peluquería</h5>
-                  <p class="card-text" style="font-size: medium;">Nuestro servicio de peluquería asegura que tu mascota siempre luzca impecable. Ofrecemos cortes y estilos adaptados a cada raza y preferencias del dueño.</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-2 col-md-6 mb-4">
-              <div class="card service-card shadow-sm bg-info bg-opacity-10 border border-info border-start-0 rounded-end p-2 mb-2 ">
-                <img src="https://www.hogarmania.com/archivos/202307/empresas-servicio-transporte-animales-compania-1280x720x80xX.jpg" height="200px" class="card-img-top" alt="Servicio 3">
-                <div class="card-body">
-                  <h5 class="card-title">Transporte</h5>
-                  <p class="card-text" style="font-size: medium;">Disponemos de un servicio de transporte seguro y cómodo para recoger y entregar a tu mascota, asegurando su bienestar en todo momento durante el trayecto.</p>
-                </div>
-              </div>
+<section id="services" class="services section-padding bg-light">
+  <div class="section-header text-center pb-5">
+    <div class="d-flex justify-content-center align-items-center mb-3">
+        <h2 class="title mb-0 me-3">Servicios disponibles</h2> 
+      </div>
+      <a href="{% url 'servicios_disponibles' %}" class="btn btn-primary">Ver todos los servicios</a>
+    <p class="pt-2">Ofrecemos los siguientes servicios, de acuerdo a las necesidades de tu mascota.</p>
+  </div> 
+  <div class="row d-flex justify-content-center">
+    <div class="col-lg-4 col-md-6 mb-4 d-flex flex-column align-items-center">
+      <div class="nft2">
+        <div class='main'>
+          <img class='tokenImage' src="https://media.istockphoto.com/id/1008083248/vector/animal-first-aid-kit.jpg?s=612x612&w=0&k=20&c=sHwm0s-WcoSrnuNsaVCqINMzsAZsJ4i2H171-U81htA=" alt="" />
+          <h2 class="pt-3" style="text-align: center; font-weight: 700;">Baños</h2>
+          <strong>
+            <p class='description'>Baños relajantes y cuidadosos con productos hipoalergénicos y especializados según el tipo de pelaje y piel</p>
+          </strong>
+          <div class='tokenInfo'>
+            <div class="price">
+              <ins>*Consultar valor en la seccion de servicios</ins>
             </div>
           </div>
         </div>
-</section>
-<hr>
+      </div>
+    </div>
 
-<section id="colaborador" class="colaborador section-padding" >
-  <div class="separator-ribbon">
-    <div class="content container"></div>
+    <div class="col-lg-4 col-md-6 mb-4 d-flex flex-column align-items-center">
+      <div class="nft2">
+        <div class='main'>
+          <img class='tokenImage' src="/static/assets/Spa12.jpg" alt="" />
+          <h2 class="pt-3" style="text-align: center; font-weight: 700;">Spa</h2>
+          <strong>
+            <p class='description'>Tratamiento de spa exclusivo para tu mascota, incluye masajes relajantes, baños terapéuticos y cuidados especiales para el pelaje</p>
+          </strong>
+          <div class='tokenInfo'>
+            <div class="price">
+              <ins>*Consultar valor en la seccion de servicios</ins>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 mb-4 d-flex flex-column align-items-center">
+      <div class="nft2">
+        <div class='main'>
+          <img class='tokenImage' src="https://www.nikonistas.com/digital/img2/2024/06/2rutcasanellas-harrycooper1-f_1200x800.jpg" alt="" />
+          <h2 class="pt-3" style="text-align: center; font-weight: 700;">Fotografía</h2>
+          <strong>
+            <p class='description'>Capturamos momentos inolvidables de tu mascota con sesiones fotográficas profesionales. Llévate un hermoso recuerdo de su estadía en nuestro hotel.</p>
+          </strong>
+          <div class='tokenInfo'>
+            <div class="price">
+              <ins>*Consultar valor en la seccion de servicios</ins>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-lg-4 col-md-6 mb-4 d-flex flex-column align-items-center">
+      <div class="nft2">
+        <div class='main'>
+          <img class='tokenImage' src="https://veterinariaelroble.cl/wp-content/uploads/2022/09/zz-yorkshire-peluqueria-dic-is_1.jpg" alt="" />
+          <h2 class="pt-3" style="text-align: center; font-weight: 700;">Peluquería</h2>
+          <strong>
+            <p class='description'>Nuestro servicio de peluquería asegura que tu mascota siempre luzca impecable. Ofrecemos cortes y estilos adaptados a cada raza y preferencias del dueño.</p>
+          </strong>
+          <div class='tokenInfo'>
+            <div class="price">
+              <ins>*Consultar valor en la seccion de servicios</ins>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 mb-4 d-flex flex-column align-items-center">
+      <div class="nft2">
+        <div class='main'>
+          <img class='tokenImage' src="https://www.hogarmania.com/archivos/202307/empresas-servicio-transporte-animales-compania-1280x720x80xX.jpg" alt="" />
+          <h2 class="pt-3" style="text-align: center; font-weight: 700;">Transporte</h2>
+          <strong>
+            <p class='description'>Disponemos de un servicio de transporte seguro y cómodo para recoger y entregar a tu mascota, asegurando su bienestar en todo momento durante el trayecto.</p>
+          </strong>
+          <div class='tokenInfo'>
+            <div class="price">
+              <ins>*Consultar valor en la seccion de servicios</ins>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+  <hr>
+</section>
+
+<section id="colaborador" class="colaborador section-padding bg-light" >
   <div class="container">
       <div class="row align-items-center">
           <div class="col-lg-6 col-md-12 col-12 mb-4 mb-lg-0">
@@ -154,11 +434,10 @@ Inicio - cliente
       </div>
   </div>
   </section>
-</section>
 
 
 
-<section id="membresia" class="membresia section-padding bg-light" style="background-color: #f8f9fa; border: 1px solid #ddd; padding: 20px;">
+<section id="membresia" class="membresia section-padding bg-light">
   <div class="separator-ribbon">
     <div class="content"></div>
   </div>

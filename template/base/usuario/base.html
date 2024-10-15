@@ -138,10 +138,32 @@
       font-size: 1rem;
       font-weight: 500;
     }
+    .bg2{
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -9999;
+      h1{
+        text-align: center;
+        font-size: 2rem;
+        filter: opacity(0.2);
+      }
+      img{
+        filter: opacity(0.07);
+        width: 500px; 
+        height: auto;
+      }
+    }
   </style>
 </head>
 
 <body>
+<div class="bg2">
+  <div class="row">
+    <img src="https://cdn-icons-png.flaticon.com/512/21/21565.png" alt="">
+  </div>
+</div>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
@@ -204,6 +226,7 @@
         <a href="#"><i class="fab fa-facebook-f"></i></a>
         <a href="#"><i class="fab fa-twitter"></i></a>
         <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fa fa-phone" aria-hidden="true"> + 569 1234 5678</i></a>
       </div>
     </div>
   </footer>
