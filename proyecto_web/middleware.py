@@ -28,7 +28,8 @@ class LoginRequiredMiddleware:
             'perfil_colaborador',
             'horas_disponibles',
             'cerrar_sesion_colaborador',
-            'horas_disponibles'
+            'horas_disponibles',
+            'eliminar_reserva'
         ]
         
         rutas_protegidas = [
@@ -60,6 +61,7 @@ class LoginRequiredMiddleware:
             'gestionar_membresia_usuario',
             'cambiar_membresia',
             'cancelar_membresia',
+            'actualizar_perfil',
             'prueba'
         ]
 

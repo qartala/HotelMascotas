@@ -10,6 +10,9 @@ class Usuario(models.Model):
     idUsuario = models.OneToOneField(User,on_delete=models.CASCADE)
     tipo_cuenta = models.CharField(max_length=20)
     membresia = models.ForeignKey('Producto.Membresia', on_delete=models.SET_NULL, null=True, blank=True)
+    telefono = models.CharField(max_length=15, blank=True, null=True)
+    direccion = models.CharField(max_length=255, blank=True, null=True)
+    fecha_nacimiento = models.DateField(blank=True, null=True)
 
 class Ficha(models.Model):
     nombre_perro = models.CharField(max_length=100)
@@ -45,14 +48,14 @@ class ReservaServicio(models.Model):
     colaborador = models.ForeignKey(Colaborador, on_delete=models.CASCADE)
     servicio = models.CharField(max_length=100)
     fecha_reservada = models.DateField()
-    mascota = models.ForeignKey(Ficha, on_delete=models.CASCADE)  # Relación con el modelo de mascotas
-    precio = models.PositiveIntegerField()  # Precio del servicio
-    hora_inicio = models.TimeField(blank=True,null=True)
-    hora_fin = models.TimeField(blank=True,null=True)
+    mascota = models.ForeignKey(Ficha, on_delete=models.CASCADE)
+    precio = models.PositiveIntegerField()
+    hora_inicio = models.TimeField(blank=True, null=True)
+    hora_fin = models.TimeField(blank=True, null=True)
     pagado = models.BooleanField(default=False)
-    
-    class Meta:
-        unique_together = ('colaborador', 'servicio', 'fecha_reservada', 'mascota')
 
-    def __str__(self):
+    class Meta:
+        unique_together = ('colaborador', 'servicio', 'fecha_reservada', 'hora_inicio', 'hora_fin', 'mascota')
+
+    def str(self):
         return f"Reserva de {self.mascota.nombre_perro} para el servicio {self.servicio} el {self.fecha_reservada}"

@@ -33,11 +33,47 @@ Inicio - colab
     <td>{{ reserva.hora_fin }}</td>
     <td>
         <!-- Botón de eliminar con ícono -->
-        <a href="{% url 'eliminar_reserva' reserva.id %}" class="btn btn-danger">
+        <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteReservasModal-{{ reserva.id }}">
             <i class="fas fa-trash-alt"></i> Eliminar
         </a>
     </td>
 </tr>
+<div class="modal fade" id="confirmDeleteReservasModal-{{ reserva.id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ reserva.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel-{{ reserva.id }}">Confirmar eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas cancelar esta hora?
+                <br>
+                    Fecha: {{ reserva.fecha }}
+                    <br>
+                    Hora de Inicio: {{ reserva.hora_inicio }}
+                    <br>
+                    Hora de Fin: {{ reserva.hora_fin }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
+                <a id="confirmDeleteBtn-{{ reserva.id }}" href="{% url 'eliminar_reserva' reserva.id %}" class="btn btn-danger">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            modal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const url = button.getAttribute('data-url');
+                const confirmDeleteBtn = modal.querySelector('.btn-danger');
+                confirmDeleteBtn.setAttribute('href', url);
+            });
+        });
+    });
+</script>
 {% empty %}
 <tr>
     <td colspan="4">No hay reservas en los próximos 30 días.</td>

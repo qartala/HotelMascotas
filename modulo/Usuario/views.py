@@ -73,6 +73,32 @@ def perfil(request):
 
     return render(request, 'base/usuario/perfil.html', contexto)
 
+def actualizar_perfil(request):
+    usuario = Usuario.objects.get(idUsuario=request.user)
+    
+    if request.method == 'POST':
+        telefono = request.POST.get('telefono')
+        direccion = request.POST.get('direccion')
+        fecha_nacimiento = request.POST.get('fecha_nacimiento')
+        
+        try:
+            # Intentar convertir la fecha de nacimiento a un formato de fecha correcto
+            usuario.fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%Y-%m-%d').date()
+        except ValueError:
+            # Si ocurre un error de formato de fecha, mostrar un mensaje de error
+            sweetify.error(request, 'Fecha de nacimiento no válida. Use el formato AAAA-MM-DD.')
+            return redirect('actualizar_perfil')  # Redirigir al formulario de nuevo
+        
+        # Actualizar el resto de los campos
+        usuario.telefono = telefono
+        usuario.direccion = direccion
+        usuario.save()
+
+        sweetify.success(request, 'Perfil actualizado exitosamente.')
+        return redirect('perfil')  # Redirigir al perfil del usuario
+
+    return render(request, 'base/usuario/datos_perfil.html', {'usuario': usuario})
+
 
 def listar_reservas_view(request):
     reservas = Reserva.objects.filter(cliente=request.user)  # O como obtengas las reservas
@@ -280,46 +306,44 @@ def reservar_servicio(request):
         mascota_id = request.POST.get('mascota_id')
         colaborador_id = request.POST.get('colaborador_id')
         servicio = request.POST.get('servicio')
-        fecha = request.POST.get('fecha')  # Se obtiene como string, lo convertimos a fecha
+        fecha = request.POST.get('fecha')
         hora_inicio_str = request.POST.get('hora_inicio')
         hora_fin_str = request.POST.get('hora_fin')
 
-        # Convertir fecha y hora a objetos datetime y time
         fecha_reservada = datetime.strptime(fecha, '%Y-%m-%d').date()
         hora_inicio = datetime.strptime(hora_inicio_str, '%H:%M').time()
         hora_fin = datetime.strptime(hora_fin_str, '%H:%M').time()
 
-        # Obtener el colaborador y la mascota
+        
         colaborador = get_object_or_404(Colaborador, id=colaborador_id)
         mascota = get_object_or_404(Ficha, id=mascota_id)
 
-        # Verificar si existe una reserva de habitación para esa mascota y fecha
-        reserva_habitacion = Reserva.objects.filter(
-            mascota=mascota,
-            fecha_inicio__lte=fecha_reservada,  # Fecha reservada debe estar entre fecha_inicio y fecha_fin
-            fecha_fin__gte=fecha_reservada
-        ).first()  # Usamos .first() para obtener una sola reserva, si existe
-
-        if not reserva_habitacion:
-            # Si no existe una reserva de habitación, mostramos un mensaje de error
-            sweetify.error(request, f'El horario del colaborador no coincide con tus reservas realizadas para {mascota.nombre_perro}(mascota)')
-            return redirect('servicios_disponibles')    
-
-        # Verificar si ya existe una reserva de servicio para el mismo colaborador, servicio, fecha y mascota
+       
         reserva_existente = ReservaServicio.objects.filter(
             colaborador=colaborador,
             servicio=servicio,
             fecha_reservada=fecha_reservada,
-            mascota=mascota,
-            hora_inicio=hora_inicio,
-            hora_fin=hora_fin
+            hora_inicio__lt=hora_fin,  
+            hora_fin__gt=hora_inicio   
         ).exists()
 
         if reserva_existente:
-            sweetify.error(request, f'Ya existe una reserva de servicio para {mascota.nombre_perro} en esa fecha y hora.')
+            sweetify.error(request, f'Ya existe una reserva de servicio para {mascota.nombre_perro} en ese rango de horas.')
             return redirect('servicios_disponibles')
 
-        # Crear la reserva de servicio
+        disponibilidad = Disponibilidad.objects.filter(
+            colaborador=colaborador,
+            servicio=servicio,
+            fecha=fecha_reservada,
+            hora_inicio__lte=hora_inicio,
+            hora_fin__gte=hora_fin,
+            disponible=True
+        ).first()
+
+        if not disponibilidad:
+            sweetify.error(request, f'El colaborador no tiene disponibilidad en ese horario.')
+            return redirect('servicios_disponibles')
+
         nueva_reserva = ReservaServicio.objects.create(
             colaborador=colaborador,
             servicio=servicio,
@@ -330,18 +354,8 @@ def reservar_servicio(request):
             hora_fin=hora_fin
         )
 
-        # Marcar la disponibilidad como no disponible
-        disponibilidad = Disponibilidad.objects.filter(
-            colaborador=colaborador,
-            servicio=servicio,
-            fecha=fecha_reservada,
-            hora_inicio=hora_inicio,
-            hora_fin=hora_fin
-        ).first()
-
-        if disponibilidad:
-            disponibilidad.disponible = False
-            disponibilidad.save()
+        disponibilidad.disponible = False
+        disponibilidad.save()
 
         sweetify.success(request, f"¡Reserva de servicio realizada con éxito para el {nueva_reserva.fecha_reservada}!")
         return redirect('servicios_disponibles')

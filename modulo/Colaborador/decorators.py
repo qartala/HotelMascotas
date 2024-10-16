@@ -9,3 +9,11 @@ def colaborador_required(view_func):
             return redirect(reverse('colaborador'))
         return view_func(request, *args, **kwargs)
     return wrapper
+
+def colaborador_login_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        colaborador_id = request.session.get('colaborador_id')
+        if not colaborador_id:
+            return redirect('iniciarsesionColaborador')
+        return view_func(request, *args, **kwargs)
+    return wrapper

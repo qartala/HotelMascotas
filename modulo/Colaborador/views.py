@@ -5,12 +5,13 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from modulo.Colaborador.models import Colaborador, Disponibilidad
+from modulo.Usuario.models import ReservaServicio
 import re
 import sweetify
 from django.core.exceptions import ValidationError
 from .forms import DisponibilidadForm, PerfilColaboradorForm
 from .models import Disponibilidad
-from .decorators import colaborador_required
+from .decorators import colaborador_required, colaborador_login_required
 
 # Create your views here.
 
@@ -315,9 +316,37 @@ def inicio_colaborador(request):
 @colaborador_required
 def eliminar_reserva(request, reserva_id):
     colaborador_id = request.session.get('colaborador_id')
+    print(colaborador_id)
     if not colaborador_id:
+        # Si no hay colaborador_id en la sesión, redirigir a la página de inicio de sesión de colaboradores
         return redirect('iniciarsesionColaborador')
-    reserva = get_object_or_404(Disponibilidad, id=reserva_id, colaborador_id=colaborador_id)
-    reserva.delete()
 
+    # Verificar si el colaborador existe
+    try:
+        colaborador = Colaborador.objects.get(id=colaborador_id)
+    except Colaborador.DoesNotExist:
+        # Si no encuentra un colaborador, redirigir a otra página, como la página de error o principal
+        sweetify.error(request, 'Colaborador no encontrado.')
+        return redirect('horas_disponibles')  # Redirige a una página de error o donde consideres adecuado
+
+    # Obtener la reserva de disponibilidad
+    reserva = get_object_or_404(Disponibilidad, id=reserva_id, colaborador_id=colaborador_id)
+
+    # Verificar si existe una reserva de servicio que coincida con la hora y la fecha de la disponibilidad
+    existe_reserva_servicio = ReservaServicio.objects.filter(
+        colaborador_id=colaborador_id,
+        fecha_reservada=reserva.fecha,
+        hora_inicio=reserva.hora_inicio,
+        hora_fin=reserva.hora_fin
+    ).exists()
+
+    if existe_reserva_servicio:
+        # Si ya existe una reserva de servicio para esa hora, mostrar error
+        sweetify.error(request, 'No puedes eliminar esta disponibilidad porque ya existe una reserva para esta hora.')
+        return redirect('horas_disponibles')
+
+    # Si no existe ninguna reserva de servicio, eliminar la disponibilidad
+    reserva.delete()
+    sweetify.success(request, 'Disponibilidad eliminada con éxito.')
+    
     return redirect('horas_disponibles')
