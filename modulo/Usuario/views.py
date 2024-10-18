@@ -11,20 +11,99 @@ from modulo.Usuario.models import Usuario, ReservaServicio
 from modulo.Producto.models import Membresia
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.contrib.auth.decorators import login_required
 import re
 import sweetify
 from .forms import FichaSaludForm
 from .models import Ficha
+from .models import Calificacion
+from .forms import CalificacionForm
+from .forms import ContactoForm
+
+def contacto(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        comentario = request.POST.get('comentario')
+
+        asunto = f"Nuevo mensaje de {nombre}"
+        mensaje_completo = f"Nombre: {nombre}\n\nComentario:\n{comentario}"
+        remitente = 'petsteamcl@gmail.com'
+        destinatarios = ['petsteamcl@gmail.com']  
+
+        try:
+            send_mail(asunto, mensaje_completo, remitente, destinatarios)
+            return HttpResponse("Correo enviado correctamente")
+        except Exception as e:
+            return HttpResponse(f"Error al enviar el correo: {str(e)}")
+
+    return render(request, 'base/usuario/caso.html')
+
+@login_required 
+def agregar_calificacion(request):
+    if request.method == 'POST':
+        comentario = request.POST.get('comentario')
+        calificacion = int(request.POST.get('calificacion'))
+
+        Calificacion.objects.create(
+            usuario=request.user,
+            comentario=comentario,
+            calificacion=calificacion
+        )
+
+        messages.success(request, '¡Gracias por tu calificación!')
+
+    calificaciones = Calificacion.objects.all().order_by('-fecha_creacion')
+
+    return render(
+        request,
+        'base/usuario/calificacion.html',
+        {'calificaciones': calificaciones, 'rango_estrellas': range(1, 6)}
+    )
+    
+@login_required
+def eliminar_calificacion(request, calificacion_id):
+    calificacion = get_object_or_404(Calificacion, id=calificacion_id, usuario=request.user)
+    calificacion.delete()
+    messages.success(request, 'Tu calificación ha sido eliminada.')
+    return redirect('agregar_calificacion') 
 
 
+
+def mostrar_calificacion(request):
+    calificacions = Calificacion.objects.all().order_by('-fecha_creacion')
+    return render(request, 'inicio.html', {'calificacions': calificacions})
+
+@login_required
+def enviar_calificacion(request):
+    if request.method == 'POST':
+        comentario = request.POST.get('comentario')
+        calificacion = int(request.POST.get('calificacion'))
+
+        nueva_calificacion = Calificacion.objects.create(
+            usuario=request.user,
+            comentario=comentario,
+            calificacion=calificacion
+        )
+
+        messages.success(request, '¡Gracias por tu calificación!')
+        return redirect('agregar_calificacion') 
+    return render(request, 'calificacion.html')
 
 def principal(request):
     buscar = request.GET.get("buscar", "")
     productos = Habitacion.objects.filter(numero_habitacion__icontains=buscar)
+    calificaciones = Calificacion.objects.all().order_by('-fecha_creacion')
     contexto = {
-        'productos': productos
+        'productos': productos,
+        'calificaciones': calificaciones,
     }
+
     return render(request, 'base/usuario/caso.html', context=contexto)
+
+def listar_calificaciones(request):
+    calificaciones = Calificacion.objects.all().order_by('-fecha_creacion')
+    return render(request, 'inicio_cliente.html', {'calificaciones': calificaciones})
+
 
 def principalUsuario (request):
     
@@ -49,20 +128,11 @@ def principalUsuario (request):
     return render(request,'base/usuario/casoUsuario.html',context = contexto)
 
 def perfil(request):
-    # Obtener el usuario autenticado
     user = request.user
-    
-    # Obtener el objeto Usuario asociado al User
     usuario = get_object_or_404(Usuario, idUsuario=user)
-
-    # Contar las reservas de servicios asociadas a las fichas del usuario
     fichas_usuario = Ficha.objects.filter(id_usuario=usuario)
     reservas_servicio_count = ReservaServicio.objects.filter(mascota__in=fichas_usuario).count()
-
-    # Contar las reservas de habitaciones asociadas al usuario
     reservas_habitacion_count = Reserva.objects.filter(cliente=user).count()
-
-    # Contar las fichas de animales asociadas al usuario
     fichas_count = fichas_usuario.count()
 
     contexto = {
@@ -82,32 +152,26 @@ def actualizar_perfil(request):
         fecha_nacimiento = request.POST.get('fecha_nacimiento')
         
         try:
-            # Intentar convertir la fecha de nacimiento a un formato de fecha correcto
             usuario.fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%Y-%m-%d').date()
         except ValueError:
-            # Si ocurre un error de formato de fecha, mostrar un mensaje de error
             sweetify.error(request, 'Fecha de nacimiento no válida. Use el formato AAAA-MM-DD.')
-            return redirect('actualizar_perfil')  # Redirigir al formulario de nuevo
-        
-        # Actualizar el resto de los campos
+            return redirect('actualizar_perfil')  
         usuario.telefono = telefono
         usuario.direccion = direccion
         usuario.save()
 
         sweetify.success(request, 'Perfil actualizado exitosamente.')
-        return redirect('perfil')  # Redirigir al perfil del usuario
+        return redirect('perfil')  
 
     return render(request, 'base/usuario/datos_perfil.html', {'usuario': usuario})
 
 
 def listar_reservas_view(request):
-    reservas = Reserva.objects.filter(cliente=request.user)  # O como obtengas las reservas
-
-    # Filtrar reservas por pagado y no pagado
+    reservas = Reserva.objects.filter(cliente=request.user) 
+    
     reservas_por_pagar = reservas.filter(pagado=False)
     reservas_pagadas = reservas.filter(pagado=True)
 
-    # Pasar los resultados al contexto
     context = {
         'reservas_por_pagar': reservas_por_pagar,
         'reservas_pagadas': reservas_pagadas,
@@ -154,18 +218,13 @@ def editar_ficha_view(request, pk):
     return render(request, 'base/usuario/editar_ficha.html', {'form': form})
 
 def eliminar_ficha(request, id):
-    # Obtener la ficha de la mascota
     ficha = get_object_or_404(Ficha, id=id)
-
-    # Verificar si la mascota está asociada a una reserva de habitación
     reservas_asociadas = Reserva.objects.filter(mascota=ficha).exists()
 
     if reservas_asociadas:
-        # Si hay reservas asociadas, mostrar un mensaje de error y evitar la eliminación
         sweetify.error(request, 'Cancela la reserva asociada a la mascota para poder eliminarla')
         return redirect('perfil')
 
-    # Si no hay reservas asociadas, se puede eliminar la ficha
     ficha.delete()
     sweetify.success(request, 'Ficha eliminada con éxito.')
     return redirect('perfil')
@@ -174,7 +233,6 @@ def generar_pdf_fichas(request):
     usuario = Usuario.objects.get(idUsuario=request.user)
     fichas = Ficha.objects.filter(id_usuario=usuario)
 
-    # Genera las URLs absolutas para las imágenes
     for ficha in fichas:
         if ficha.imagen_mascota:
             ficha.imagen_mascota_url = request.build_absolute_uri(ficha.imagen_mascota.url)
@@ -364,17 +422,11 @@ def reservar_servicio(request):
 
 
 def listar_reservas_servicios(request):
-    # Obtener el usuario autenticado
     usuario = request.user
-
-    # Obtener las mascotas asociadas al usuario
     mascotas_usuario = Ficha.objects.filter(id_usuario__idUsuario=usuario)
-
-    # Filtrar las reservas de servicio asociadas a las mascotas del usuario
     reservas_pagadas = ReservaServicio.objects.filter(mascota__in=mascotas_usuario, pagado=True)
     reservas_no_pagadas = ReservaServicio.objects.filter(mascota__in=mascotas_usuario, pagado=False)
 
-    # Contexto para pasar al template
     contexto = {
         'reservas_pagadas': reservas_pagadas,
         'reservas_no_pagadas': reservas_no_pagadas
@@ -383,16 +435,9 @@ def listar_reservas_servicios(request):
     return render(request, 'base/usuario/listar_reservas_servicio.html', contexto)
 
 def eliminar_reserva_servicio(request, reserva_id):
-    # Obtener la instancia del modelo Usuario relacionado con el usuario autenticado
     usuario = get_object_or_404(Usuario, idUsuario=request.user)
-
-    # Obtener las fichas (mascotas) asociadas al usuario autenticado
     mascotas_usuario = Ficha.objects.filter(id_usuario=usuario)
-
-    # Buscar la reserva que pertenece a una de las mascotas del usuario
     reserva = get_object_or_404(ReservaServicio, id=reserva_id, mascota__in=mascotas_usuario)
-
-    # Buscar la disponibilidad asociada a la reserva y marcarla como disponible nuevamente
     disponibilidad = Disponibilidad.objects.filter(
         colaborador=reserva.colaborador,
         servicio=reserva.servicio,
@@ -405,7 +450,6 @@ def eliminar_reserva_servicio(request, reserva_id):
         disponibilidad.disponible = True
         disponibilidad.save()
 
-    # Eliminar la reserva
     reserva.delete()
     sweetify.success(request, 'Reserva de servicio eliminada con éxito')
     return redirect('listar_reservas_servicios')
@@ -416,22 +460,19 @@ def unirse_membresia(request, membresia_id):
     perfil_usuario = Usuario.objects.get(idUsuario=request.user)
 
     if perfil_usuario.membresia:
-        # Redirigir a la página de gestión de membresías si ya tiene una activa
         sweetify.warning(request, 'Ya tienes una membresía activa. Por favor, cancélala antes de unirte a otra.')
-        return redirect('gestionar_membresia_usuario')  # O cualquier página de gestión de membresías
+        return redirect('gestionar_membresia_usuario') 
 
     if request.method == 'POST':
-        # Iniciar el proceso de pago de la membresía
         return redirect('iniciar_pago', item_id=membresia.id, tipo_pago='membresia')
 
-    # Si es un GET o el usuario aún no ha confirmado, mostramos la página de confirmación
     return render(request, 'base/usuario/membresia_confirmacion.html', {'membresia': membresia})
 
 
 def gestionar_membresia_usuario(request):
     try:
         perfil_usuario = Usuario.objects.get(idUsuario=request.user)
-        membresia = perfil_usuario.membresia  # Membresía confirmada del usuario
+        membresia = perfil_usuario.membresia  
     except Usuario.DoesNotExist:
         membresia = None
 
@@ -440,7 +481,7 @@ def gestionar_membresia_usuario(request):
     })
 
 def cambiar_membresia(request):
-    membresias = Membresia.objects.all()  # Listar todas las membresías disponibles
+    membresias = Membresia.objects.all()  
 
     if request.method == 'POST':
         nueva_membresia_id = request.POST.get('membresia_id')
@@ -460,7 +501,7 @@ def cambiar_membresia(request):
 
 def cancelar_membresia(request):
     perfil_usuario = Usuario.objects.get(idUsuario=request.user)
-    perfil_usuario.membresia = None  # Cancelar la membresía actual
+    perfil_usuario.membresia = None  
     perfil_usuario.save()
 
     sweetify.success(request, 'Has cancelado tu membresía.')

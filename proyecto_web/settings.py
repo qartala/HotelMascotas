@@ -95,22 +95,28 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'petsteam',#cambiar segun base de datos de mysql
         'USER':'root', #cambiar segun configuracion mysql
-        'PASSWORD':'root',#cambiar segun configuracion mysql
+        'PASSWORD':'admin',#cambiar segun configuracion mysql
         'HOST':'localhost',
         'PORT': 3306 #cambiar segun configuracion mysql
     }
 }
 
-# Correo electronico
-
+# Configuración del correo electrónico con Gmail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'petsteamcl@gmail.com'
-EMAIL_HOST_PASSWORD = 'rfmv itgh wwuu byya'  # Reemplaza por la contraseña real o usa un App Password.
+EMAIL_HOST_PASSWORD = 'rfmv itgh wwuu byya'  # Usa una App Password válida
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+# Habilitar los logs de depuración
+import logging
 
+logging.basicConfig(
+    level=logging.DEBUG,  # Muestra los logs en modo depuración
+    format='%(asctime)s %(levelname)s %(message)s',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
