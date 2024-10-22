@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from modulo.Producto.models import Habitacion, Reserva
 from modulo.Colaborador.models import Colaborador, Disponibilidad
-from modulo.Usuario.models import Usuario, ReservaServicio
+from modulo.Usuario.models import Usuario, ReservaServicio, Calificacion
 from modulo.Producto.models import Membresia
 from django.template.loader import get_template
 from xhtml2pdf import pisa
@@ -64,7 +64,7 @@ def perfil(request):
 
     # Contar las fichas de animales asociadas al usuario
     fichas_count = fichas_usuario.count()
-
+    print(reservas_servicio_count)
     contexto = {
         'reservas_servicio_count': reservas_servicio_count,
         'reservas_habitacion_count': reservas_habitacion_count,
@@ -101,7 +101,8 @@ def actualizar_perfil(request):
 
 
 def listar_reservas_view(request):
-    reservas = Reserva.objects.filter(cliente=request.user)  # O como obtengas las reservas
+    # Obtener las reservas del usuario, excluyendo las canceladas
+    reservas = Reserva.objects.filter(cliente=request.user, cancelada=False)
 
     # Filtrar reservas por pagado y no pagado
     reservas_por_pagar = reservas.filter(pagado=False)
@@ -115,9 +116,14 @@ def listar_reservas_view(request):
     return render(request, 'base/usuario/listar_reservas.html', context)
 
 def eliminar_reserva_habitacion(request, reserva_id):
+    # Obtener la reserva correspondiente
     reserva = get_object_or_404(Reserva, id=reserva_id, cliente=request.user)
-    reserva.delete()
-    sweetify.success(request, 'Reserva eliminada con éxito')
+
+    # Marcar la reserva como cancelada
+    reserva.cancelada = True
+    reserva.save()  # Guardar los cambios en la base de datos
+
+    sweetify.success(request, 'Reserva cancelada con éxito')
     return redirect('listar_reservas')
 
     
@@ -246,7 +252,7 @@ def iniciarsesion(request):
             login(request, usuario_encontrado)
             if usuario_encontrado.is_superuser:
                 sweetify.toast(request,f'Bienvenido {usuario_encontrado.first_name}',position='top-start')
-                return redirect('vistaAdmin') 
+                return redirect('dashboard_admin') 
             else:
                 sweetify.toast(request,f'Bienvenido {usuario_encontrado.first_name}',position='top-start')
                 return redirect('principalUsuario')  
@@ -373,7 +379,7 @@ def listar_reservas_servicios(request):
     # Filtrar las reservas de servicio asociadas a las mascotas del usuario
     reservas_pagadas = ReservaServicio.objects.filter(mascota__in=mascotas_usuario, pagado=True)
     reservas_no_pagadas = ReservaServicio.objects.filter(mascota__in=mascotas_usuario, pagado=False)
-
+    print(reservas_pagadas)
     # Contexto para pasar al template
     contexto = {
         'reservas_pagadas': reservas_pagadas,
@@ -467,6 +473,87 @@ def cancelar_membresia(request):
     return redirect('gestionar_membresia_usuario')
 
 
+def agregar_calificacion(request):
+    if request.method == 'POST':
+        comentario = request.POST.get('comentario')
+        calificacion = int(request.POST.get('calificacion'))
+        Calificacion.objects.create(
+            usuario=request.user,
+            comentario=comentario,
+            calificacion=calificacion
+        )
+        messages.success(request, '¡Gracias por tu calificación!')
+    calificaciones = Calificacion.objects.all().order_by('-fecha_creacion')
+    return render(
+        request,
+        'base/usuario/calificacion.html',
+        {'calificaciones': calificaciones, 'rango_estrellas': range(1, 6)}
+    )
+    
+def eliminar_calificacion(request, calificacion_id):
+    calificacion = get_object_or_404(Calificacion, id=calificacion_id, usuario=request.user)
+    calificacion.delete()
+    messages.success(request, 'Tu calificación ha sido eliminada.')
+    return redirect('agregar_calificacion') 
+
+
+
+def mostrar_calificacion(request):
+    calificacions = Calificacion.objects.all().order_by('-fecha_creacion')
+    return render(request, 'inicio.html', {'calificacions': calificacions})
+
+def enviar_calificacion(request):
+    if request.method == 'POST':
+        comentario = request.POST.get('comentario')
+        calificacion = int(request.POST.get('calificacion'))
+
+        nueva_calificacion = Calificacion.objects.create(
+            usuario=request.user,
+            comentario=comentario,
+            calificacion=calificacion
+        )
+
+        messages.success(request, '¡Gracias por tu calificación!')
+        return redirect('agregar_calificacion') 
+    return render(request, 'calificacion.html')
+
+def listar_calificaciones(request):
+    calificaciones = Calificacion.objects.all().order_by('-fecha_creacion')
+    return render(request, 'inicio_cliente.html', {'calificaciones': calificaciones})
+
+def generar_pdf_reserva(request, reserva_id):
+    try:
+        # Obtiene la reserva por ID
+        reserva = Reserva.objects.get(id=reserva_id)
+    except Reserva.DoesNotExist:
+        return HttpResponse('Reserva no encontrada', status=404)
+
+    # Genera la URL absoluta para la imagen de la mascota, si existe
+    if reserva.mascota.imagen_mascota:
+        reserva.mascota.imagen_mascota_url = request.build_absolute_uri(reserva.mascota.imagen_mascota.url)
+    else:
+        reserva.mascota.imagen_mascota_url = None
+
+    # Prepara el contexto para el template
+    context = {
+        'reserva': reserva,
+        'precio_total': reserva.calcular_precio_total()  # Calcula el precio total si es necesario
+    }
+
+    # Cargar el template para el PDF
+    template = get_template('base/usuario/pdf_reserva.html')
+    html = template.render(context)
+
+    # Configurar la respuesta del PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="reserva_{reserva_id}.pdf"'
+
+    # Generar el PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('Error al generar el PDF', status=400)
+    
+    return response
 
 
 

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'sweetify',
     'crispy_forms',
     'crispy_bootstrap5', 
+    'django.contrib.humanize'
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -147,9 +148,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    join(BASE_DIR,'static')
-]
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Configuraciòn de media
 
@@ -202,4 +201,4 @@ WEBPAY_PLUS_RETURN_URL = 'http://localhost:8000/pagos/confirmar/'
 LOGIN_URL = ''
 
 
-
+PDFKIT_WKHTMLTOPDF = os.path.join('ruta/a/wkhtmltopdf')

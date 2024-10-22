@@ -6,26 +6,9 @@ Horas Disponibles
 
 {% block content %}
 
-<head>
-    <style>
-      footer {
-        background-color: #0d6efd;
-        color: #fff;
-        padding: 40px 0;
-        text-align: center;
-        margin-top: auto;
-      }
-      body {
-        font-family: 'Poppins', sans-serif;
-        background-color: #f8f9fa;
-        color: #343a40;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-    </style>
-</head>
-<br><br>
+<div class="d-flex" style="height: 80px; visibility: hidden;">
+  <div class="vr"></div>
+</div>
 <div class="container mt-5">
   <div class="title-container" style="text-align: center;">
     <h2>Horas disponibles de {{ colaborador.fullname }}</h2>
@@ -60,7 +43,7 @@ Horas Disponibles
               <input type="hidden" name="hora_fin" value="{{ disponibilidad.hora_fin }}">
               
               <!-- Botón de reservar hora -->
-              <button type="submit" class="btn btn-warning mt-2">Reservar Hora</button>
+              <button type="submit" class="btn mt-2">Reservar Hora</button>
             </form>
           </li>
           {% empty %}
@@ -71,7 +54,7 @@ Horas Disponibles
         {% endif %}
         <div class="row d-flex justify-content-center">
           <div class="col-2">
-            <a href="{% url 'servicios_disponibles' %}" class="btn btn-secondary mt-3">Volver</a>
+            <a href="{% url 'servicios_disponibles' %}" class="btn mt-3">Volver</a>
           </div>
       </div>
     </div>

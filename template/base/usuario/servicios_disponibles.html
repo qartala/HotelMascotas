@@ -30,6 +30,7 @@ Servicios Disponibles
 
     .card {
       flex: 1;
+      align-items: center;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       border: none;
@@ -51,22 +52,21 @@ Servicios Disponibles
     }
 
     .card img {
-      width: 100%;
-      height: 200px;
+      width: 50%;
       object-fit: cover;
       border-radius: 10px;
     }
 
-    .btn-warning {
-      background-color: #ffc107;
+    .btn {
+      background-color:#0d6efd;
       border: none;
       font-weight: bold;
       padding: 10px 25px;
       transition: background-color 0.3s ease;
     }
 
-    .btn-warning:hover {
-      background-color: #e0a800;
+    .btn:hover {
+      background-color: #0d6efd;
     }
 
   </style>
@@ -94,9 +94,10 @@ Servicios Disponibles
             <option value="Fotografia" {% if request.GET.servicio == 'Fotografia' %}selected{% endif %}>Fotografía</option>
           </select>
           <div class="row d-flex justify-content-center">
-            <div class="col-4">
-              <button type="submit" class="btn btn-warning mt-2">Filtrar</button>
-
+            <div class="col-4 pt-3">
+              <div class="white-button">
+                <a type="submit" >Filtrar</a>
+              </div>
             </div>
           </div>
         </form>
@@ -108,14 +109,16 @@ Servicios Disponibles
     {% for servicio in servicios %}
     <div class="col-lg-4 col-md-6 mb-4">
       <div class="card">
-        <p class="card-text" style="text-align: center;">Colaborador: {{ servicio.fullname }}</p>
+        <p class="card-text" style="text-align: center; color: black;">Colaborador: {{ servicio.fullname }}</p>
         <img src="{% if servicio.foto_perfil %}{{ servicio.foto_perfil.url }}{% else %}/static/assets/perfilll.png{% endif %}" alt="Foto de perfil" class="img-thumbnail mb-3" height="100px" width="100px">
 
         <div class="card-body text-center">
           <h5 class="card-title">Servicio: {{ servicio.servicio }}</h5>
           <p class="card-text">{{ servicio.descripcion|default_if_none:"Sin descripción disponible" }}</p>
           <p><strong>Precio:</strong> ${{ servicio.precio_por_hora|default_if_none:"0" }}</p>
-          <a href="{% url 'ver_horas_colaborador' servicio.id %}" class="btn btn-warning">Ver Horas</a>
+          <div class="white-button">
+            <a href="{% url 'ver_horas_colaborador' servicio.id %}" class="btn">Ver Horas</a>
+          </div>
         </div>
       </div>
     </div>
@@ -123,9 +126,6 @@ Servicios Disponibles
     <p>No hay servicios disponibles en este momento.</p>
     {% endfor %}
   </div>
-</div>
-<div class="d-flex" style="height: 100px; visibility: hidden;">
-  <div class="vr"></div>
 </div>
 
 {% endblock %}

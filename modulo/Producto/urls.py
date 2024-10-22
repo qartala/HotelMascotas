@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import listar_colaboradores_aprobados,solicitudes_admin, gestionar_solicitud,eliminar_membresia,editar_membresia,gestionar_membresias,crear_membresia,listar,admin, eliminar, agregarProductos, modificar, reservar_habitacion,obtener_reservas_json
+from .views import dashboard_admin,listar_colaboradores_aprobados,solicitudes_admin, gestionar_solicitud,eliminar_membresia,editar_membresia,gestionar_membresias,crear_membresia,listar,admin, eliminar, agregarProductos, modificar, reservar_habitacion,obtener_reservas_json
 
 urlpatterns = [
-    path('panel/',admin, name='vistaAdmin'),
+    path('dashboard_admin/',dashboard_admin, name='dashboard_admin'),
     path('agregarProductos/', agregarProductos, name='agregarProductos'),
     path('Productos/', listar, name='listarProducto'),
     path('modificar/<int:idHabitacion>/', modificar, name='modificarProducto'),  
@@ -19,4 +19,5 @@ urlpatterns = [
 
     path('reservar_habitacion/<int:habitacion_id>/', reservar_habitacion, name='reservar_habitacion'),
     path('obtener_reservas_json/<int:habitacion_id>/', obtener_reservas_json, name='obtener_reservas_json'),
+    
 ]

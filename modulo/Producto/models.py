@@ -32,6 +32,7 @@ class Reserva(models.Model):
     fecha_fin = models.DateField()
     precio_total = models.PositiveIntegerField()  
     pagado = models.BooleanField(default=False)
+    cancelada = models.BooleanField(default=False) 
 
     def __str__(self):
         return f"Reserva de {self.cliente.username} en la habitación {self.habitacion.numero_habitacion}"

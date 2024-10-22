@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.core.paginator import Paginator, PageNotAnInteger,EmptyPage
 from django.http import HttpResponseRedirect
 from .models import Habitacion, Reserva
 from .forms import ReservaForm
@@ -28,9 +29,28 @@ def admin(request):
 
 def listar(request):
     productos = Habitacion.objects.all()
-    contexto = {
-        'productos': productos
-    }
+    paginator = Paginator(productos, 5)  # Mostrar 5 habitaciones por página
+    
+    # Validar la página que se intenta acceder
+    page_number = request.GET.get('page', 1)
+
+    try:
+        # Asegurarnos de que page_number sea un entero mayor que 0
+        page_number = int(page_number)
+        if page_number < 1:
+            raise ValueError("El número de página no puede ser menor que 1.")
+
+        # Obtener la página solicitada
+        page_obj = paginator.get_page(page_number)
+
+    except (ValueError, PageNotAnInteger):
+        # Si ocurre un error, redirige a la primera página
+        return redirect('?page=1')
+    except EmptyPage:
+        # Si la página está fuera de rango, redirige a la última página
+        return redirect(f'?page={paginator.num_pages}')
+
+    contexto = {'page_obj': page_obj}
     return render(request, 'base/admin/listar.html', context=contexto)
 
 def modificar(request, idHabitacion):
@@ -43,12 +63,24 @@ def modificar(request, idHabitacion):
         return render(request, 'base/admin/modificar.html', contexto)
 
     elif request.method == 'POST':
+        # Obtener el nuevo número de habitación del formulario
+        nuevo_numero = request.POST.get('numero_habitacion', habitacion.numero_habitacion)
+
+        # Verificar si el nuevo número ya existe en otra habitación
+        if Habitacion.objects.filter(numero_habitacion=nuevo_numero).exclude(id=idHabitacion).exists():
+            sweetify.error(request, 'Este número de habitación ya existe. Por favor, elige otro.')
+            return HttpResponseRedirect(reverse('listarProducto'))
+
+        # Actualizar los campos de la habitación
         habitacion.imagen_habitacion = request.FILES.get('imagen_habitacion', habitacion.imagen_habitacion)
-        habitacion.numero_habitacion = request.POST.get('numero_habitacion', habitacion.numero_habitacion)
+        habitacion.numero_habitacion = nuevo_numero
         habitacion.tipo_habitacion = request.POST.get('tipo_habitacion', habitacion.tipo_habitacion)
         habitacion.precio = request.POST.get('precio', habitacion.precio)
+        
+        # Guardar los cambios
         habitacion.save()
-        sweetify.success(request, 'La habitacion se modifico correctamente')
+
+        sweetify.success(request, 'La habitación se modificó correctamente.')
         return HttpResponseRedirect(reverse('listarProducto'))
 
 
@@ -59,25 +91,26 @@ def agregarProductos(request):
         }
         return render(request,'base/admin/AgregarProductos.html',context = contexto)
 
-    elif request.method =='POST':
-        nuevoProducto = Habitacion()
-        nuevoProducto.imagen_habitacion = request.FILES.get('imagen_habitacion')
-        nuevoProducto.numero_habitacion = request.POST['numero_habitacion']
-        nuevoProducto.tipo_habitacion = request.POST['tipo_habitacion']
-        nuevoProducto.precio=request.POST['precio']
-        try:
-            nuevoProducto.save()
-        except Exception as ex:
-            codigo_error =int (ex.args[0])
-            if codigo_error == 1062:
-                print(ex)
-                contexto = {
-                    'numero_habitacion':request.POST['numero_habitacion'],
-                }
-                sweetify.warning(request, 'El numero de habitacion esta en uso')
-                return render(request,'base/admin/AgregarProductos.html',context = contexto)
-        sweetify.success(request, 'Habitacion agregada con éxito!')    
-        return HttpResponseRedirect(reverse('agregarProductos'))
+    elif request.method == 'POST':
+        numero_habitacion = request.POST.get('numero_habitacion')
+        tipo_habitacion = request.POST.get('tipo_habitacion')
+        precio = request.POST.get('precio')
+        imagen_habitacion = request.FILES.get('imagen_habitacion')
+
+        # Verificar si ya existe una habitación con ese número
+        if Habitacion.objects.filter(numero_habitacion=numero_habitacion).exists():
+            sweetify.error(request, 'El número de habitación ya existe. Por favor, elige otro.')
+            return redirect('listarProducto')
+
+        # Crear la nueva habitación
+        Habitacion.objects.create(
+            numero_habitacion=numero_habitacion,
+            tipo_habitacion=tipo_habitacion,
+            precio=precio,
+            imagen_habitacion=imagen_habitacion
+        )
+        sweetify.success(request, 'Habitación creada exitosamente.')
+        return redirect('listarProducto')
 
 def eliminar(request, idProducto):
     try:
@@ -140,7 +173,9 @@ def reservar_habitacion(request, habitacion_id):
 
 def obtener_reservas_json(request, habitacion_id):
     habitacion = Habitacion.objects.get(id=habitacion_id)
-    reservas = Reserva.objects.filter(habitacion=habitacion)
+    
+    # Obtener solo las reservas que no están canceladas
+    reservas = Reserva.objects.filter(habitacion=habitacion, cancelada=False)
     eventos = []
 
     def generar_color_aleatorio():
@@ -173,18 +208,33 @@ def crear_membresia(request):
         nueva_membresia.save()
 
         sweetify.success(request, 'Membresía creada exitosamente.')
-        return redirect('crear_membresia')
-
-    return render(request, 'base/admin/crearMembresia.html')
+        return redirect('gestionar_membresias')
 
 def gestionar_membresias(request):
     membresias = Membresia.objects.all()  # Obtener todas las membresías
+    paginator = Paginator(membresias, 5)  # Mostrar 5 membresías por página
+    
+    # Validar la página que se intenta acceder
+    page_number = request.GET.get('page', 1)
 
-    if request.method == 'POST':
-        membresia_id = request.POST.get('membresia_id')
-        accion = request.POST.get('accion')
+    try:
+        # Asegurarse de que page_number sea un entero válido y mayor que 0
+        page_number = int(page_number)
+        if page_number < 1:
+            raise ValueError("El número de página no puede ser menor que 1.")
 
-    return render(request, 'base/admin/gestionMembresia.html', {'membresias': membresias})
+        # Obtener la página solicitada
+        page_obj = paginator.get_page(page_number)
+
+    except (ValueError, PageNotAnInteger):
+        # Si ocurre un error, redirige a la primera página
+        return redirect('?page=1')
+    except EmptyPage:
+        # Si la página está fuera de rango, redirige a la última página
+        return redirect(f'?page={paginator.num_pages}')
+
+    contexto = {'page_obj': page_obj}
+    return render(request, 'base/admin/gestionMembresia.html', context=contexto)
 
 def editar_membresia(request, membresia_id):
     membresia = get_object_or_404(Membresia, id=membresia_id)
@@ -205,8 +255,6 @@ def editar_membresia(request, membresia_id):
         sweetify.success(request, 'Membresía actualizada con éxito.')
         return redirect('gestionar_membresias')
 
-    return render(request, 'base/admin/editarMembresia.html', {'membresia': membresia})
-
 def eliminar_membresia(request, membresia_id):
     membresia = get_object_or_404(Membresia, id=membresia_id)
     membresia.delete()
@@ -214,14 +262,30 @@ def eliminar_membresia(request, membresia_id):
     return redirect('gestionar_membresias')
 
 def solicitudes_admin(request):
-    storage = messages.get_messages(request)
-    for message in storage:
-        if "Inicio de sesión exitoso" in message.message:
-            message.used = True 
-
     solicitudes = Colaborador.objects.filter(estado='pendiente')
-    
-    return render(request, 'base/admin/solicitudes.html', {'solicitudes': solicitudes})
+    paginator = Paginator(solicitudes, 5)  # Mostrar 5 solicitudes por página
+
+    # Validar la página solicitada
+    page_number = request.GET.get('page', 1)
+
+    try:
+        # Asegúrate de que el número de página sea un entero positivo
+        page_number = int(page_number)
+        if page_number < 1:
+            raise ValueError("El número de página no puede ser menor que 1.")
+
+        # Obtener la página solicitada
+        page_obj = paginator.get_page(page_number)
+
+    except (ValueError, PageNotAnInteger):
+        # Redirige a la primera página si hay un error
+        return redirect('?page=1')
+    except EmptyPage:
+        # Redirige a la última página disponible si la página está fuera de rango
+        return redirect(f'?page={paginator.num_pages}')
+
+    contexto = {'page_obj': page_obj}
+    return render(request, 'base/admin/solicitudes.html', context=contexto)
 
 def gestionar_solicitud(request, colaborador_id, accion):
     colaborador = get_object_or_404(Colaborador, id=colaborador_id)
@@ -255,4 +319,99 @@ def gestionar_solicitud(request, colaborador_id, accion):
 
 def listar_colaboradores_aprobados(request):
     colaboradores_aprobados = Colaborador.objects.filter(estado='aprobado')
-    return render(request, 'base/admin/colaboradores_aprobados.html', {'colaboradores': colaboradores_aprobados})
+    paginator = Paginator(colaboradores_aprobados, 5)  # Mostrar 5 colaboradores por página
+
+    # Validar la página solicitada
+    page_number = request.GET.get('page', 1)
+
+    try:
+        # Asegúrate de que el número de página sea un entero positivo
+        page_number = int(page_number)
+        if page_number < 1:
+            raise ValueError("El número de página no puede ser menor que 1.")
+
+        # Obtener la página solicitada
+        page_obj = paginator.get_page(page_number)
+
+    except (ValueError, PageNotAnInteger):
+        # Redirige a la primera página si hay un error
+        return redirect('?page=1')
+    except EmptyPage:
+        # Redirige a la última página disponible si la página está fuera de rango
+        return redirect(f'?page={paginator.num_pages}')
+
+    contexto = {'page_obj': page_obj}
+    return render(request, 'base/admin/colaboradores_aprobados.html', context=contexto)
+
+
+from django.utils.timezone import now
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncMonth
+from modulo.Producto.models import Reserva
+from modulo.Colaborador.models import Colaborador
+import json
+
+def dashboard_admin(request):
+    año_actual = now().year
+
+    # Ingresos totales por mes solo para reservas pagadas
+    ingresos_mensuales = (
+        Reserva.objects.filter(pagado=True, fecha_inicio__year=año_actual)
+        .annotate(mes=TruncMonth('fecha_inicio'))
+        .values('mes')
+        .annotate(total=Sum('precio_total'))
+        .order_by('mes')
+    )
+
+    # Datos para las habitaciones y sus reservas (solo pagadas)
+    reservas_por_habitacion = (
+        Reserva.objects.filter(pagado=True)
+        .values('habitacion__tipo_habitacion')
+        .annotate(total_reservas=Count('id'))
+        .order_by('-total_reservas')
+    )
+
+    # Preparar datos para los gráficos
+    habitaciones = [reserva['habitacion__tipo_habitacion'] for reserva in reservas_por_habitacion]
+    total_reservas_habitaciones = [reserva['total_reservas'] for reserva in reservas_por_habitacion]
+
+    # Preparar ingresos totales mensuales
+    meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+    ingresos_totales_mensuales = [0] * 12  # Inicializar con 0 para cada mes
+
+    for ingreso in ingresos_mensuales:
+        mes_index = ingreso['mes'].month - 1  # Obtener el índice del mes (0-11)
+        ingresos_totales_mensuales[mes_index] = ingreso['total']
+
+    # Otros KPIs solo considerando reservas pagadas
+    total_reservas_pagadas = Reserva.objects.filter(pagado=True).count()  # Contar solo las reservas pagadas
+    total_reservas = Reserva.objects.count()  # Total de todas las reservas
+    colaboradores_activos = Colaborador.objects.filter(estado='aprobado').count()  # Contar solo aprobados
+    print(f'Total Reservas Pagadas: {total_reservas_pagadas}')
+    print(f'Total Reservas: {total_reservas}')
+
+    # Contar las reservas que han sido canceladas
+    canceladas = Reserva.objects.filter(cancelada=True).count()  # Contar todas las canceladas
+    print(f'Total Reservas canceladas: {canceladas}')
+    
+    # Calcular la tasa de cancelación
+    if total_reservas > 0:
+        tasa_cancelacion = round((canceladas / total_reservas * 100), 1)  # Redondear a un decimal
+    else:
+        tasa_cancelacion = 0  # No hay reservas pagadas, tasa de cancelación es 0
+
+    # Preparar los datos para el template
+    dashboard_data = json.dumps({
+        'total_reservas_pagadas': total_reservas_pagadas,
+        'total_reservas': total_reservas,  # Añadido para mostrar el total general
+        'ingresos_totales_mensuales': ingresos_totales_mensuales,
+        'meses': meses,
+        'colaboradores_activos': colaboradores_activos,
+        'tasa_cancelacion': tasa_cancelacion,
+        'habitacion_tipos': habitaciones,
+        'habitacion_reservas': total_reservas_habitaciones
+    })
+
+    return render(request, 'base/admin/dashboard.html', {
+        'dashboard_data': dashboard_data
+    })

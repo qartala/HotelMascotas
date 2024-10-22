@@ -12,7 +12,6 @@ class Colaborador(models.Model):
     password = models.CharField(max_length=255) 
     descripcion = models.TextField(null=True, blank=True)  
     foto_perfil = models.ImageField(upload_to='fotos_perfil/', null=True, blank=True)  
-    
     precio_por_hora = models.IntegerField(null=True, blank=True)
 
     ESTADOS = [

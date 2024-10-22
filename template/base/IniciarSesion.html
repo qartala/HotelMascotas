@@ -120,7 +120,7 @@ Inicio - cliente
   <!-- Left section with wave and text -->
   <div class="login-left">
     <h1>¡Bienvenido de vuelta!</h1>
-    <p>Nos alegra verte de nuevo en Pets Team. Aquí encontrarás el mejor cuidado para tu mascota.</p>
+    <p style="color: #fff;">Nos alegra verte de nuevo en Pets Team. Aquí encontrarás el mejor cuidado para tu mascota.</p>
     <div class="wave"></div>
   </div>
 
@@ -131,18 +131,11 @@ Inicio - cliente
       {% csrf_token %}
       <input type="text" id="usuario" name="usuario" class="form-control" placeholder="Usuario" required>
       <input type="password" id="contrasenia" name="contrasenia" class="form-control" placeholder="Contraseña" required>
-      <div class="form-check mb-3">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Recuérdame</label>
-      </div>
       <button type="submit" class="btn btn-primary w-100">Ingresar</button>
       <div class="text-center mt-3">
         <a href="{% url 'registrarse' %}" class="text-muted">¿No estás registrado?</a>
       </div>
     </form>
   </div>
-</div>
-<div class="d-flex" style="height: 80px;">
-  <div class="vr"></div>
 </div>
 {% endblock %}

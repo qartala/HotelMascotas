@@ -135,9 +135,9 @@ Inicio - cliente
 </head>
 
 <div class="container">
-    <div class="d-flex" style="height: 70px; visibility: hidden;">
-        <div class="vr"></div>
-      </div>
+    <div class="d-flex" style="height: 80px; visibility: hidden;">
+      <div class="vr"></div>
+    </div>
     <div class="row d-flex justify-content-center pt-4">
         <div class="col-7">
             <h1 class="text-center">Fichas de Macotas</h1>
@@ -147,7 +147,7 @@ Inicio - cliente
                 {% if fichas %}
             <div class="row d-flex justify-content-center">
                 <div class="col-5 d-flex justify-content-center pb-1">
-                    <a href="{% url 'descargar_fichas' %}" class="btn btn-success">Descargar (PDF)</a>
+                    <a href="{% url 'descargar_fichas' %}" class="btn">Descargar (PDF)</a>
                 </div>
             </div>
                 {% endif %}
@@ -214,8 +214,8 @@ Inicio - cliente
                                                 <div class='tokenInfo'>
                                                 <div class="duration">
                                                     <div class="actions">
-                                                        <a class="edit btn btn-warning" href="{% url 'editar_ficha' ficha.pk %}">Editar</a>
-                                                        <a class="delete btn btn-danger" href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-url="{% url 'eliminar_ficha' ficha.id %}">Eliminar</a>
+                                                        <a class="edit btn" href="{% url 'editar_ficha' ficha.pk %}">Editar</a>
+                                                        <a class="delete btn " href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-url="{% url 'eliminar_ficha' ficha.id %}">Eliminar</a>
                                                     </div>
                                                 </div>
                                                 </div>

@@ -163,39 +163,40 @@ Reservas de Servicios
     <!-- Reservas Pagadas -->
     <h3 class="text-center text-success">Servicios Pagados</h3>
     {% if reservas_pagadas %}
-        <div class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                {% for reserva in reservas_pagadas %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <div class="card text-center bg-success bg-opacity-10 border border-success rounded-end pt-3">
-                            <div class="card-body">
-                                <h2>Servicio: {{ reserva.servicio }}</h2>
-                                <p><strong>Fecha Reservada:</strong> {{ reserva.fecha_reservada }}</p>
-                                <p><strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}</p>
-                                <p><strong>Hora Inicio:</strong> {{ reserva.hora_inicio }}</p>
-                                <p><strong>Hora Fin:</strong> {{ reserva.hora_fin }}</p>
-                                <p><strong>Precio:</strong> {{ reserva.precio }} CLP</p>
-                                <p><strong>Colaborador:</strong> {{ reserva.colaborador.fullname }}</p>
-                                <p><strong>Estado:</strong> Pagado</p>
-                                <p>*Para cancelar esta reserva de servicio comunícate con el hotel</p>
-                            </div>
+    <div id="reservasPagadasCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for reserva in reservas_pagadas %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="card text-center bg-success bg-opacity-10 border border-success rounded-end pt-3">
+                        <div class="card-body">
+                            <h2>Servicio: {{ reserva.servicio }}</h2>
+                            <p><strong>Fecha Reservada:</strong> {{ reserva.fecha_reservada }}</p>
+                            <p><strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}</p>
+                            <p><strong>Hora Inicio:</strong> {{ reserva.hora_inicio }}</p>
+                            <p><strong>Hora Fin:</strong> {{ reserva.hora_fin }}</p>
+                            <p><strong>Precio:</strong> {{ reserva.precio }} CLP</p>
+                            <p><strong>Colaborador:</strong> {{ reserva.colaborador.fullname }}</p>
+                            <p><strong>Estado:</strong> Pagado</p>
+                            <p>*Para cancelar esta reserva de servicio comunícate con el hotel</p>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
-
-            <button class="carousel-control-prev" type="button" data-bs-target="#reservasPagadasCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#reservasPagadasCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+                </div>
+            {% endfor %}
         </div>
-    {% else %}
-        <p class="text-center text-muted">No hay reservas pagadas.</p>
-    {% endif %}
+
+        <!-- Flechas de control del carrusel -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#reservasPagadasCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#reservasPagadasCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+{% else %}
+    <p class="text-center text-muted">No hay reservas pagadas.</p>
+{% endif %}
 </div>
 
 <div class="d-flex" style="height: 170px;">

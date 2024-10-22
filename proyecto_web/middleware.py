@@ -29,7 +29,8 @@ class LoginRequiredMiddleware:
             'horas_disponibles',
             'cerrar_sesion_colaborador',
             'horas_disponibles',
-            'eliminar_reserva'
+            'eliminar_reserva',
+            'prueba'
         ]
         
         rutas_protegidas = [
@@ -62,11 +63,17 @@ class LoginRequiredMiddleware:
             'cambiar_membresia',
             'cancelar_membresia',
             'actualizar_perfil',
-            'prueba'
+            'agregar_calificacion',
+            'mostrar_calificacion',
+            'enviar_calificacion',
+            'eliminar_calificacion',
+            'inicio_cliente',
+            'generar_pdf_reserva'
         ]
 
         rutas_protegidas_admin = [
              'vistaAdmin',
+             'dashboard_admin',
              'listarProducto',
              'crearOferta',
              'agregarCategoria',
@@ -83,8 +90,7 @@ class LoginRequiredMiddleware:
              'crear_membresia',
              'gestionar_membresias',
              'editar_membresia',
-             'eliminar_membresia'
-
+             'eliminar_membresia',
         ]
 
         if request.path.startswith('/media/'):

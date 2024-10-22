@@ -196,6 +196,7 @@ Inicio - cliente
                                 Reservas pagadas ({{ reservas_pagadas|length }})
                             </h2>
                         </div>
+                        
                     </div>
 
                     {% if reservas_pagadas %}
@@ -214,6 +215,13 @@ Inicio - cliente
                                                 <p><strong>Mascota:</strong> {{ reserva.mascota.nombre_perro }}</p>
                                                 <p><strong>Esta reserva fue pagada por un monto de:</strong> {{ reserva.precio_total }} CLP</p>
                                                 <p>*Para cancelar esta reserva comunicate con el hotel</p>
+                                                <div class="row d-flex justify-content-center">
+                                                    <div class="col-5 text-center">
+                                                        <div class="white-button">
+                                                            <a href="{% url 'generar_pdf_reserva' reserva.id %}">Descargar Reserva</a> <!-- Botón para descargar PDF -->
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

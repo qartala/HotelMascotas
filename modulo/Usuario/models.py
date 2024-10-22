@@ -57,5 +57,16 @@ class ReservaServicio(models.Model):
     class Meta:
         unique_together = ('colaborador', 'servicio', 'fecha_reservada', 'hora_inicio', 'hora_fin', 'mascota')
 
-    def str(self):
+    def __str__(self):
         return f"Reserva de {self.mascota.nombre_perro} para el servicio {self.servicio} el {self.fecha_reservada}"
+
+    
+
+class Calificacion(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    comentario = models.TextField()
+    calificacion = models.PositiveSmallIntegerField(default=5)  # Default definido aquí
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.usuario.username}: {self.calificacion} estrellas"

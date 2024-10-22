@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError
 from .forms import DisponibilidadForm, PerfilColaboradorForm
 from .models import Disponibilidad
 from .decorators import colaborador_required, colaborador_login_required
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 # Create your views here.
 
@@ -28,7 +29,7 @@ def listar_colaboradores(request):
 @colaborador_required
 def horas_disponibles(request):
     colaborador_id = request.session.get('colaborador_id')
-    
+
     if not colaborador_id:
         return redirect('iniciarsesionColaborador')
 
@@ -36,15 +37,37 @@ def horas_disponibles(request):
 
     hoy = datetime.now().date()
     en_30_dias = hoy + timedelta(days=30)
-    
+
+    # Obtener las reservas dentro del rango de 30 días
     reservas = Disponibilidad.objects.filter(colaborador=colaborador, fecha__range=[hoy, en_30_dias])
-    
+
+    # Configurar la paginación para mostrar 5 reservas por página
+    paginator = Paginator(reservas, 5)  
+    page_number = request.GET.get('page', 1)  # Obtener el número de página de la solicitud
+
+    try:
+        # Validar que el número de página sea un entero positivo
+        page_number = int(page_number)
+        if page_number < 1:
+            raise ValueError("El número de página no puede ser menor que 1.")
+
+        # Obtener la página solicitada
+        page_obj = paginator.get_page(page_number)
+
+    except (ValueError, PageNotAnInteger):
+        # Si el número de página no es válido, redirigir a la primera página
+        return redirect('?page=1')
+    except EmptyPage:
+        # Si la página solicitada está fuera del rango, redirigir a la última página
+        return redirect(f'?page={paginator.num_pages}')
+
+    # Contexto para renderizar la plantilla
     contexto = {
-        'reservas': reservas,
-        'colaborador': colaborador,  
+        'page_obj': page_obj,
+        'colaborador': colaborador,
     }
-    
-    return render(request, 'base/colaborador/horas_disponibles.html', contexto)
+
+    return render(request, 'base/colaborador/horas_disponibles.html', context=contexto)
 
 
 @colaborador_required
@@ -78,7 +101,7 @@ def registrar_disponibilidad(request):
                 ).exists()
 
                 if conflicto:
-                    form.add_error(None, "Ya has registrado una disponibilidad para este servicio en este horario.")
+                    form.add_error(None, "Ya has registrado una disponibilidad para este horario.")
                 else:
                     disponibilidad.save()
                     return redirect('horas_disponibles') 

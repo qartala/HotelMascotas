@@ -19,38 +19,41 @@
     <div class="vr"></div>
   </div>
 <div class="container">
-    <h2 class="text-center">Tu Membresía Actual</h2>
 
     {% if membresia %}
-    <div class="card mt-4">
-        <div class="card-header bg-info text-white">
-            <h4 class="text-center">Detalles de la Membresía</h4>
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped text-center">
-                <thead>
-                    <tr>
-                        <th>Nombre de la Membresía</th>
-                        <th>Descuento (%)</th>
-                        <th>Duración (días)</th>
-                        <th>Valor ($)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ membresia.nombre }}</td>
-                        <td>{{ membresia.descuento|stringformat:"d" }}</td>
-                        <td>{{ membresia.duracion_dias }}</td>
-                        <td>{{ membresia.valor|stringformat:"d" }}</td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="row d-flex justify-content-center">
+        <div class="col-6">
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h4 class="text-center">Detalles de tu Membresía</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped text-center">
+                        <thead>
+                            <tr>
+                                <th>Nombre de la Membresía</th>
+                                <th>Descuento (%)</th>
+                                <th>Duración (días)</th>
+                                <th>Valor ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ membresia.nombre }}</td>
+                                <td>{{ membresia.descuento|stringformat:"d" }}</td>
+                                <td>{{ membresia.duracion_dias }}</td>
+                                <td>{{ membresia.valor|stringformat:"d" }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="text-center mt-4">
         <!-- Botón para activar el modal de confirmación -->
-        <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#confirmCancelMembresiaModal">
+        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#confirmCancelMembresiaModal">
             Cancelar Membresía
         </button>
     </div>
@@ -66,11 +69,11 @@
                     ¿Estás seguro de que deseas cancelar tu membresía?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
+                    <button type="button" class="btn" data-bs-dismiss="modal">Volver</button>
                     <!-- Formulario de cancelación -->
                     <form method="POST" action="{% url 'cancelar_membresia' %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Confirmar Cancelación</button>
+                        <button type="submit" class="btn">Confirmar Cancelación</button>
                     </form>
                 </div>
             </div>
@@ -79,7 +82,7 @@
     {% else %}
     <p class="text-center">No tienes ninguna membresía activa en este momento.</p>
     <div class="text-center mt-4">
-        <a href="{% url 'principalUsuario' %}" class="btn btn-primary btn-lg">Volver a Principal</a>
+        <a href="{% url 'principalUsuario' %}" class="btn btn-primary btn-lg">Volver al Inicio</a>
     </div>
     {% endif %}
 </div>
