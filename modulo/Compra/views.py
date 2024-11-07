@@ -10,7 +10,8 @@ from django.urls import reverse
 from transbank.error.transbank_error import TransbankError
 from modulo.Producto.models import Reserva, Membresia
 from modulo.Usuario.models import ReservaServicio, Usuario
-
+import sweetify
+from datetime import date
 def iniciar_pago(request, item_id, tipo_pago):
     # Obtener el item (reserva de habitación, servicio o membresía) según el tipo de pago
     if tipo_pago == 'habitacion':
@@ -50,27 +51,36 @@ def pago_exitoso(request, tipo_pago):
         print(response)
 
         if response['status'] == 'AUTHORIZED':
-            # Actualizar el estado según el tipo de pago
-            item_id = response['buy_order']
+            item_id = response['buy_order']  # ID del item pagado
 
             if tipo_pago == 'habitacion':
                 reserva = get_object_or_404(Reserva, id=item_id)
-                reserva.pagado = True  # Marcar la reserva de la habitación como pagada
+                reserva.pagado = True
                 reserva.save()
+
             elif tipo_pago == 'servicio':
                 reserva = get_object_or_404(ReservaServicio, id=item_id)
-                reserva.pagado = True  # Marcar la reserva del servicio como pagada
+                reserva.pagado = True
                 reserva.save()
+
             elif tipo_pago == 'membresia':
                 membresia = get_object_or_404(Membresia, id=item_id)
                 usuario = Usuario.objects.get(idUsuario=request.user)
-                usuario.membresia = membresia  # Asociar la membresía al usuario
+
+                # Asignar la membresía y registrar la fecha de inicio
+                usuario.membresia = membresia
+                usuario.fecha_inicio_membresia = date.today()  # Asignar la fecha actual
                 usuario.save()
+
+                sweetify.success(request, 'Membresía activada exitosamente.')
+
             else:
                 return render(request, 'base/usuario/error.html', {'error': 'Tipo de pago no válido'})
 
             return render(request, 'base/usuario/pago_exitoso.html', {'item': item_id, 'response': response})
+
         else:
             return render(request, 'base/usuario/pago_fallido.html')
+
     except TransbankError as e:
         return render(request, 'base/usuario/error.html', {'error': str(e)})

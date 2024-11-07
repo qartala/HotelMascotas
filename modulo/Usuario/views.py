@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta, date
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
@@ -15,6 +15,7 @@ import re
 import sweetify
 from .forms import FichaSaludForm
 from .models import Ficha
+
 
 
 
@@ -54,6 +55,11 @@ def perfil(request):
     
     # Obtener el objeto Usuario asociado al User
     usuario = get_object_or_404(Usuario, idUsuario=user)
+
+
+    if not usuario.membresia:
+        sweetify.toast(request, 'No tienes membresia activa!',icon='warning')
+
 
     # Contar las reservas de servicios asociadas a las fichas del usuario
     fichas_usuario = Ficha.objects.filter(id_usuario=usuario)
@@ -417,21 +423,33 @@ def eliminar_reserva_servicio(request, reserva_id):
     return redirect('listar_reservas_servicios')
 
 
+
 def unirse_membresia(request, membresia_id):
     membresia = get_object_or_404(Membresia, id=membresia_id)
     perfil_usuario = Usuario.objects.get(idUsuario=request.user)
 
-    if perfil_usuario.membresia:
-        # Redirigir a la página de gestión de membresías si ya tiene una activa
-        sweetify.warning(request, 'Ya tienes una membresía activa. Por favor, cancélala antes de unirte a otra.')
-        return redirect('gestionar_membresia_usuario')  # O cualquier página de gestión de membresías
+    # Verificar si el usuario ya tiene una membresía activa
+    if perfil_usuario.membresia and perfil_usuario.fecha_inicio_membresia:
+        fecha_vencimiento = perfil_usuario.fecha_inicio_membresia + timedelta(days=perfil_usuario.membresia.duracion_dias)
+        hoy = date.today()
+
+        if hoy >= fecha_vencimiento:
+            # La membresía ha caducado, eliminarla
+            perfil_usuario.membresia = None
+            perfil_usuario.fecha_inicio_membresia = None
+            perfil_usuario.save()
+            sweetify.info(request, 'Tu membresía anterior ha caducado. Ahora puedes unirte a una nueva.')
+        else:
+            sweetify.warning(request, 'Ya tienes una membresía activa. Espera a que caduque para unirte a otra.')
+            return redirect('gestionar_membresia_usuario')
 
     if request.method == 'POST':
-        # Iniciar el proceso de pago de la membresía
+        # Redirigir al proceso de pago
         return redirect('iniciar_pago', item_id=membresia.id, tipo_pago='membresia')
 
-    # Si es un GET o el usuario aún no ha confirmado, mostramos la página de confirmación
+    # Renderizar la página de confirmación para unirse a la membresía
     return render(request, 'base/usuario/membresia_confirmacion.html', {'membresia': membresia})
+
 
 
 def gestionar_membresia_usuario(request):

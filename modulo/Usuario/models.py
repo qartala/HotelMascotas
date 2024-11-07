@@ -13,6 +13,7 @@ class Usuario(models.Model):
     telefono = models.CharField(max_length=15, blank=True, null=True)
     direccion = models.CharField(max_length=255, blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
+    fecha_inicio_membresia = models.DateField(null=True, blank=True)  # Fecha de inicio
 
 class Ficha(models.Model):
     nombre_perro = models.CharField(max_length=100)

@@ -13,6 +13,7 @@ from modulo.Colaborador.models import Colaborador
 from modulo.Usuario.models import Usuario
 import random
 import sweetify
+from datetime import date, timedelta
 
 
 # Create your views here. aqui
@@ -126,48 +127,43 @@ def eliminar(request, idProducto):
     
 def reservar_habitacion(request, habitacion_id):
     habitacion = Habitacion.objects.get(id=habitacion_id)
-    
-    # Obtener el usuario y su perfil
     perfil_usuario = Usuario.objects.get(idUsuario=request.user)
-    
-    # Obtener la membresía del usuario, si tiene una
+
     membresia = perfil_usuario.membresia
-    
+
+    if membresia and perfil_usuario.fecha_inicio_membresia:
+        hoy = date.today()
+        fecha_vencimiento = perfil_usuario.fecha_inicio_membresia + timedelta(days=membresia.duracion_dias)
+
+        if hoy > fecha_vencimiento:
+                # Membresía vencida: Eliminarla del usuario
+                perfil_usuario.membresia = None
+                perfil_usuario.fecha_inicio_membresia = None
+                perfil_usuario.save()  # Guardar los cambios
+                membresia = None
+
     if request.method == 'POST':
         form = ReservaForm(request.POST)
         if form.is_valid():
-            fecha_inicio = form.cleaned_data['fecha_inicio']
-            fecha_fin = form.cleaned_data['fecha_fin']
-            
-            # Verificar si la habitación está disponible
-            if Reserva.verificar_disponibilidad(habitacion, fecha_inicio, fecha_fin):
-                nueva_reserva = form.save(commit=False)
-                nueva_reserva.habitacion = habitacion
-                nueva_reserva.cliente = request.user  # Asigna el cliente actual
-                
-                # Calcular el precio total original
-                precio_original = nueva_reserva.calcular_precio_total()
-                
-                # Aplicar descuento si el usuario tiene una membresía
-                if membresia:
-                    descuento = float(membresia.descuento) / 100  # Convertir porcentaje a decimal
-                    precio_con_descuento = precio_original * (1 - descuento)
-                    nueva_reserva.precio_total = round(precio_con_descuento, 2)  # Redondear a 2 decimales
-                else:
-                    nueva_reserva.precio_total = precio_original  # Sin descuento
+            nueva_reserva = form.save(commit=False)
+            nueva_reserva.habitacion = habitacion
+            nueva_reserva.cliente = request.user
+            precio_original = nueva_reserva.calcular_precio_total()
 
-                nueva_reserva.save()
-                sweetify.success(request, 'Reserva realizada con éxito')
-                return redirect('principalUsuario')  # Redirigir a una página de confirmación
+            if membresia:
+                descuento = float(membresia.descuento) / 100
+                nueva_reserva.precio_total = round(precio_original * (1 - descuento), 2)
             else:
-                sweetify.error(request, 'La habitación no está disponible en las fechas seleccionadas.')
-        else:
-            # Mostrar errores de formulario
-            sweetify.error(request, 'Debes ingresar una mascota para realizar reservas')
+                nueva_reserva.precio_total = precio_original
+
+            nueva_reserva.save()
+            sweetify.success(request, 'Reserva realizada con éxito.')
+            return redirect('principalUsuario')
     else:
         form = ReservaForm()
 
     return redirect('principalUsuario')
+
 
 
 
