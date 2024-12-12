@@ -1,0 +1,199 @@
+{% extends 'base/admin/Administrador.html' %}
+{% block title %}Reservas Activas{% endblock %}
+{% block content %}
+{% load custom_filters %}
+
+<style>
+    
+    .badge {
+    font-size: 0.75rem; /* Ajustar tamaño del texto */
+    padding: 0.5em 0.6em; /* Espaciado interno */
+}
+
+</style>
+
+<div class="container-xl">
+    <h2>Reservas Activas</h2>
+
+    <!-- Notificación de mensajes no respondidos -->
+    <div id="mensaje-notificacion" class="alert alert-warning alert-dismissible fade show {% if total_mensajes_no_respondidos > 0 %} d-block {% else %} d-none {% endif %}" role="alert">
+        <strong>Tienes {{ total_mensajes_no_respondidos }} mensaje(s) no respondido(s).</strong> Haz clic para ver los detalles.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Cliente</th>
+                <th>Nombre de la Mascota</th>
+                <th>Foto</th>
+                <th>Habitación</th>
+                <th>Trabajador</th>
+                <th>Fechas</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reserva in reservas %}
+            <tr>
+                <td>{{ reserva.id }}</td>
+                <td>{{ reserva.cliente.username }}</td>
+                <td>{{ reserva.mascota.nombre_perro }}</td>
+                <td>
+                    <img src="{{ reserva.mascota.imagen_mascota.url }}" alt="Foto de {{ reserva.mascota.nombre_perro }}" style="width: 50px; height: 50px; border-radius: 50%;">
+                </td>
+                <td>{{ reserva.habitacion.numero_habitacion }}</td>
+                <td>{{ reserva.trabajador.username }}</td>
+                <td>{{ reserva.fecha_inicio }} - {{ reserva.fecha_fin }}</td>
+                <td>
+                    <button class="btn btn-primary position-relative" data-reserva-id="{{ reserva.id }}" data-cliente-nombre="{{ reserva.cliente.username }}" onclick="abrirChat(this)">
+                        <i class="fa fa-envelope"></i> Mensaje
+                        {% with mensajes_por_reserva|get_item:reserva.id as total_mensajes %}
+                            {% if total_mensajes %}
+                                <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">+{{ total_mensajes }}</span>
+                            {% endif %}
+                        {% endwith %}
+                    </button>
+                </td>
+                
+                
+                
+                
+                
+                
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No hay reservas activas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal para el Chat -->
+<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chatModalLabel">Chat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="chat-container" style="max-height: 300px; overflow-y: auto; margin-bottom: 10px;">
+                    <!-- Los mensajes se cargarán aquí -->
+                </div>
+                <div class="input-group">
+                    <input type="text" id="nuevoMensaje" class="form-control" placeholder="Escribe un mensaje...">
+                    <button id="enviarMensaje" class="btn btn-primary">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function abrirChat(button) {
+        const reservaId = button.getAttribute('data-reserva-id');
+        const clienteNombre = button.getAttribute('data-cliente-nombre');
+        document.getElementById('chatModalLabel').innerText = `Chat con ${clienteNombre} - Reserva ${reservaId}`;
+    
+        const chatContainer = document.getElementById('chat-container');
+        chatContainer.innerHTML = '<p>Cargando mensajes...</p>';
+
+        fetch(`/api/chat/history/${reservaId}/`)
+            .then(response => response.json())
+            .then(data => {
+                chatContainer.innerHTML = '';
+                data.forEach(mensaje => {
+                    const messageElement = document.createElement('div');
+                    messageElement.innerHTML = `
+                        <strong>${mensaje.emisor_nombre}:</strong> ${mensaje.contenido} <br>
+                        <small>${new Date(mensaje.fecha_hora).toLocaleString()}</small>
+                    `;
+                    chatContainer.appendChild(messageElement);
+                });
+            })
+            .catch(error => {
+                chatContainer.innerHTML = '<p>Error al cargar mensajes.</p>';
+                console.error('Error:', error);
+            });
+
+        const enviarMensajeButton = document.getElementById('enviarMensaje');
+        enviarMensajeButton.setAttribute('data-reserva-id', reservaId);
+        enviarMensajeButton.setAttribute('data-emisor-id', '{{ user.id }}'); // Emisor actual (admin)
+        
+        const chatModal = new bootstrap.Modal(document.getElementById('chatModal'));
+        chatModal.show();
+    }
+
+    document.getElementById('enviarMensaje').onclick = function () {
+        const nuevoMensaje = document.getElementById('nuevoMensaje').value;
+        const enviarMensajeButton = document.getElementById('enviarMensaje');
+        const emisorId = enviarMensajeButton.getAttribute('data-emisor-id');
+        const reservaId = enviarMensajeButton.getAttribute('data-reserva-id');
+
+        if (nuevoMensaje.trim() === '') return;
+
+        fetch('/api/chat/enviar/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({
+                reserva_id: reservaId,
+                contenido: nuevoMensaje,
+                emisor_id: emisorId,
+            }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al enviar mensaje');
+            }
+            return response.json();
+        })
+        .then(mensaje => {
+            // Si el admin responde, marcamos el mensaje como respondido
+            if (emisorId == 1) {  // ID del administrador
+                fetch(`/api/chat/marcar_respondido/${reservaId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: JSON.stringify({
+                        reserva_id: reservaId,
+                        receptor_id: '{{ user.id }}',  // El ID del receptor
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al marcar los mensajes como respondidos');
+                    }
+                    // Desaparece la notificación de mensajes no respondidos
+                    document.getElementById("mensaje-notificacion").style.display = "none";
+                })
+                .catch(error => console.error('Error al marcar los mensajes como respondidos:', error));
+            }
+
+            // Agregar el nuevo mensaje al chat
+            const chatContainer = document.getElementById('chat-container');
+            const messageElement = document.createElement('div');
+            messageElement.innerHTML = `
+                <strong>${mensaje.emisor_nombre}:</strong> ${mensaje.contenido} <br>
+                <small>${new Date(mensaje.fecha_hora).toLocaleString()}</small>
+            `;
+            chatContainer.appendChild(messageElement);
+            document.getElementById('nuevoMensaje').value = ''; // Limpiar el input
+        })
+        .catch(error => console.error('Error al enviar mensaje:', error));
+    };
+</script>
+
+
+
+{% endblock %}

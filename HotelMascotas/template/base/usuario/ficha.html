@@ -1,0 +1,397 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - Cliente
+{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+
+        /* Aumentar el espacio superior para dar aire entre el navbar y el contenido 
+
+        /* Sección estilizada con mayor margen */
+        .section {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Título estilizado */
+        .section h2 {
+            color: #2980b9;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para los campos del formulario */
+        .field {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        /* Etiquetas más espaciadas */
+        label {
+            width: 160px;
+            font-weight: bold;
+        }
+
+        /* Input y selects estilizados */
+        .field input, .field textarea, .field select {
+            width: calc(100% - 180px);
+            padding: 12px;
+            border: 1px solid #2980b9;
+            border-radius: 4px;
+            font-size: 16px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease;
+        }
+
+        /* Efecto al enfocar los campos */
+        .field input:focus, .field textarea:focus, .field select:focus {
+            border-color: #0d6efd;
+            outline: none;
+        }
+
+        /* Contenedores de selección (vacunas, alergias, etc.) */
+        .selection-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .selection-box {
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Botones entre cajas */
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left: 10px;
+        }
+
+        .buttons button {
+            width: 40px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #0d6efd;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Botón para guardar la ficha */
+        .btnGuardar {
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+
+        /* Hover en el botón de guardar */
+        .btnGuardar:hover {
+            background-color: #218838;
+        }
+
+    </style>
+</head>
+<div class="d-flex" style="height: 100px; visibility: hidden;">
+    <div class="vr"></div>
+  </div>
+<!-- Formulario de ficha de salud -->
+<form method="POST" enctype="multipart/form-data" action="">
+    {% csrf_token %}
+    <div class="container" >
+        <!-- Sección de información general de la mascota -->
+        <div class="section">
+            <h2>Ficha de Salud de la Mascota</h2>
+            <div class="row">
+                <div class="col-6">
+                    <div class="field">
+                        <label for="nombre_perro">Nombre del Perro:</label>
+                        <input type="text" id="nombre_perro" name="nombre_perro" value="{{ form.nombre_perro.value|default:'' }}" placeholder="Nombre de tu perro" required>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <div class="oculto">
+                        <input type="text" id="nombre_dueno" name="nombre_dueno" value="{{ user.first_name }}" hidden>
+                    </div>
+                    {% endif %}
+                    <div class="field">
+                        <label for="raza">Raza:</label>
+                        <input type="text" id="raza" name="raza" value="{{ form.raza.value|default:'' }}" placeholder="Raza del perro" required>
+                    </div>
+        
+                    <div class="field">
+                        <label for="edad">Edad:</label>
+                        <input type="number" id="edad" name="edad" value="{{ form.edad.value|default:'' }}" placeholder="Edad en años" required>
+                    </div>
+        
+                </div>
+                <div class="col-6">
+                    <div class="field">
+                        <label for="peso">Peso:</label>
+                        <input type="number" id="peso" name="peso" value="{{ form.peso.value|default:'' }}" placeholder="Peso en kg" required>
+                    </div>
+        
+                    <div class="field">
+                        <label for="chip">¿Tiene Chip?</label>
+                        <select id="chip" name="chip" required>
+                            <option value="">Selecciona...</option>
+                            <option value="si">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+        
+                    <div class="field">
+                        <label for="comida">Tipo de Comida:</label>
+                        <input type="text" id="comida" name="comida" value="{{ form.comida.value|default:'' }}" placeholder="Escribe el tipo de comida" required>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="field">
+                        <label for="imagen_mascota">Imagen de la mascota:</label>
+                        <input type="file" id="imagen_mascota" name="imagen_mascota" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de historial médico -->
+        <div class="section">
+            <h2>Historial Médico</h2>
+
+            <!-- Selección de Vacunas -->
+            <div class="selection-container">
+                <div class="selection-box">
+                    <label>Vacunas Disponibles:</label>
+                    <select id="vacunas" name="vacunas" multiple>
+                        <option value="ninguna">Ninguna</option>
+                        <option value="Rabia">Vacuna contra la Rabia</option>
+                        <option value="Parvovirus">Vacuna contra el Parvovirus</option>
+                        <option value="Moquillo">Vacuna contra el Moquillo</option>
+                        <option value="Hepatitis">Vacuna contra la Hepatitis</option>
+                        <option value="Tifus">Vacuna contra el Tifus Canino</option>
+                    </select>
+                </div>
+
+                <div class="buttons">
+                    <button type="button" onclick="moverVacunaDerecha()">→</button>
+                    <button type="button" onclick="moverVacunaIzquierda()">←</button>
+                </div>
+
+                <div class="selection-box">
+                    <label>Vacunas Seleccionadas:</label>
+                    <textarea id="vacunasSeleccionadas" name="vacunas" rows="6"></textarea>
+                </div>
+            </div>
+
+            <!-- Selección de Alergias -->
+            <div class="selection-container">
+                <div class="selection-box">
+                    <label>Alergias Disponibles:</label>
+                    <select id="alergias" name="alergias" multiple>
+                        <option value="Ninguna">Ninguna</option>
+                        <option value="Polen">Polen</option>
+                        <option value="Polvo">Polvo</option>
+                        <option value="Verduras">Verduras</option>
+                        <option value="Carne">Carne</option>
+                        <option value="Pescado">Pescado</option>
+                    </select>
+                </div>
+
+                <div class="buttons">
+                    <button type="button" onclick="moverAlergiaDerecha()">→</button>
+                    <button type="button" onclick="moverAlergiaIzquierda()">←</button>
+                </div>
+
+                <div class="selection-box">
+                    <label>Alergias Seleccionadas:</label>
+                    <textarea id="alergiasSeleccionadas" name="alergias" rows="6"></textarea>
+                </div>
+            </div>
+
+            <!-- Selección de Enfermedades -->
+            <div class="selection-container">
+                <div class="selection-box">
+                    <label>Enfermedades Disponibles:</label>
+                    <select id="enfermedades" name="enfermedades" multiple>
+                        <option value="Ninguna">Ninguna</option>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="Hipotiroidismo">Hipotiroidismo</option>
+                        <option value="Epilepsia">Epilepsia</option>
+                    </select>
+                </div>
+
+                <div class="buttons">
+                    <button type="button" onclick="moverEnfermedadDerecha()">→</button>
+                    <button type="button" onclick="moverEnfermedadIzquierda()">←</button>
+                </div>
+
+                <div class="selection-box">
+                    <label>Enfermedades Seleccionadas:</label>
+                    <textarea id="enfermedadesSeleccionadas" name="enfermedades" rows="6"></textarea>
+                </div>
+            </div>
+        </div>
+        <div id="liveAlertPlaceholder"></div>
+        <!-- Botón para guardar -->
+        <div class="row d-flex justify-content-center">
+            <div class="col-8">
+                <button class="btnGuardar mb-3" type="submit">Guardar Ficha de Salud</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    function moverVacunaDerecha() {
+        moverItem('vacunas', 'vacunasSeleccionadas');
+    }
+
+    function moverVacunaIzquierda() {
+        removerItem('vacunasSeleccionadas');
+    }
+
+    function moverAlergiaDerecha() {
+        moverItem('alergias', 'alergiasSeleccionadas');
+    }
+
+    function moverAlergiaIzquierda() {
+        removerItem('alergiasSeleccionadas');
+    }
+
+    function moverEnfermedadDerecha() {
+        moverItem('enfermedades', 'enfermedadesSeleccionadas');
+    }
+
+    function moverEnfermedadIzquierda() {
+        removerItem('enfermedadesSeleccionadas');
+    }
+
+    function moverItem(origenId, destinoId) {
+        var origen = document.getElementById(origenId);
+        var destino = document.getElementById(destinoId);
+
+        Array.from(origen.selectedOptions).forEach(option => {
+            if (!destino.value.includes(option.text)) {
+                destino.value += option.text + "\n";
+            }
+        });
+    }
+
+    function removerItem(destinoId) {
+        var destino = document.getElementById(destinoId);
+        var items = destino.value.trim().split('\n');
+        items.pop();
+        destino.value = items.join('\n');
+    }
+</script>
+
+<script>
+    function showAlert(message, type) {
+        const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+            <div class="alert alert-${type} alert-dismissible" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        alertPlaceholder.append(wrapper);
+    }
+</script>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault();  // Previene el envío por defecto
+
+        // Limpiar alertas previas
+        document.getElementById('liveAlertPlaceholder').innerHTML = '';
+
+        // Variables de campo
+        const nombrePerro = document.getElementById('nombre_perro').value.trim();
+        const raza = document.getElementById('raza').value.trim();
+        const edad = document.getElementById('edad').value;
+        const peso = document.getElementById('peso').value;
+        const chip = document.getElementById('chip').value;
+        const comida = document.getElementById('comida').value.trim();
+        const imagenMascota = document.getElementById('imagen_mascota').files[0];
+
+        let isValid = true;
+
+        // Validación de nombre del perro: mínimo 2 caracteres, solo letras y espacios
+        const namePattern = /^[A-Za-z\s]{2,}$/;
+        if (!namePattern.test(nombrePerro)) {
+            showAlert('El nombre del perro debe tener al menos 2 letras y solo puede contener letras y espacios.', 'danger');
+            isValid = false;
+        }
+
+        // Validación de raza: mínimo 2 caracteres, solo letras y espacios
+        if (!namePattern.test(raza)) {
+            showAlert('La raza debe tener al menos 2 letras y solo puede contener letras y espacios.', 'danger');
+            isValid = false;
+        }
+
+        // Validación de edad: valor positivo entre 0 y 30 años
+        if (isNaN(edad) || edad <= 0 || edad > 30) {
+            showAlert('La edad debe ser un número positivo entre 1 y 35 años.', 'danger');
+            isValid = false;
+        }
+
+        // Validación de peso: valor positivo entre 0 y 100 kg
+        if (isNaN(peso) || peso <= 0 || peso > 100) {
+            showAlert('El peso debe ser un número positivo entre 1 y 170 kg.', 'danger');
+            isValid = false;
+        }
+
+        // Validación de chip: debe seleccionar "Sí" o "No"
+        if (chip !== 'si' && chip !== 'no') {
+            showAlert('Por favor selecciona si la mascota tiene chip.', 'danger');
+            isValid = false;
+        }
+
+        // Validación de tipo de comida: mínimo 2 caracteres
+        if (comida.length < 2) {
+            showAlert('El tipo de comida debe tener al menos 2 caracteres.', 'danger');
+            isValid = false;
+        }
+
+        // Validación de imagen: tamaño menor a 5 MB, opcional
+        if (imagenMascota && imagenMascota.size > 5 * 1024 * 1024) {
+            showAlert('La imagen de la mascota debe ser menor a 5 MB.', 'danger');
+            isValid = false;
+        }
+
+        // Enviar formulario si todas las validaciones pasan
+        if (isValid) {
+            this.submit();
+        }
+    });
+</script>
+<div class="d-flex" style="height: 50px;">
+    <div class="vr"></div>
+  </div>
+{% endblock %}

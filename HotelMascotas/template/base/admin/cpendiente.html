@@ -1,0 +1,40 @@
+<!-- Tabla de Reservas -->
+{% if reservas %}
+<div class="table-responsive mt-5">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Id</th>
+                <th>Cliente</th>
+                <th>Habitación</th>
+                <th>Mascota</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Pagado</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reserva in reservas %}
+            <tr>
+                <td>{{ reserva.id }}</td>
+                <td>{{ reserva.cliente.username }}</td>
+                <td>{{ reserva.habitacion.numero_habitacion }}</td>
+                <td>{{ reserva.mascota.nombre_perro }}</td>
+                <td>{{ reserva.fecha_inicio }}</td>
+                <td>{{ reserva.fecha_fin }}</td>
+                <td>{{ reserva.pagado|yesno:"Sí,No" }}</td>
+                <td>{{ reserva.check_in|yesno:"Sí,No" }}</td>
+                <td>{{ reserva.checkout|yesno:"Sí,No" }}</td>
+                <td>
+                    <a href="{% url 'realizar_check_in' reserva.id %}" class="btn btn-primary btn-sm">Check-in</a>
+                    <a href="{% url 'realizar_checkout' reserva.id %}" class="btn btn-success btn-sm">Check-out</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}

@@ -1,0 +1,68 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/locale/es.js'></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'es', // Configuración del idioma
+      events: function(fetchInfo, successCallback, failureCallback) {
+        $.ajax({
+          url: "{% url 'obtener_reservas_json' habitacion.id %}", // URL de tu vista Django con habitacion.id
+          dataType: 'json',
+          success: function(data) {
+            successCallback(data);
+          },
+          error: function() {
+            failureCallback();
+          }
+        });
+      },
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      eventColor: '#378006',
+      buttonText: {
+        prev: "Ant",
+        next: "Sig",
+        today: "Hoy",
+        month: "Mes",
+        week: "Semana",
+        day: "Día",
+        list: "Agenda"
+      },
+      weekText: "Sm",
+      allDayText: "Todo el día",
+      moreLinkText: "más",
+      noEventsText: "No hay eventos para mostrar"
+    });
+    calendar.render();
+  });
+</script>
+
+<div class="d-flex" style="height: 100px;">
+  <div class="vr"></div>
+</div>
+
+<div class="card">
+  <div class="card-title text-center pt-3">
+    <h2>Horarios de la habitación {{ habitacion.numero_habitacion }}</h2>
+  </div>
+  <div class="card-body">
+    <p class="text-center">En el siguiente calendario puedes revisar todos los días en que la habitación se encuentra ocupada.</p>
+    <div id='calendar' class="card" style="padding: 20px;"></div>
+  </div>
+</div>
+{% endblock %}

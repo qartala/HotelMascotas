@@ -1,0 +1,29 @@
+.container {
+  padding: 1rem;
+}
+
+.video-card {
+  margin-bottom: 1.5rem;
+}
+
+.video-preview {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.no-videos {
+  text-align: center;
+  color: gray;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+.upload-section {
+  margin-top: 2rem;
+}
+
+.upload-section ion-item {
+  margin-bottom: 1rem;
+}

@@ -1,0 +1,96 @@
+{% extends 'base/admin/Administrador.html' %}
+{% block title %}Recepción - Reservas No Pagadas{% endblock %}
+{% block content %}
+<div class="container-xl">
+    <h2>Reservas No Pagadas</h2>
+
+    <!-- Barra de búsqueda -->
+    <form method="GET" action="">
+        <div class="row mb-3 d-flex justify-content-start">
+            <div class="col-md-3">
+                <input
+                    type="text"
+                    name="buscar_cliente"
+                    class="form-control"
+                    placeholder="Buscar por nombre del cliente"
+                    value="{{ buscar_cliente }}">
+            </div>
+            <div class="col-md-3">
+                <input
+                    type="text"
+                    name="buscar_habitacion"
+                    class="form-control"
+                    placeholder="Buscar por número de habitación"
+                    value="{{ buscar_habitacion }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Cliente</th>
+                <th>Habitación</th>
+                <th>Precio de Habitación</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reserva in reservas %}
+            <tr>
+                <td>{{ reserva.id }}</td>
+                <td>{{ reserva.cliente.first_name }} {{ reserva.cliente.last_name }}</td>
+                <td>{{ reserva.habitacion.numero_habitacion }}</td>
+                <td>${{ reserva.habitacion.precio }}</td>
+                <td>{{ reserva.fecha_inicio }}</td>
+                <td>{{ reserva.fecha_fin }}</td>
+                <td>
+                    <!-- Botón para abrir el modal -->
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal{{ reserva.id }}">
+                        Marcar como Pagada
+                    </button>
+                </td>
+            </tr>
+            
+            <!-- Modal de confirmación -->
+            <div class="modal fade" id="confirmModal{{ reserva.id }}" tabindex="-1" aria-labelledby="confirmModalLabel{{ reserva.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmModalLabel{{ reserva.id }}">Confirmación</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            ¿Estás seguro de que deseas marcar esta reserva como pagada?
+                            <ul>
+                                <li><strong>ID:</strong> {{ reserva.id }}</li>
+                                <li><strong>Cliente:</strong> {{ reserva.cliente.first_name }} {{ reserva.cliente.last_name }}</li>
+                                <li><strong>Habitación:</strong> {{ reserva.habitacion.numero_habitacion }}</li>
+                                <li><strong>Precio:</strong> ${{ reserva.habitacion.precio }}</li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <form method="POST" action="{% url 'marcar_como_pagada' reserva.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success">Confirmar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <tr>
+                <td colspan="7">No hay reservas no pagadas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

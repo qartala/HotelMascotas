@@ -1,0 +1,83 @@
+<ion-app>
+  <!-- Contenido Principal -->
+  <div class="ion-page" id="main-content">
+    <ion-header>
+      <ion-toolbar class="navbar">
+        <ion-buttons slot="start">
+          <ion-button (click)="regresar()" class="menu-item">
+            <ion-icon slot="icon-only" name="arrow-back-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title class="navbar-title">Mi Perfil</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content [fullscreen]="true" class="perfil-background">
+      <div class="background-image"></div>
+
+      <ion-card class="perfil-card">
+        <div class="perfil-avatar-container">
+          <ion-avatar class="perfil-avatar">
+            <ion-icon *ngIf="selectedIcon" [name]="selectedIcon" class="perfil-icon"></ion-icon>
+            <ion-icon *ngIf="!selectedIcon" name="person-circle-outline" class="perfil-icon"></ion-icon>
+          </ion-avatar>
+        </div>
+
+        <ion-card-header class="ion-text-center">
+          <ion-card-title class="perfil-username">{{ usuario?.idUsuario?.first_name || 'Usuario' }}</ion-card-title>
+          <ion-card-subtitle class="perfil-email">{{ usuario?.idUsuario?.email || 'Correo no registrado' }}</ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-list lines="full">
+            <ion-item>
+              <ion-label color="primary">Teléfono</ion-label>
+              <ion-note slot="end">{{ usuario?.telefono || 'No registrado' }}</ion-note>
+            </ion-item>
+            <ion-item>
+              <ion-label color="primary">Dirección</ion-label>
+              <ion-note slot="end">{{ usuario?.direccion || 'No registrada' }}</ion-note>
+            </ion-item>
+            <ion-item>
+              <ion-label color="primary">Fecha de Nacimiento</ion-label>
+              <ion-note slot="end">{{ usuario?.fecha_nacimiento || 'No registrada' }}</ion-note>
+            </ion-item>
+            <ion-item *ngIf="membresia">
+              <ion-label color="primary">Membresía</ion-label>
+              <ion-note slot="end">{{ membresia.nombre }}</ion-note>
+            </ion-item>
+            <ion-item *ngIf="!membresia">
+              <ion-label color="primary">Membresía</ion-label>
+              <ion-note slot="end">Sin membresía</ion-note>
+            </ion-item>
+            <ion-item>
+              <ion-label color="primary">Fecha de Inicio Membresía</ion-label>
+              <ion-note slot="end">{{ usuario?.fecha_inicio_membresia || 'No registrada' }}</ion-note>
+            </ion-item>
+            <ion-item>
+              <ion-label color="primary">Trabajador</ion-label>
+              <ion-note slot="end">{{ usuario?.trabajador ? 'Sí' : 'No' }}</ion-note>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+
+        <ion-list>
+          <ion-item lines="none">
+            <ion-label>Selecciona un icono de perfil</ion-label>
+          </ion-item>
+          <div class="icon-selection">
+            <ion-icon *ngFor="let icon of iconList" [name]="icon" (click)="selectIcon(icon)" size="large" color="primary"></ion-icon>
+          </div>
+        </ion-list>
+      </ion-card>
+
+      <div class="wave-bottom">
+        <div style="height: 150px; overflow: hidden;">
+          <svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+            <path d="M-6.49,71.55 C271.16,166.30 289.21,42.94 507.62,112.02 L500.00,150.00 L0.00,150.00 Z" style="stroke: none; fill: rgb(0, 136, 255);"></path>
+          </svg>
+        </div>
+      </div>
+    </ion-content>
+  </div>
+</ion-app>

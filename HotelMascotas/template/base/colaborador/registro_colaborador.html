@@ -1,0 +1,274 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - colab
+{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+        #messages {
+            position: fixed;
+            top: 80%;
+            left: 50%;
+            z-index: 1000;
+            width: 300px; /* Puedes ajustar el ancho si lo deseas */
+            text-align: center;
+        }
+        .register-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1300px;
+            height: 600px;
+            margin: 0 auto;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 50px;
+        }
+
+        .register-left {
+            background: linear-gradient(to bottom right, #0066ff, #0099cc);
+            width: 100%;
+            height: 100%;
+            padding: 50px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            flex-direction: column;
+            text-align: center;
+            padding-bottom: 120px;
+        }
+
+        .register-left h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .register-left p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .register-right {
+            background-color: #fff;
+            width: 100%;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .register-right h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #0066ff;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-check-input {
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background-color: #0066ff;
+            border: none;
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #004db3;
+        }
+
+        /* Wave background */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: url('https://cdn.jsdelivr.net/gh/abrahamcalfie/svg-wave-top@master/wave.svg') no-repeat;
+            background-size: cover;
+            z-index: -1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .register-wrapper {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .register-left,
+            .register-right {
+                width: 100%;
+            }
+
+            .register-left {
+                padding: 30px;
+            }
+
+            .register-right {
+                padding: 30px;
+            }
+        }
+        
+    </style>
+</head>
+
+<div class="d-flex" style="height: 80px;">
+    <div class="vr"></div>
+  </div>
+<!-- Register Section -->
+<div class="register-wrapper">
+    <!-- Left section with wave and text -->
+     <div class="row">
+        <div class="col-4 ">
+            <div class="register-left">
+                <h1>¡Únete a Pets Team!</h1>
+                <div id="liveAlertPlaceholder"></div>
+                <div class="wave"></div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="register-right">
+                <h2 style="text-align: center;">Registro de colaboradores</h2>
+                <form method="POST" enctype="multipart/form-data" action="{% url 'registro_colaborador' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Nombre Completo" maxlength="255" required value="{{ fullname|default_if_none:'' }}">
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Nombre de Usuario" maxlength="255" required value="{{ username|default_if_none:'' }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1" style="background-color: #f8f9fa; padding-right: 12px; padding-left: 12px; display: flex; align-items: center; height: 60px; line-height: 3;">+569</span>
+                                <input type="text" style="height: 60px;" class="form-control" id="phone" name="phone" placeholder="12345678" maxlength="8" pattern="\d{8}" required value="{{ phone|default_if_none:'' }} ">
+                            </div>                            
+                            <input type="text" class="form-control" id="email" name="email" placeholder="usuario@ejemplo.com" required>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="service" class="form-label">Servicios a postular:</label>
+                                <select class="form-select" id="service" name="service" required>
+                                    <option value="" disabled {% if not servicio %}selected{% endif %}>Seleccione un servicio:</option>
+                                    <option value="Baños" {% if servicio == "Baños" %}selected{% endif %}>Baños</option>
+                                    <option value="Spa" {% if servicio == "Spa" %}selected{% endif %}>Spa</option>
+                                    <option value="Fotografía" {% if servicio == "Fotografía" %}selected{% endif %}>Fotografía</option>
+                                    <option value="Peluqueria" {% if servicio == "Peluqueria" %}selected{% endif %}>Peluqueria</option>
+                                    <option value="Servicio de transportes" {% if servicio == "Servicio de transportes" %}selected{% endif %}>Transportes</option>
+                                </select>
+                            </div>
+                            <input type="file" class="form-control" id="pdf_file" name="pdf_file" accept=".pdf" required>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-8 text-center">
+                            <button type="submit" class="btn" style="width: 50%;">Registrarse</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+     </div>
+
+</div>
+<div class="d-flex" style="height: 80px;">
+    <div class="vr"></div>
+  </div>
+
+<script>
+    function showAlert(message, type) {
+        const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+            <div class="alert alert-${type} alert-dismissible" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        alertPlaceholder.append(wrapper);
+    }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Mostrar errores de usuario o correo ya existentes, si se encuentran en el contexto
+        const existingUsername = "{{ existing_username|default:'' }}";
+        const existingEmail = "{{ existing_email|default:'' }}";
+
+        if (existingUsername) {
+            showAlert(`El nombre de usuario '${existingUsername}' ya está en uso.`, 'danger');
+        }
+
+        if (existingEmail) {
+            showAlert(`El correo electrónico '${existingEmail}' ya está en uso.`, 'danger');
+        }
+
+        // Agregar validaciones de formulario en el evento submit
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Previene el envío del formulario si hay errores
+            document.getElementById('liveAlertPlaceholder').innerHTML = ''; // Limpia alertas previas
+            let isValid = true;
+
+            const fullname = document.getElementById('fullname').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            // Validación del nombre completo
+            if (fullname.length > 100) {
+                showAlert('El nombre completo no puede tener más de 100 caracteres.', 'danger');
+                isValid = false;
+            }
+
+            // Validación del nombre de usuario
+            if (username.length > 15) {
+                showAlert('El nombre de usuario no puede tener más de 15 caracteres.', 'danger');
+                isValid = false;
+            } else if (!/^(?=.*[A-Z])(?=.*[0-9])(?=.*[.-]).{1,15}$/.test(username)) {
+                showAlert('El nombre de usuario debe contener al menos una mayúscula, un número y un punto o guion.', 'danger');
+                isValid = false;
+            }
+
+            // Validación de la contraseña
+            if (password.length > 15) {
+                showAlert('La contraseña no puede tener más de 15 caracteres.', 'danger');
+                isValid = false;
+            } else if (!/(?=.*[A-Z])/.test(password)) {
+                showAlert('La contraseña debe contener al menos una letra mayúscula.', 'danger');
+                isValid = false;
+            }
+
+            // Validación del teléfono
+            if (!/^\d{8}$/.test(phone)) {
+                showAlert('El número de teléfono debe tener el formato de 8 dígitos después de +569.', 'danger');
+                isValid = false;
+            }
+
+            // Validación del correo electrónico
+            if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
+                showAlert('Introduce una dirección de correo válida.', 'danger');
+                isValid = false;
+            }
+
+            // Enviar el formulario si todas las validaciones pasan
+            if (isValid) {
+                this.submit();
+            }
+        });
+    });
+</script>
+{% endblock %}

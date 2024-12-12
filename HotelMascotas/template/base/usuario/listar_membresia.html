@@ -1,0 +1,95 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}Gestionar Membresía{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+      footer {
+        margin-top: auto;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+    </style>
+</head>
+<div class="d-flex" style="height: 90px; visibility: hidden;">
+    <div class="vr"></div>
+  </div>
+<div class="container">
+
+    {% if membresia %}
+    <div class="row d-flex justify-content-center">
+        <div class="col-6">
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h4 class="text-center">Detalles de tu Membresía</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped text-center">
+                        <thead>
+                            <tr>
+                                <th>Nombre de la Membresía</th>
+                                <th>Descuento (%)</th>
+                                <th>Duración (días)</th>
+                                <th>Valor ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ membresia.nombre }}</td>
+                                <td>{{ membresia.descuento|stringformat:"d" }}</td>
+                                <td>{{ membresia.duracion_dias }}</td>
+                                <td>{{ membresia.valor|stringformat:"d" }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <!-- Botón para activar el modal de confirmación -->
+        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#confirmCancelMembresiaModal">
+            Cancelar Membresía
+        </button>
+    </div>
+    <!-- Modal para confirmar la eliminación del colaborador -->
+    <div class="modal fade" id="confirmCancelMembresiaModal" tabindex="-1" aria-labelledby="confirmCancelMembresiaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmCancelMembresiaModalLabel">Confirmar Cancelación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas cancelar tu membresía?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-bs-dismiss="modal">Volver</button>
+                    <!-- Formulario de cancelación -->
+                    <form method="POST" action="{% url 'cancelar_membresia' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn">Confirmar Cancelación</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="d-flex" style="height: 90px; visibility: hidden;">
+    <div class="vr"></div>
+    </div>
+    <p class="text-center">No tienes ninguna membresía activa en este momento.</p>
+    <div class="text-center mt-4">
+        <a href="{% url 'principalUsuario' %}" class="btn btn-primary btn-lg">Volver al Inicio</a>
+    </div>
+    <div class="d-flex" style="height: 90px; visibility: hidden;">
+        <div class="vr"></div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

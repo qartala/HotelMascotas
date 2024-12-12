@@ -1,0 +1,186 @@
+<ion-app>
+  <!-- Contenido Principal -->
+  <div class="ion-page" id="main-content">
+    <!-- Header -->
+    <ion-header>
+      <ion-toolbar class="navbar header-toolbar">
+        <!-- Botón de volver a la izquierda -->
+        <ion-buttons slot="start" class="volver-boton">
+          <ion-button (click)="volver()" class="menu-item">
+            <ion-icon slot="icon-only" name="arrow-back-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
+        <!-- Título centrado -->
+        <ion-title class="navbar-title">Pets Team</ion-title>
+
+        <!-- Ícono de galería de videos a la derecha -->
+        <ion-buttons slot="end">
+          <ion-button
+          *ngIf="reserva?.id !== undefined"
+          (click)="irAVideoTrabajador(reserva?.id)"
+          class="menu-item"
+        >
+          <ion-icon slot="icon-only" name="images-outline" color="primary"></ion-icon>
+        </ion-button>
+
+        </ion-buttons>
+
+
+
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content *ngIf="reserva && groupedServicios" class="contenido-seguimiento">
+      <div class="info-mascota">
+        <img [src]="reserva.mascota.imagen_mascota" alt="Imagen de la mascota" *ngIf="reserva.mascota.imagen_mascota" class="imagen-mascota" />
+
+        <h2 class="titulo-mascota">{{ reserva.mascota.nombre_perro }}</h2>
+        <p class="texto-secundario">Dueño: <strong>{{ reserva.mascota.nombre_dueno }}</strong></p>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4"><p><strong>Raza:</strong> {{ reserva.mascota.raza }}</p></ion-col>
+            <ion-col size="4"><p><strong>Edad:</strong> {{ reserva.mascota.edad }} años</p></ion-col>
+            <ion-col size="4"><p><strong>Peso:</strong> {{ reserva.mascota.peso }} kg</p></ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <hr class="separator"/>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <p><strong>🍖 Comida:</strong>
+              </p>
+              <span>{{ reserva.mascota.comida }}</span>
+            </ion-col>
+            <ion-col size="6">
+              <p><strong>💉Vacunas:</strong>
+              </p>
+              <span *ngIf="reserva.mascota.vacunas.length > 0">{{ reserva.mascota.vacunas.join(', ') }}</span>
+              <span *ngIf="reserva.mascota.vacunas.length === 0">Ninguna</span>
+            </ion-col>
+            <ion-col size="6">
+              <p><strong>🌱 Alergias:</strong>
+              </p>
+              <span *ngIf="reserva.mascota.alergias.length > 0">{{ reserva.mascota.alergias.join(', ') }}</span>
+              <span *ngIf="reserva.mascota.alergias.length === 0">Ninguna</span>
+            </ion-col>
+            <ion-col size="6">
+              <p><strong>🦠Enfermedades:</strong>
+              </p>
+              <span *ngIf="reserva.mascota.enfermedades.length > 0">{{ reserva.mascota.enfermedades.join(', ') }}</span>
+              <span *ngIf="reserva.mascota.enfermedades.length === 0">Ninguna</span>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <hr class="separator" />
+
+        <ion-grid>
+        <p style="text-align: center;">Entrega estos regalos a la mascota</p>
+        <ion-button style="display: flex; justify-content: center;" color="primary" title="Ver regalos de la reserva" (click)="toggleRegalos()">
+          {{ mostrarRegalos ? 'Ocultar regalos' : 'Ver regalos' }}
+        </ion-button>
+
+        <div *ngIf="mostrarRegalos" style="padding-top: 5px;">
+        <ion-row *ngIf="reservaRegalia && reservaRegalia.length > 0; else noRegalos">
+                <ion-col size="6" *ngFor="let reserva of reservaRegalia">
+                <ion-card >
+                  <ion-card-header>
+                    <ion-card-title style="text-align: center;">{{ reserva.regalia.nombre }}</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <p><strong>Cantidad:</strong> {{ reserva.cantidad }}</p>
+                    <p><strong>Utilizado:</strong> {{ reserva.usada ? 'Sí' : 'No'}}</p>
+                    <ion-row class="ion-justify-content-center">
+                      <ion-col size="auto">
+                        <ion-button (click)="confirmarUso(reserva)">
+                          <ion-icon name="gift-outline"></ion-icon>
+                        </ion-button>
+                      </ion-col>
+                    </ion-row>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+            <ng-template #noRegalos>
+              <ion-card>
+                <ion-card-content>
+                  <p>No hay regalos asociados a esta reserva.</p>
+                </ion-card-content>
+              </ion-card>
+            </ng-template>
+        </div>
+
+          <!-- Plantilla para cuando no hay regalos -->
+
+
+        </ion-grid>
+        <hr class="separator" />
+
+        <h3 class="subtitulo">✔️ Servicios Comunes por Día</h3>
+        <div class="servicios-lista">
+          <ng-container *ngFor="let grupo of groupedServicios">
+            <h4>Reserva {{ grupo.reserva }}</h4>
+            <ion-list>
+              <ng-container *ngFor="let servicio of grupo.dias">
+                <ion-item>
+                  <ion-label>Día {{ servicio.dia }}</ion-label>
+                </ion-item>
+                <!-- Sección para capturar la evidencia de cada actividad -->
+                <ion-item>
+                  <ion-label>¿Comió?</ion-label>
+                  <ion-toggle [(ngModel)]="servicio.comio" (ionChange)="actualizarServicio(servicio.id, 'comio', servicio.comio)"></ion-toggle>
+                  <ion-button fill="clear" size="small" (click)="capturarEvidencia(servicio.id, 'comio_evidencia')">
+                    <ion-icon name="camera-outline" slot="icon-only" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-item>
+                <ion-item>
+                  <ion-label>¿Paseo?</ion-label>
+                  <ion-toggle [(ngModel)]="servicio.paseo" (ionChange)="actualizarServicio(servicio.id, 'paseo', servicio.paseo)"></ion-toggle>
+                  <ion-button fill="clear" size="small" (click)="capturarEvidencia(servicio.id, 'paseo_evidencia')">
+                    <ion-icon name="camera-outline" slot="icon-only" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-item>
+                <ion-item>
+                  <ion-label>¿Entretención?</ion-label>
+                  <ion-toggle [(ngModel)]="servicio.entretencion" (ionChange)="actualizarServicio(servicio.id, 'entretencion', servicio.entretencion)"></ion-toggle>
+                  <ion-button fill="clear" size="small" (click)="capturarEvidencia(servicio.id, 'entretencion_evidencia')">
+                    <ion-icon name="camera-outline" slot="icon-only" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-item>
+                <ion-item>
+                  <ion-label>¿Medicamentos?</ion-label>
+                  <ion-toggle [(ngModel)]="servicio.medicamentos" (ionChange)="actualizarServicio(servicio.id, 'medicamentos', servicio.medicamentos)"></ion-toggle>
+                  <ion-button fill="clear" size="small" (click)="capturarEvidencia(servicio.id, 'medicamentos_evidencia')">
+                    <ion-icon name="camera-outline" slot="icon-only" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Regalo</ion-label>
+                  <ion-button fill="clear" size="small" (click)="capturarEvidencia(servicio.id, 'regalo_evidencia')">
+                    <ion-icon name="camera-outline" slot="icon-only" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Observaciones:</ion-label>
+                  <ion-input [(ngModel)]="servicio.observacion" (ionChange)="actualizarServicio(servicio.id, 'observacion', servicio.observacion)"></ion-input>
+                </ion-item>
+                <ion-item-divider></ion-item-divider>
+              </ng-container>
+            </ion-list>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Vista de previsualización de la cámara -->
+      <div *ngIf="videoStream" class="video-preview">
+        <video id="videoPreview" autoplay playsinline [srcObject]="videoStream"></video>
+        <ion-button (click)="detenerCamara()" color="danger">Detener Cámara</ion-button>
+      </div>
+    </ion-content>
+
+  </div>
+</ion-app>

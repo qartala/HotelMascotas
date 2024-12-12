@@ -1,0 +1,102 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="regresar()" class="menu-item" color="secondary">
+        <ion-icon slot="icon-only" name="arrow-back-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="secondary">Regalos adquiridos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="background-image"></div>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-title>
+            <p style="padding: 20px; text-align: center;">
+              <strong>Aquí puedes ver todos los <span>regalos</span> que adquiriste</strong>
+            </p>
+          </ion-card-title>
+          <ion-card-content>
+            <p>Para pagarlos, puedes hacerlo mediante la web o en el hotel directamente*</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <!-- Iterar sobre las reservas de regalos -->
+      <ion-col size="12" size-md="6" *ngFor="let reserva of reservaRegalia">
+        <ion-card>
+          <ion-row class="ion-justify-content-center" style="padding-top: 10px;">
+            <img [src]="reserva.regalia.foto" alt="Foto de la regalia" width="200px" />
+          </ion-row>
+          <ion-row class="ion-justify-content-center">
+            <ion-card-header>
+              <ion-card-title>{{ reserva.regalia.nombre }}</ion-card-title>
+            </ion-card-header>
+          </ion-row>
+          <ion-row class="ion-justify-content-center">
+            <p><strong>Descripción:</strong> {{ reserva.regalia.descripcion }}</p>
+          </ion-row>
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="6">
+                <p><strong>Fecha:</strong> {{ reserva.fecha | date:'shortDate' }}</p>
+              </ion-col>
+              <ion-col size="6">
+                <p><strong>Cantidad:</strong> {{ reserva.cantidad }}</p>
+              </ion-col>
+              <ion-col size="6">
+                <p><strong>Precio Total:</strong> {{ reserva.precio_total_r | currency }}</p>
+              </ion-col>
+              <ion-col size="6">
+                <p>
+                  <strong>Estado del pago:</strong>
+                  <span [style.color]="reserva.pagada ? 'green' : 'red'">
+                    {{ reserva.pagada ? 'Pagado' : 'Pendiente' }}
+                  </span>
+                </p>
+              </ion-col>
+            </ion-row>
+
+            <!-- Tabla para reservas activas -->
+            <ion-row>
+              <ion-col size="12">
+                <h3 style="margin-top: 20px;">Reservas Activas</h3>
+                <div style="overflow-x: auto;">
+                  <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                      <tr>
+                        <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Id</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Habitación</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Fecha Inicio</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Fecha Fin</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Enviar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let reservaActiva of reservasActivas">
+                        <td style="border: 1px solid #ddd; padding: 8px;">{{ reservaActiva.id }}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ reservaActiva.habitacion.numero_habitacion }}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">{{ reservaActiva.fecha_inicio | date:'dd/MM/yy' }}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">{{ reservaActiva.fecha_fin | date:'dd/MM/yy' }}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                          <ion-button color="primary" (click)="confirmarEnvio(reservaActiva,reserva)" title="Enviar regalo">
+                            <ion-icon name="send-outline"></ion-icon>
+                          </ion-button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

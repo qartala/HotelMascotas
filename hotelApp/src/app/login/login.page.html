@@ -1,0 +1,46 @@
+<ion-content fullscreen class="login-background">
+  <div class="background-image"></div> <!-- Imagen de fondo -->
+
+  <div class="wave-top">
+    <div style="height: 150px; overflow: hidden;" ><svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;"><path d="M0.00,49.98 C149.99,150.00 271.49,-49.98 500.00,49.98 L500.00,0.00 L0.00,0.00 Z" style="stroke: none; fill: rgb(0, 136, 255);"></path></svg></div>
+  </div>
+
+  <div class="welcome-container">
+    <div class="logo-container">
+      <ion-icon name="paw" class="paw-icon"></ion-icon>
+      <h2 class="welcome-title">Pets Team</h2>
+    </div>
+
+
+    <form (ngSubmit)="login()" class="login-form">
+      <ion-item lines="none" class="input-field">
+        <ion-label position="floating" color="primary">Nombre de Usuario</ion-label>
+        <ion-input [(ngModel)]="username" name="username" required></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="input-field">
+        <ion-label position="floating" color="primary">Contraseña</ion-label>
+        <ion-input
+          [type]="passwordType"
+          [(ngModel)]="password"
+          name="password"
+          required>
+        </ion-input>
+        <ion-icon
+          [name]="passwordIcon"
+          slot="end"
+          class="password-toggle-icon"
+          (click)="togglePasswordVisibility()">
+        </ion-icon>
+      </ion-item>
+
+      <ion-button expand="block" type="submit" class="btn-primary">
+        Ingresar
+      </ion-button>
+    </form>
+  </div>
+
+  <div class="wave-bottom">
+    <div style="height: 150px; overflow: hidden;" ><svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;"><path d="M-6.49,71.55 C271.16,166.30 289.21,42.94 507.62,112.02 L500.00,150.00 L0.00,150.00 Z" style="stroke: none; fill: rgb(0, 136, 255);"></path></svg></div>
+  </div>
+</ion-content>

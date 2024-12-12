@@ -1,0 +1,674 @@
+{% extends 'base/admin/Administrador.html' %}
+{% load static %}
+
+{% block title %}
+Dashboard - Estrategicos
+{% endblock %}
+
+{% block content %}
+<head>
+    <!-- Fuentes -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+
+<style>
+    /* Contenedor general */
+    .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    /* Títulos */
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 5px;
+        color: #34495e;
+    }
+
+    /* Tarjetas */
+    .card {
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        background-color: #ffffff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .card img {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 10px;
+    }
+
+    .card h5 {
+        font-size: 24px;
+        margin: 0;
+        color: #34495e;
+        font-weight: bold;
+    }
+
+    .card p {
+        font-size: 14px;
+        color: #7f8c8d;
+        margin: 0;
+    }
+
+    /* Colores personalizados para las tarjetas */
+    .card-stock-low {
+        background-color: #ffebee; /* Rojo claro */
+        color: #d32f2f; /* Rojo oscuro */
+    }
+
+    .card-checkin-pending {
+        background-color: #fff8e1; /* Amarillo claro */
+        color: #f57c00; /* Amarillo oscuro */
+    }
+
+    .card-checkout-pending {
+        background-color: #ffe056; /* Amarillo más claro */
+        color: #f9a825; /* Amarillo más oscuro */
+    }
+
+    .card-arrival {
+        background-color: #e8f5e9; /* Verde claro */
+        color: #388e3c; /* Verde oscuro */
+    }
+
+    .card-departure {
+        background-color: #e3f2fd; /* Azul claro */
+        color: #1976d2; /* Azul oscuro */
+    }
+
+    /* Botón flotante */
+    .modern-floating-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 15px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #3498db;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 999;
+    }
+
+    .modern-floating-button:hover {
+        background-color: #2980b9;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Contenedor desplegable */
+    .modern-panel {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        max-width: 90%;
+        padding: 20px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1001;
+    }
+
+    .modern-panel p {
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        color: #34495e;
+        margin-bottom: 10px;
+    }
+
+    .modern-panel ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .modern-panel ul li {
+        margin: 8px 0;
+        font-size: 14px;
+        display: flex;
+        align-items: flex-start;
+        color: #34495e;
+    }
+
+    .modern-panel ul li::before {
+        content: "✔";
+        color: #2ecc71;
+        font-size: 16px;
+        font-weight: bold;
+        margin-right: 8px;
+    }
+
+    /* Fondo con desenfoque */
+    .blur-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(5px); /* Desenfoque */
+        background-color: rgba(0, 0, 0, 0.3); /* Fondo semitransparente */
+        z-index: 1000;
+    }
+
+    /* Contenedor de la leyenda */
+    .legend-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        gap: 20px;
+        padding: 15px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        font-family: 'Poppins', sans-serif;
+        color: #34495e;
+    }
+
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        margin-right: 8px;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .bg-warning {
+        background-color: #fff8e1; /* Amarillo claro */
+    }
+
+    .bg-danger {
+        background-color: #ffebee; /* Rojo claro */
+    }
+
+    .bg-success {
+        background-color: #e8f5e9; /* Verde claro */
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 22px;
+        }
+
+        .card img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .card h5 {
+            font-size: 18px;
+        }
+
+        .card p {
+            font-size: 12px;
+        }
+    }
+</style>
+
+
+<button class="modern-floating-button" onclick="togglePanel()">📋 Información</button>
+<div class="row mt-3">
+    <div class="col-12 text-center">
+        <p id="fecha-hora" style="font-size: 16px; font-family: 'Poppins', sans-serif; color: #34495e;"></p>
+    </div>
+</div>
+
+<h1 class="text-center text-primary mb-5">Dashboard Gestión</h1>
+
+
+<!-- Botón flotante -->
+<button class="modern-floating-button" onclick="togglePanel()">📋 Información</button>
+
+<!-- Fondo con desenfoque -->
+<div class="blur-overlay" id="blurOverlay" onclick="togglePanel()"></div>
+
+<!-- Contenedor centrado -->
+<div class="modern-panel" id="modernPanel">
+    <h4>Datos Estadisticos</h4>
+    <p>Los graficos presentan datos con la finalidad de medir:</p>
+    <ul>
+        <li><b>Ingresos Diarios y Totales por Año: </b>  Permite analizar el flujo de ingresos para identificar días, meses o años más rentables y planificar estrategias en periodos de baja demanda.</li>
+        <li><b>Reservas Totales por Mes: </b> Ayuda a detectar patrones estacionales y planificar recursos y promociones en función de la demanda mensual.</li>
+        <li><b>Reservas por Tipo de Habitación: </b>  Identifica las habitaciones más demandadas para optimizar precios, promociones y mantenimiento.</li>
+        <li><b>Tasa de Cancelación:</b>  Monitorea la frecuencia de cancelaciones para ajustar políticas y mejorar la experiencia del cliente.</li>
+        <li><b>Reservas de Servicio por Mes y por Tipo de Servicio:  </b>  Analiza la popularidad de servicios adicionales para ajustar recursos y ofrecer mejores paquetes.</li>
+        <li><b>Tasa de Cancelación de Servicios:  </b>  Evalúa la confiabilidad en la prestación de servicios y permite identificar problemas logísticos.</li>
+        <li><b>Ingresos Totales por Habitaciones y Servicios:   </b> Compara la rentabilidad de habitaciones y servicios para equilibrar ingresos y planificar nuevas estrategias.</li>
+    </ul>
+    
+    <button class="modern-floating-button" style="margin-top: 20px;" onclick="togglePanel()">Cerrar</button>
+
+    
+</div>
+
+<div class="container mt-5">
+
+    <div class="row g-5 mt-3 d-flex justify-content-center">
+        <div class="col-lg-6">
+            <h5 class="text-primary text-center">Ingresos Diarios</h5>
+            <div class="chart-container" style="position: relative; max-width: 900px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                <canvas id="barChartIngresosDiarios"></canvas>
+            </div>
+        </div>
+   
+        <div  class="col-lg-6">
+            <h5 class="text-primary text-center">Totales de Ingresos por Año</h5>
+            <div class="chart-container" style="position: relative; max-width: 900px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                <canvas id="barChartIngresosAño"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Reservas e Ingresos -->
+    <div class="row g-5 mt-3 d-flex justify-content-center">
+        <div class="col-lg-6">
+            <h5 class="text-primary text-center">Reservas totales por mes</h5>
+            <div class="chart-container" style="position: relative; max-width: 900px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                <canvas id="reservasMesChart" height="300" style="width: 100%; max-height: 300px;"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <h5 class="text-primary text-center">Reservas por tipo de habitación</h5>
+            <div class="chart-container" style="position: relative; max-width: 900px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                <canvas id="reservasChart" height="300" style="width: 100%; max-height: 250px;"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <h5 class="text-primary text-center">Tasa de cancelación</h5>
+            <div class="chart-container" style="position: relative; max-width: 900px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                <canvas id="tasaCancelacionGauge" height="250" style="width: 100%; max-height: 250px;"></canvas>
+                <h4 id="tasaCancelacion" class="display-6 fw-bold text-center">0%</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Reservas de Servicio y Cancelaciones -->
+    <div class="row g-5 mt-5 d-flex justify-content-center">
+        <div class="col-lg-6">
+            <h5 class="text-primary text-center">Reservas de servicio por mes</h5>
+            <div class="chart-container" style="position: relative; max-width: 900px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                <canvas id="reservasServicioPorMesChart" height="300" style="width: 100%; max-height: 300px;"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <h5 class="text-primary text-center">Reservas por tipo de servicio</h5>
+            <div class="chart-container" style="position: relative; max-width: 900px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                <canvas id="reservasServicioChart" height="300" style="width: 100%; max-height: 250px;"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <h5 class="text-primary text-center">Tasa de cancelación servicio</h5>
+            <div class="chart-container" style="position: relative; max-width: 900px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                <canvas id="tasaCancelacionServicioGauge" height="250" style="width: 100%; max-height: 250px;"></canvas>
+                <h4 id="tasaCancelacionServicios" class="display-6 fw-bold text-center">0%</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Ingresos -->
+    <div class="row g-5 mt-5 d-flex justify-content-center">
+        <div class="col-lg-6">
+            <h5 class="text-primary text-center">Ingresos totales por habitaciones</h5>
+            <div class="chart-container" style="position: relative; max-width: 900px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                <canvas id="ingresosChart" height="300" style="width: 100%; max-height: 300px;"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <h5 class="text-primary text-center">Ingresos mensual por servicio</h5>
+            <div class="chart-container" style="position: relative; max-width: 900px; margin: auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);">
+                <canvas id="ingresosServicioMesChart" height="300" style="width: 100%; max-height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        try {
+            const data = JSON.parse(document.getElementById('dashboard-data').textContent);
+
+            // Gráfico de Totales de Ingresos por Año
+            renderBarChart(
+                document.getElementById('barChartIngresosAño').getContext('2d'),
+                data.meses,
+                data.ingresos_totales_mensuales,
+                'Ingresos Totales ($)'
+            );
+
+            // Actualizar los valores de la tasa de cancelación
+            document.getElementById('tasaCancelacion').textContent = `${data.tasa_cancelacion}%`;
+            document.getElementById('tasaCancelacionServicios').textContent = `${data.tasa_cancelacion_servicios}%`;
+
+            // Gráfico de Tasa de Cancelación
+            renderGaugeChart(
+                document.getElementById('tasaCancelacionGauge').getContext('2d'),
+                data.tasa_cancelacion
+            );
+
+            // Gráfico de Tasa de Cancelación de Servicios
+            renderGaugeChart(
+                document.getElementById('tasaCancelacionServicioGauge').getContext('2d'),
+                data.tasa_cancelacion_servicios
+            );
+
+            // Gráfico de Reservas por tipo de habitación
+            renderPieChart(
+                document.getElementById('reservasChart'),
+                data.habitacion_tipos,
+                data.habitacion_reservas
+            );
+
+            // Gráfico de Reservas Totales por Mes
+            renderBarChart(
+                document.getElementById('reservasMesChart'),
+                data.meses,
+                data.total_reservas_mensuales,
+                'Reservas Totales por Mes'
+            );
+
+            // Gráfico de Reservas de Servicio por Mes
+            renderBarChart(
+                document.getElementById('reservasServicioPorMesChart'),
+                data.meses,
+                data.total_reservas_servicio_por_mes,
+                'Reservas de Servicio por Mes'
+            );
+
+            // Gráfico de Ingresos Totales por Habitaciones
+            renderBarChart(
+                document.getElementById('ingresosChart'),
+                data.meses,
+                data.ingresos_totales_habitaciones,
+                'Ingresos Totales por Habitaciones'
+            );
+
+            // Gráfico de Ingresos por Servicio por Mes
+            renderStackedBarChart(
+                document.getElementById('ingresosServicioMesChart'),
+                data.meses,
+                data.servicios,
+                data.ingresos_mensuales_por_servicio
+            );
+            // Configuración del gráfico de Ingresos Diarios
+            new Chart(document.getElementById('barChartIngresosDiarios').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: [data.fecha_hoy],  // Mostrar solo la fecha actual
+                    datasets: [{
+                        label: 'Ingresos del Día ($)',
+                        data: [data.ingresos_diarios_total],  // Valor de los ingresos diarios
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (tooltipItem) => `$${tooltipItem.raw}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(200, 200, 200, 0.3)' },
+                            ticks: { font: { family: 'Poppins', size: 12 }, color: '#34495e' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Poppins', size: 12 }, color: '#34495e' }
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            console.error("Error al cargar los datos del dashboard:", error);
+        }
+    });
+
+    // Función para gráfico de barra
+    function renderBarChart(ctx, labels, dataValues, title) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: title,
+                    data: dataValues,
+                    backgroundColor: 'rgba(30, 144, 255, 0.7)',
+                    borderColor: 'rgba(30, 144, 255, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (tooltipItem) => `$${tooltipItem.raw}`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(200, 200, 200, 0.3)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });}
+
+    // Gráfico de Torta
+    function renderPieChart(ctx, labels, dataValues) {
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: dataValues,
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: (tooltipItem) => `${tooltipItem.raw} unidades`
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Gráfico de Barras
+    function renderBarChart(ctx, labels, dataValues, title) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: title,
+                    data: dataValues,
+                    backgroundColor: 'rgba(30, 144, 255, 0.7)',
+                    borderColor: 'rgba(30, 144, 255, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (tooltipItem) => `${tooltipItem.raw} CLP`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(200, 200, 200, 0.3)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
+    // Gráfico de Barras Apiladas
+    function renderStackedBarChart(ctx, labels, servicios, dataValues) {
+        const datasets = servicios.map((servicio, index) => ({
+            label: servicio,
+            data: dataValues[index],
+            backgroundColor: `rgba(${(index * 50) % 255}, ${(index * 100) % 255}, 132, 0.7)`,
+            borderColor: `rgba(${(index * 50) % 255}, ${(index * 100) % 255}, 132, 1)`,
+            borderWidth: 1
+        }));
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (tooltipItem) => `${tooltipItem.raw} CLP`
+                        }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, stacked: true },
+                    x: { stacked: true }
+                }
+            }
+        });
+    }
+
+    // Gráfico de Donut para Tasa de Cancelación
+    function renderGaugeChart(ctx, value) {
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Canceladas', 'Completadas'],
+                datasets: [{
+                    data: [value, 100 - value],
+                    backgroundColor: ['rgba(255, 99, 132, 0.7)', 'rgba(75, 192, 192, 0.7)'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: (tooltipItem) => `${tooltipItem.raw.toFixed(1)}%`
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+
+<script type="application/json" id="dashboard-data">
+    {{ dashboard_data|safe }}
+</script>
+<script>
+    function togglePanel() {
+        const panel = document.getElementById("modernPanel");
+        const overlay = document.getElementById("blurOverlay");
+        if (panel.style.display === "block") {
+            panel.style.display = "none";
+            overlay.style.display = "none";
+        } else {
+            panel.style.display = "block";
+            overlay.style.display = "block";
+        }
+    }
+</script>
+{% endblock %}

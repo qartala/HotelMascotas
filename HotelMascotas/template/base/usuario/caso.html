@@ -1,0 +1,246 @@
+{% extends 'base/usuario/base.html' %}
+
+{% load static %}
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+
+<div class="main-banner wow fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="col-lg-6 align-self-center">
+            <div class="left-content show-up header-text wow fadeInLeft" data-wow-duration="1s" data-wow-delay="1s">
+              <div class="row">
+                <div class="col-lg-12 text-white">
+                  <h2>Bienvenido a <span style="color: #2478f9;">Pets</span>Team</h2>
+                  <p class="text-white">Ofrecemos una experiencia de lujo para tu perro con un ambiente cómodo y seguro.</p>
+                </div>
+                <div class="col-lg-12">
+                  <div class="white-button first-button scroll-to-section " style="width: 10rem; text-align: center;">
+                    <a class="shadow-lg gradient-button" href="#pricing">Reservar</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="right-image wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.5s">
+              <img src="{% static 'images/ilustracionPerro.png' %}" style="filter: hue-rotate(30deg);" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="services" class="services section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+        <div class="section-heading  wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.5s">
+          <h4>Nuestros <em>Servicios</em> Disponibles</h4>
+          <img src="{% static 'images/heading-line-dec.png' %}" alt="">
+          <p style="color: black;">Ofrecemos los siguientes servicios, de acuerdo a las necesidades de tu mascota.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row d-flex justify-content-center">
+      <div class="col-lg-4 mb-4">
+        <div class="service-item first-service">
+          <div class="icon"></div>
+          <h4>Baños</h4>
+          <p>Baños relajantes y cuidadosos con productos hipoalergénicos y especializados según el tipo de pelaje y piel</p>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="service-item fourth-service">
+          <div class="icon"></div>
+          <h4>Spa</h4>
+          <p>Tratamiento de spa exclusivo para tu mascota, incluye masajes relajantes, baños terapéuticos y cuidados especiales para el pelaje</p>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="service-item third-service">
+          <div class="icon"></div>
+          <h4>Fotografía</h4>
+          <p>Capturamos momentos inolvidables de tu mascota con sesiones fotográficas profesionales. Llévate un hermoso recuerdo de su estadía en nuestro hotel.</p>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="service-item second-service">
+          <div class="icon"></div>
+          <h4>Peluquería</h4>
+          <p>Nuestro servicio de peluquería asegura que tu mascota siempre luzca impecable. Ofrecemos cortes y estilos adaptados a cada raza y preferencias del dueño.</p>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="service-item quinto-service">
+          <div class="icon"></div>
+          <h4>Transporte</h4>
+          <p>Disponemos de un servicio de transporte seguro y cómodo para recoger y entregar a tu mascota, asegurando su bienestar en todo momento durante el trayecto.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="about" class="about-us section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 align-self-center">
+        <div class="section-heading">
+          <h4><em>Quienes somos</em> &amp; Que hacemos</h4>
+          <img src="{% static 'images/heading-line-dec.png' %}" alt="">
+          <p>Somos Pets Team, una organizacion que brinda estadia y cuidado a tus mascotas</p>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="box-item">
+              <h4><a href="#">Estad&iacute;a</a></h4>
+              <p>Servicio de reservas para nuestros clientes</p>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="box-item">
+              <h4><a href="#">Servicio 24/7</a></h4>
+              <p>Brindamos cuidado todo el d&iacute;a a tu mascota durante su estancia</p>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="box-item">
+              <h4><a href="#">Identidad</a></h4>
+              <p>Los dueños de mascotas tienen credenciales para gestionar sus reservas y servicios</p>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="box-item">
+              <h4><a href="#">Bienestar</a></h4>
+              <p>Ofrcemos servicios de profesionales para asegurar una experiencia de calidad</p>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <p style="color: black;">En Pets Team, estamos comprometidos con brindar la mejor experiencia y cuidado a tus mascotas, asegurando que se sientan en casa mientras tú estás fuera. Con nuestro servicio de estadía y atención 24/7, puedes tener la tranquilidad de que tu mascota estará segura y feliz.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="right-image">
+          <img src="" style="width: 85%;" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="clients" class="the-clients">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+        <div class="section-heading">
+          <h4>Nuestros<em> Colaboradores</em> Asociados</h4>
+          <img src="{% static 'images/heading-line-dec.png' %}" alt="">
+          <p>Forma parte de PetsTeam enviandonos tus datos, para que podamos conocerte y puedas otorgar servicios en nuestro hotel.</p>
+          <div class="white-button pt-3">
+            <a class="shadow-lg gradient-button" href="{% url 'colaborador' %}">Apartado Colaborador</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="pricing" class="pricing-tables">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="section-heading">
+            <h4>Reserva tu <em>Habitación</em> Ideal</h4>
+            <img src="{% static 'images/heading-line-dec.png' %}" alt="">
+            <p>Descubre nuestras opciones de alojamiento para tus mascotas y reserva fácilmente la habitación que mejor se ajuste a tus necesidades.</p>
+        </div>
+      </div>
+      {% if productos %}
+        {% for producto in productos %}
+          <div class="col-lg-4">
+            <div class="pricing-item-pro">
+              <span class="price">{{ producto.precio }} CLP</span>
+              <div class="icon pt-4">
+                <img src="/media/{{producto.imagen_habitacion}}" alt="">
+              </div>
+              <ul>
+                <li>№ {{ producto.numero_habitacion }}</li>
+                <li>Tipo: {{ producto.tipo_habitacion }}</li>
+              </ul>
+              <div class="border-button">
+                <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#loginModal">Reservar</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <h4 style="text-align: center;">Sin <em>Habitaciones</em> disponibles</h4>
+      {% endif %}
+    </div>
+  </div>
+</div> 
+
+<div id="pricing" class="pricing-tables">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+        <div class="section-heading">
+            <h4>Nuestras <em>Membresias</em></h4>
+            <img src="{% static 'images/heading-line-dec.png' %}" alt="">
+            <p>¡Únete a nuestro programa de membresías y obtén descuentos especiales en tus reservas!</p>
+        </div>
+      </div>
+      {% if membresias %}
+        {% for membresia in membresias %}
+          <div class="col-lg-4">
+            <div class="pricing-item-pro">
+              <h4>Membresia</h4>
+              <ul>
+                <li>Tipo: {{ membresia.nombre }}</li>
+                <li>Acceso a descuentos del {{ membresia.descuento }}% en todas las reservas.</li>
+              </ul>
+              <div class="border-button">
+                <form method="POST" action="#">
+                  {% csrf_token %}
+                  <a href="#" class="btn btn-warning reservar-btn" data-bs-toggle="modal" data-bs-target="#loginModal">unirse</a>
+              </form>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+            <p class="text-center" style="color: black;">Debes Iniciar sesion para acceder a las membresias.</p>
+        {% endif %}
+    </div>
+  </div>
+</div> 
+
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="loginModalLabel">Inicio de Sesión Requerido</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              Debes iniciar sesión para realizar una reserva.
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn" data-bs-dismiss="modal">Cerrar</button>
+              <a href="{% url 'iniciarsesion' %}" class="btn">Iniciar Sesión</a>
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock %}

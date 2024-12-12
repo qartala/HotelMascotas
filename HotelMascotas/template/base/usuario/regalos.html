@@ -1,0 +1,170 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Regalos
+{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+        .regalo-img {
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+        }
+    </style>
+</head>
+
+<div class="d-flex" style="height: 130px; visibility: hidden;">
+    <div class="vr"></div>
+</div>
+
+<div class="container">
+    <h2 class="pb-4" style="text-align: center; color: #2854C5;">Regalos enviados a tus Reservas</h2>
+    <div class="row">
+        {% if reservas_finalizadas %}
+        {% for reserva in reservas_finalizadas %}
+        <div class="col-6 mb-5">
+            <!-- Información de la Reserva -->
+            <div class="card border border-dark">
+                <div class="card-header">
+                    <h5>Reserva en Habitación: {{ reserva.habitacion.numero_habitacion }}</h5>
+                    <p><strong>Reserva: {{ reserva.id }}</strong></p>
+                    <p><strong>Fecha de Inicio:</strong> {{ reserva.fecha_inicio|date:"d M Y" }}</p>
+                    <p><strong>Fecha de Fin:</strong> {{ reserva.fecha_fin|date:"d M Y" }}</p>
+                </div>
+                <div class="card-body">
+                    <h6 class="pb-4">Regalos Asociados</h6>
+                    <div class="row">
+                        <!-- Regalos Asociados -->
+                        {% for regalo in reserva.regalias.all %}
+                        <div class="col-4 mb-4">
+                            <div class="card">
+                                <img src="/media/{{ regalo.regalia.foto }}" class="card-img-top regalo-img" alt="{{ regalo.regalia.nombre }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ regalo.regalia.nombre }}</h5>
+                                    <p><strong>Cantidad:</strong> {{ regalo.cantidad }}</p>
+                                    <p><strong>Precio Total:</strong> {{ regalo.precio_total_r }}</p>
+                                    <p><strong>Utilizado:</strong> {{ regalo.usada|yesno:"Sí,No" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button class="btn" data-bs-toggle="modal" data-bs-target="#confirmPagoModal-{{ reserva.id }}">
+                        Pagar Regalos
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Modal de Confirmación de Pago -->
+        <div class="modal fade" id="confirmPagoModal-{{ reserva.id }}" tabindex="-1" aria-labelledby="pagoModalLabel-{{ reserva.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="pagoModalLabel-{{ reserva.id }}">Confirmar Pago</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Detalles de tu reserva:
+                        <ul>
+                            <li>Habitación: {{ reserva.habitacion.numero_habitacion }}</li>
+                            <li>Fecha Inicio: {{ reserva.fecha_inicio|date:"d M Y" }}</li>
+                            <li>Fecha Fin: {{ reserva.fecha_fin|date:"d M Y" }}</li>
+                            <li>Total Regalos a Pagar: 
+                                <strong>
+                                    ${{ total_pendiente }}
+                                </strong>
+                            </li>
+                        </ul>
+                        <p class="text-danger">* Los regalos no utilizados serán devueltos a tu inventario en la App móvil.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" data-bs-dismiss="modal">Cancelar</button>
+                        <a href="{% url 'iniciar_pago_regalos' reserva.id %}" class="btn">Confirmar Pago</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <h4 class="pt-3" style="text-align: center;">--Por el momento no tienes reservas finalizadas con pagos pendientes--</h4>
+        {% endif %}
+    </div>
+
+    <h2 class="pb-4 pt-4" style="text-align: center; color: #2854C5;">Reservas anteriores</h2>
+    <div style="display: flex; justify-content: center;">
+        <button id="toggleButton" class="btn mb-4" onclick="toggleVisibility()">
+            Mostrar/Ocultar Reservas Pagadas
+        </button>
+    </div>
+    <div class="row" id="reservasPagadasRow" style="display: none;">
+        {% if reservas_pagadas %}
+        {% for reserva in reservas_pagadas %}
+        <div class="col-6 mb-5">
+            <!-- Información de la Reserva -->
+            <div class="card border border-dark">
+                <div class="card-header">
+                    <h5>Reserva en Habitación: {{ reserva.habitacion.numero_habitacion }}</h5>
+                    <p><strong>Reserva: {{ reserva.id }}</strong></p>
+                    <p><strong>Fecha de Inicio:</strong> {{ reserva.fecha_inicio|date:"d M Y" }}</p>
+                    <p><strong>Fecha de Fin:</strong> {{ reserva.fecha_fin|date:"d M Y" }}</p>
+                    <p><strong>Valor total de regalos:</strong> {{ total_pagado }}</p>
+                </div>
+                <div class="card-body">
+                    <h6 class="pb-4">Regalos Asociados</h6>
+                    <div class="row">
+                        <!-- Regalos Asociados -->
+                        {% for regalo in reserva.regalias.all %}
+                        <div class="col-4 mb-4">
+                            <div class="card">
+                                <img src="/media/{{ regalo.regalia.foto }}" class="card-img-top regalo-img" alt="{{ regalo.regalia.nombre }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ regalo.regalia.nombre }}</h5>
+                                    <p><strong>Cantidad:</strong> {{ regalo.cantidad }}</p>
+                                    <p><strong>Precio Total:</strong> {{ regalo.precio_total_r }}</p>
+                                    <p><strong>Utilizado:</strong> {{ regalo.usada|yesno:"Sí,No" }}</p>
+                                    <p><strong>Pagado:</strong> {{ regalo.pagada|yesno:"Sí,No" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <h4 class="pt-3" style="text-align: center;">--No tienes reservas pagadas con regalos asociados--</h4>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Función para alternar la visibilidad de la fila
+    function toggleVisibility() {
+        var row = document.getElementById("reservasPagadasRow");
+        var button = document.getElementById("toggleButton");
+        
+        // Alternar entre mostrar y ocultar
+        if (row.style.display === "none") {
+            row.style.display = "block";
+            button.innerText = "Ocultar Reservas Pagadas"; // Cambiar texto del botón
+        } else {
+            row.style.display = "none";
+            button.innerText = "Mostrar Reservas Pagadas"; // Cambiar texto del botón
+        }
+    }
+</script>
+
+
+<div class="d-flex" style="height: 50px; visibility: hidden;">
+    <div class="vr"></div>
+</div>
+
+
+{% endblock %}

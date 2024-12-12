@@ -1,0 +1,262 @@
+{% extends 'base/admin/Administrador.html' %}
+{% load static %}
+
+{% block title %}
+Dashboard - Operativos
+{% endblock %}
+
+{% block content %}
+<head>
+    <!-- Fuentes -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <!-- Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Chart.js DataLabels Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+    <style>
+        /* Estilos personalizados para mejorar la visualización */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<h1 class="text-center text-primary mb-5">Dashboard Operativo</h1>
+
+<div class="container mt-5">
+
+    <!-- Sección de Reservas e Ingresos -->
+    <div class="row mb-4 justify-content-center" id="reservasSection">
+        <div class="col-lg-5 mt-5">
+            <h5 class="text-primary text-center">Reservas Diarias por Habitación</h5>
+            <div class="chart-container">
+                <canvas id="reservasDiariasChart"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-5 mt-5">
+            <h5 class="text-primary text-center">Tasa de Cancelación Diaria</h5>
+            <div class="chart-container">
+                <canvas id="pieChartCancelacionDiaria"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Reservas y Cancelaciones Semanales -->
+    <div class="row g-5 mt-5 d-flex justify-content-center">
+        <div class="col-lg-5">
+            <h5 class="text-primary text-center">Reservas Semanales por Habitación</h5>
+            <div class="chart-container">
+                <canvas id="reservasSemanalesChart"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <h5 class="text-primary text-center">Tasa de Cancelación Semanal</h5>
+            <div class="chart-container">
+                <canvas id="pieChartCancelacionSemanal"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <h5 class="text-primary text-center" id="ingresosSection">Ingresos Diarios (CLP)</h5>
+            <div class="chart-container">
+                <canvas id="ingresosDiariosChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <h5 class="text-primary text-center">Ingresos Semanales (CLP)</h5>
+            <div class="chart-container">
+                <canvas id="ingresosSemanalesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        try {
+            const data = JSON.parse(document.getElementById('dashboard-data').textContent);
+
+            // Gráfico de Ingresos Diarios
+            renderBarChart(
+                document.getElementById('ingresosDiariosChart'),
+                data.dias,
+                data.ingresos_totales_diarios,
+                'Ingresos Diarios'
+            );
+
+            // Gráfico de Ingresos Semanales
+            renderBarChart(
+                document.getElementById('ingresosSemanalesChart'),
+                data.semanas,
+                data.ingresos_totales_semanales,
+                'Ingresos Semanales'
+            );
+
+            // Gráfico de Reservas Diarias
+            renderBarChart(
+                document.getElementById('reservasDiariasChart'),
+                data.dias,
+                data.reservas_totales_diarias,
+                'Reservas Diarias'
+            );
+
+            // Gráfico de Reservas Semanales
+            renderBarChart(
+                document.getElementById('reservasSemanalesChart'),
+                data.semanas,
+                data.reservas_totales_semanales,
+                'Reservas Semanales'
+            );
+
+            // Gráfico de pastel: Tasa de Cancelación Diaria
+            renderPieChart2(
+                document.getElementById('pieChartCancelacionDiaria'),
+                ['Canceladas', 'No Canceladas'],
+                [data.tasa_cancelacion_diaria, data.reservas_no_canceladas_hoy]
+            );
+
+            // Gráfico de pastel: Tasa de Cancelación Semanal
+            renderPieChart2(
+                document.getElementById('pieChartCancelacionSemanal'),
+                ['Canceladas', 'No Canceladas'],
+                [data.tasa_cancelacion_semanal, data.reservas_no_canceladas_semana]
+            );
+        } catch (error) {
+            console.error("Error al cargar los datos del dashboard:", error);
+        }
+    });
+
+    function renderBarChart(ctx, labels, dataValues, title) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: dataValues,
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)', // Color verde agua
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: title,
+                        font: {
+                            size: 18,
+                            weight: 'bold'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function renderPieChart2(ctx, labels, dataValues) {
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: dataValues,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',  // Rojo claro (Canceladas)
+                        'rgba(75, 192, 192, 0.7)'   // Verde agua (No Canceladas)
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribución de Cancelaciones'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                const total = dataValues.reduce((acc, val) => acc + val, 0);
+                                const value = dataValues[tooltipItem.dataIndex];
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${labels[tooltipItem.dataIndex]}: ${percentage}%`;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        formatter: function (value, ctx) {
+                            const total = ctx.chart.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${percentage}%`;
+                        },
+                        color: '#fff',
+                        font: {
+                            weight: 'bold',
+                            size: 16
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    }
+</script>
+
+<script type="application/json" id="dashboard-data">
+    {{ dashboard_data|safe }}
+</script>
+
+{% endblock %}

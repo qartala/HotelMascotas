@@ -1,0 +1,50 @@
+<ion-app>
+  <!-- Contenido Principal -->
+  <div class="ion-page" id="main-content">
+    <div class="background-image"></div> <!-- Imagen de fondo -->
+
+    <ion-header>
+      <ion-toolbar class="navbar">
+        <ion-buttons slot="start">
+          <ion-button (click)="home()" class="menu-item">
+            <ion-icon slot="icon-only" name="arrow-back-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title class="navbar-title">Regalías</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <div class="background-image"></div>
+      <ion-row>
+        <ion-col size="12">
+          <ion-list class="transparent-list" *ngIf="regalias.length > 0; else noRegalias">
+            <ng-container *ngFor="let regalia of regalias">
+              <ion-item class="regalia-item">
+                <ion-thumbnail slot="start">
+                  <img [src]="regalia.foto" alt="{{ regalia.nombre }}" />
+                </ion-thumbnail>
+                <ion-label>
+                  <h2>{{ regalia.nombre }}</h2>
+                  <p class="description">{{ regalia.descripcion }}</p>
+                  <p><strong>Precio:</strong> {{ regalia.precio | currency:'CLP' }}</p>
+                  <p><strong>Stock:</strong> {{ regalia.stock }}</p>
+                </ion-label>
+                <ion-button color="success" fill="solid" (click)="confirmAgregarRegalia(regalia)">
+                  <ion-icon name="add-outline"></ion-icon> <!-- Icono cambiado a '+' -->
+                </ion-button>
+              </ion-item>
+            </ng-container>
+          </ion-list>
+        </ion-col>
+        <ng-template #noRegalias>
+          <ion-item>
+            <ion-label>No hay regalías disponibles.</ion-label>
+          </ion-item>
+        </ng-template>
+      </ion-row>
+
+
+    </ion-content>
+  </div>
+</ion-app>

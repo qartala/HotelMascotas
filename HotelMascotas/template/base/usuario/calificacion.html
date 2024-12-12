@@ -1,0 +1,98 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}Calificación del Servicio{% endblock %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="path/to/your/styles.css"> <!-- Asegúrate de tener tu archivo CSS -->
+</head>
+<div class="d-flex" style="height: 80px; visibility: hidden;">
+    <div class="vr"></div>
+  </div>
+<div class="container mt-5">
+    <h2 class="text-center">Califica Nuestro Servicio</h2>
+
+    <div class="card mt-4 mx-auto" style="max-width: 600px;">
+        <div class="card-header text-white" style="background-color: rgb(19, 121, 229);">
+            <h4 class="text-center">Tus Comentarios y Calificación</h4>
+        </div>
+
+        <div class="card-body">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="comentario" class="form-label">Escribe tu comentario:</label>
+                    <textarea id="comentario" name="comentario" rows="4" class="form-control" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Calificación:</label>
+                    <div class="text-center">
+                        <i class="fa-regular fa-star fa-2x" data-value="1" style="color: rgb(242, 242, 2);"></i>
+                        <i class="fa-regular fa-star fa-2x" data-value="2" style="color: rgb(242, 242, 2);"></i>
+                        <i class="fa-regular fa-star fa-2x" data-value="3" style="color: rgb(242, 242, 2);"></i>
+                        <i class="fa-regular fa-star fa-2x" data-value="4" style="color: rgb(242, 242, 2);"></i>
+                        <i class="fa-regular fa-star fa-2x" data-value="5" style="color: rgb(242, 242, 2);"></i>
+                    </div>
+                    <input type="hidden" id="calificacion" name="calificacion" required>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success btn-lg">Enviar Calificación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h3 class="text-center">Calificaciones</h3>
+        <div class="list-group mt-3">
+            {% for calificacion in calificaciones %}
+            <div class="list-group-item mb-3 p-4" style="border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">{{ calificacion.usuario.username }}</h5>
+                        <p class="mt-2 mb-0" style="color: #555;">{{ calificacion.comentario }}</p>
+                    </div>
+                    <div>
+                        {% for i in rango_estrellas %}
+                            {% if i <= calificacion.calificacion %}
+                                <i class="fa-solid fa-star" style="color: gold;"></i>
+                            {% else %}
+                                <i class="fa-regular fa-star" style="color: lightgray;"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% if calificacion.usuario == request.user %}
+                    <form method="POST" action="{% url 'eliminar_calificacion' calificacion.id %}" class="ms-3">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center">Aún no hay calificaciones.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    const stars = document.querySelectorAll('.fa-star');
+    const calificacionInput = document.getElementById('calificacion');
+
+    stars.forEach((star, index) => {
+        star.addEventListener('click', () => {
+            stars.forEach((s) => s.classList.remove('fa-solid'));
+            stars.forEach((s, i) => {
+                if (i <= index) {
+                    s.classList.add('fa-solid');
+                }
+            });
+            calificacionInput.value = index + 1;
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,239 @@
+{% extends 'base/admin/Administrador.html' %}
+
+{% block title %}
+Gestión de Calificaciones Bajas
+{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .dashboard-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .dashboard-subtitle {
+        font-family: 'Poppins', sans-serif;
+        font-size: 18px;
+        color: #7f8c8d;
+    }
+
+    .kpi-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: space-around;
+        margin-bottom: 40px;
+    }
+
+    .kpi-card {
+        flex: 1 1 calc(25% - 20px);
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .kpi-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: #34495e;
+        margin-top: 10px;
+    }
+
+    .kpi-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #3498db;
+    }
+
+    .table-container {
+        margin-top: 40px;
+    }
+
+    .table-calificaciones {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-calificaciones th, .table-calificaciones td {
+        text-align: left;
+        padding: 12px;
+        border: 1px solid #ddd;
+    }
+
+    .badge-danger {
+        background-color: #e74c3c;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 12px;
+    }
+
+    .btn-action {
+        font-size: 14px;
+        padding: 8px 15px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-success {
+        background-color: #27ae60;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background-color: #229954;
+    }
+
+    .btn-primary {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #2980b9;
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Encabezado -->
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Gestión de Calificaciones Bajas</h1>
+        <p class="dashboard-subtitle">Monitorea y analiza las calificaciones de los servicios para tomar decisiones.</p>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-value">{{ total_calificaciones }}</div>
+            <div class="kpi-title">Total de Calificaciones</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value">{{ promedio_calificaciones|floatformat:1 }}</div>
+            <div class="kpi-title">Promedio General</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value">{{ total_comentarios }}</div>
+            <div class="kpi-title">Comentarios con Calificaciones Bajas</div>
+        </div>
+    </div>
+
+    <!-- Gráfico -->
+    <div class="chart-container">
+        <h2 class="chart-title">Distribución de Calificaciones</h2>
+        <canvas id="calificacionesChart"></canvas>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-container">
+        <table class="table-calificaciones">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Calificación</th>
+                    <th>Comentario</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for calificacion in calificaciones_bajas %}
+                <tr>
+                    <td>{{ calificacion.usuario.username }}</td>
+                    <td>
+                        <span class="badge {% if calificacion.calificacion %}badge-danger{% else %}badge-secondary{% endif %}">
+                            {{ calificacion.calificacion }}
+                        </span>
+                    </td>
+                    <td>{{ calificacion.comentario }}</td>
+                    <td>
+                        <form action="{% url 'marcar_calificacion_revisada' calificacion.id %}" method="POST" style="display: inline-block;">
+                            {% csrf_token %}
+                            
+                        </form>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#responderComentarioModal{{ calificacion.id }}">Responder</button>
+                        <!-- Modal para responder -->
+                        <div class="modal fade" id="responderComentarioModal{{ calificacion.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form action="{% url 'responder_calificacion' calificacion.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Responder a {{ calificacion.usuario.username }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea class="form-control" name="respuesta" rows="4" placeholder="Escribe tu respuesta aquí..."></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Enviar</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('calificacionesChart').getContext('2d');
+    const data = {
+        labels: ['1 estrella', '2 estrellas', '3 estrellas', '4 estrellas'],
+        datasets: [{
+            label: 'Distribución de Calificaciones',
+            data: [
+                {{ calificaciones_1|default:0 }},
+                {{ calificaciones_2|default:0 }},
+                {{ calificaciones_3|default:0 }},
+                {{ calificaciones_4|default:0 }},
+                
+            ],
+            backgroundColor: ['#e74c3c', '#f39c12', '#f1c40f', '#3498db', '#2ecc71'],
+        }]
+    };
+
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    };
+
+    new Chart(ctx, config);
+</script>
+{% endblock %}

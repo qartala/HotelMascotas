@@ -1,0 +1,90 @@
+<ion-app>
+  <div class="ion-page" id="main-content">
+    <ion-header>
+      <ion-toolbar class="navbar">
+        <ion-buttons slot="start">
+          <ion-button (click)="regresar()" class="menu-item">
+            <ion-icon slot="icon-only" name="arrow-back-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title class="navbar-title">Reservas</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content fullscreen class="reservas-background">
+      <div class="background-image"></div>
+
+      <div class="busqueda-container">
+        <ion-item class="busqueda">
+          <ion-input
+            placeholder="Buscar por cliente o habitación"
+            [(ngModel)]="filtro">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <ion-list class="reservas-list">
+        <ng-container *ngIf="reservasFiltradas.length > 0; else noReservas">
+          <ng-container *ngFor="let reserva of reservasFiltradas">
+            <ion-item
+              *ngIf="!reserva.cancelada"
+              class="reserva-item"
+              [ngClass]="{ 'check-in-true': reserva.check_in }">
+              <ion-label class="reserva-label">
+                <h2 class="cliente-label">
+                  <ion-icon name="person-circle-outline" class="icon"></ion-icon>
+                  Cliente: {{ reserva.cliente.first_name || 'Sin cliente' }}
+                </h2>
+                <p>
+                  <ion-icon name="home-outline" class="icon"></ion-icon>
+                  Habitación: <strong>{{ reserva.habitacion.numero_habitacion || 'N/A' }}</strong>
+                </p>
+                <p>
+                  <ion-icon name="paw-outline" class="icon"></ion-icon>
+                  Mascota: <strong>{{ reserva.mascota.nombre_perro || 'Sin mascota' }}</strong>
+                </p>
+                <p>
+                  <ion-icon name="calendar-outline" class="icon"></ion-icon>
+                  Desde: <strong>{{ reserva.fecha_inicio | date:'dd/MM/yy' }}</strong> - Hasta: <strong>{{ reserva.fecha_fin | date:'dd/MM/yy' }}</strong>
+                </p>
+                <p class="precio">
+                  <ion-icon name="cash-outline" class="icon"></ion-icon>
+                  Precio Total: <strong>{{ reserva.precio_total | currency }}</strong>
+                </p>
+                <p *ngIf="reserva.pagado" class="estado estado-pagada">
+                  <ion-icon name="checkmark-circle-outline" class="icon"></ion-icon>
+                  Estado: <strong>Pagada</strong>
+                </p>
+                <p *ngIf="!reserva.pagado" class="estado estado-no-pagada">
+                  <ion-icon name="close-circle-outline" class="icon"></ion-icon>
+                  Estado: <strong>No Pagada</strong>
+                </p>
+
+                <div class="btn-container">
+                  <ion-button
+                    (click)="verSeguimiento(reserva.id)"
+                    class="btn-action">
+                    Seguimiento
+                  </ion-button>
+                </div>
+              </ion-label>
+            </ion-item>
+          </ng-container>
+        </ng-container>
+
+        <ng-template #noReservas>
+          <ion-item>
+            <ion-label>No hay reservas disponibles.</ion-label>
+          </ion-item>
+        </ng-template>
+      </ion-list>
+      <div class="wave-bottom">
+        <div style="height: 150px; overflow: hidden;">
+          <svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+            <path d="M-6.49,71.55 C271.16,166.30 289.21,42.94 507.62,112.02 L500.00,150.00 L0.00,150.00 Z" style="stroke: none; fill: rgb(0, 136, 255);"></path>
+          </svg>
+        </div>
+      </div>
+    </ion-content>
+  </div>
+</ion-app>

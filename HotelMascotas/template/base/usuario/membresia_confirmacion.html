@@ -1,0 +1,56 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}Confirmar Membresía{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+      footer {
+        margin-top: auto;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+    </style>
+</head>
+<div class="d-flex" style="height: 90px; visibility: hidden;">
+    <div class="vr"></div>
+  </div>
+<div class="container">
+    <h2 class="text-center">Confirmar Membresía</h2>
+
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h4 class="text-center">Detalles de la Membresía</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped text-center">
+                <thead>
+                    <tr>
+                        <th>Nombre de la Membresía</th>
+                        <th>Descuento (%)</th>
+                        <th>Duración (días)</th>
+                        <th>Valor ($)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ membresia.nombre }}</td>
+                        <td>{{ membresia.descuento|stringformat:"d" }}</td>
+                        <td>{{ membresia.duracion_dias }}</td>
+                        <td>{{ membresia.valor|stringformat:"d"  }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <form method="POST" action="{% url 'iniciar_pago' membresia.id 'membresia' %}" class="text-center mt-4">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success btn-lg">Pagar y unirse</button>
+        <a href="{% url 'principalUsuario' %}" class="btn btn-secondary btn-lg ml-3">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

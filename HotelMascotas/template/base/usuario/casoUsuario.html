@@ -1,0 +1,237 @@
+
+{% extends 'base/usuario/base.html' %}
+{% load static %}
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+
+<div class="main-banner wow fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="col-lg-6 align-self-center">
+            <div class="left-content show-up header-text wow fadeInLeft" data-wow-duration="1s" data-wow-delay="1s">
+              <div class="row">
+                <div class="col-lg-12 text-white">
+                  <h2>Bienvenido a <span style="color: #2478f9;">Pets</span>Team</h2>
+                  <p class="text-white">En esta seccion puedes realizar reservas de habitaciones y servicios, ademas de contratar membresias y ver tu perfil cuando desees.</p>
+                </div>
+                <div class="col-lg-4">
+                  <div class="white-button first-button scroll-to-section " style="width: 10rem; text-align: center;">
+                    <a class="shadow-lg gradient-button" href="#pricing">Reservar Habitacion</a>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="white-button first-button scroll-to-section " style="width: 10rem; text-align: center;">
+                    <a class="shadow-lg gradient-button" href="#services">Reservar Servicios</a>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="white-button first-button scroll-to-section " style="width: 10rem; text-align: center;">
+                    <a class="shadow-lg gradient-button" href="{% url 'perfil' %}">Perfil</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="right-image wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.5s">
+              <img src="{% static 'images/ilustracionPerro.png' %}" style="filter: hue-rotate(30deg);" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="pricing" class="pricing-tables">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+        <div class="section-heading">
+            <h4>Reserva tu <em>Habitación</em> Ideal</h4>
+            <img src="{% static 'images/heading-line-dec.png' %}" alt="">
+            <p>Descubre nuestras opciones de alojamiento para tus mascotas y reserva fácilmente la habitación que mejor se ajuste a tus necesidades.</p>
+        </div>
+      </div>
+      {% if productos %}
+        {% for producto in productos %}
+          <div class="col-lg-4 pt-3">
+            <div class="pricing-item-pro">
+              <span class="price">${{producto.precio}}   </span>
+              <div class="icon pt-4">
+                <img src="/media/{{producto.imagen_habitacion}}" alt="">
+              </div>
+              <ul>
+                <li><h4>№: <em style="color: black;">{{ producto.numero_habitacion }}</em></li>
+                <li><h4>Tipo: <em style="color: black;">{{ producto.tipo_habitacion }}</em></h4></li>
+                <li>
+                  <div class="border-button">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#fechasModal-{{producto.id}}">Reservar</a>
+                  </div>
+                </li>
+                <li><p style="color: black;">Las reservas que realices se guardaran en tu perfil</p></li>
+                <li>
+                  <div class="border-button">
+                    <a href="{% url 'reservas_hotel' producto.id %}" >Disponibilidad</a>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="modal fade" id="fechasModal-{{producto.id}}" tabindex="-1" aria-labelledby="fechasModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="fechasModalLabel" style="text-align: center;">Indique periodo de reserva</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="reservaForm" method="POST" enctype="multipart/form-data" action="{% url 'reservar_habitacion' producto.id %}">
+                      {% csrf_token %}
+                      
+                      {% if mascotas %}
+                      <div class="mb-3">
+                          <label for="mascota" class="form-label">Mascota</label>
+                          <select class="form-control select2" name="mascota" id="mascota" aria-label="Default select example">
+                              <option selected>Elija su mascota</option>
+                              {% for mascota in mascotas %}
+                                  <option value="{{ mascota.id }}">{{ mascota.nombre_perro }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                      {% else %}
+                          <p>Sin Mascotas, Ingresa al menos una en tu perfil</p>
+                      {% endif %}
+                  
+                      <div class="mb-3">
+                          <label for="fecha_inicio" class="form-label">Fecha inicio</label>
+                          <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" placeholder="Fecha de inicio" required>
+                      </div>
+                  
+                      <div class="mb-3">
+                          <label for="fecha_fin" class="form-label">Fecha termino</label>
+                          <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" placeholder="Fecha de termino" required>
+                      </div>
+                  
+                      <button type="submit" class="btn">Reservar</button>
+                  </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn" data-bs-dismiss="modal">Volver</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+      <div class="row" style="text-align: center;">
+        <h4>Sin <em>Habitaciones</em> disponibles</h4></div>
+      {% endif %}
+    </div>
+  </div>
+</div> 
+
+<div id="services" class="services section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+        <div class="section-heading  wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.5s">
+          <h4>Nuestros <em>Servicios</em> Disponibles</h4>
+          <img src="{% static 'images/heading-line-dec.png' %}" alt="">
+          <p style="color: black;">Ofrecemos los siguientes servicios, de acuerdo a las necesidades de tu mascota.</p>
+          <div class="white-button pt-2">
+            <a class="gradient-button" href="{% url 'servicios_disponibles' %}">Servicios Disponibles</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row d-flex justify-content-center">
+      <div class="col-lg-4 mb-4">
+        <div class="service-item first-service">
+          <div class="icon"></div>
+          <h4>Baños</h4>
+          <p>Baños relajantes y cuidadosos con productos hipoalergénicos y especializados según el tipo de pelaje y piel</p>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="service-item fourth-service">
+          <div class="icon"></div>
+          <h4>Spa</h4>
+          <p>Tratamiento de spa exclusivo para tu mascota, incluye masajes relajantes, baños terapéuticos y cuidados especiales para el pelaje</p>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="service-item third-service">
+          <div class="icon"></div>
+          <h4>Fotografía</h4>
+          <p>Capturamos momentos inolvidables de tu mascota con sesiones fotográficas profesionales. Llévate un hermoso recuerdo de su estadía en nuestro hotel.</p>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="service-item second-service">
+          <div class="icon"></div>
+          <h4>Peluquería</h4>
+          <p>Nuestro servicio de peluquería asegura que tu mascota siempre luzca impecable. Ofrecemos cortes y estilos adaptados a cada raza y preferencias del dueño.</p>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="service-item quinto-service">
+          <div class="icon"></div>
+          <h4>Transporte</h4>
+          <p>Disponemos de un servicio de transporte seguro y cómodo para recoger y entregar a tu mascota, asegurando su bienestar en todo momento durante el trayecto.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="pricing2" class="pricing-tables">
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2">
+      <div class="section-heading">
+          <h4>Nuestras <em>Membresias</em></h4>
+          <img src="{% static 'images/heading-line-dec.png' %}" alt="">
+          <p>¡Únete a nuestro programa de membresías y obtén descuentos especiales en tus reservas!</p>
+      </div>
+    </div>
+    {% if membresias %}
+      {% for membresia in membresias %}
+        <div class="col-lg-4">
+          <div class="pricing-item-pro">
+            <ul>
+              <li><h4 style="color:black">Tipo: <em style="color: #2478f9;">{{ membresia.nombre }}</em></h4> </li>
+              <li><h4 style="color:black">Descuentos del <em style="color: #2478f9;">{{ membresia.descuento |stringformat:"d" }}% </em>en todas las reservas.</h4></li>
+            </ul>
+            <div class="border-button">
+              <a href="{% url 'unirse_membresia' membresia.id %}">Unirse</a>
+            </div>
+            <p class="pt-2" style="color: black;">Se aplicaran los descuentos automaticamente a las reservas, una vez seas miembro.</p>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+          <p class="text-center">Debes Iniciar sesion para acceder a las membresias.</p>
+      {% endif %}
+  </div>
+</div>
+</div> 
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.select2').select2({
+        placeholder: 'Seleccionar una mascota',
+        allowClear: true
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Horas Disponibles
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex" style="height: 80px; visibility: hidden;">
+  <div class="vr"></div>
+</div>
+<div class="container mt-5">
+  <div class="title-container" style="text-align: center;">
+    <h2>Horas disponibles de {{ colaborador.fullname }}</h2>
+  </div>
+  <ul class="list-group mt-4">
+    <div class="row d-flex justify-content-center">
+      <div class="col-6">
+        {% if disponibilidades %}
+          {% for disponibilidad in disponibilidades %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>Fecha:</strong> {{ disponibilidad.fecha }} <br>
+              <strong>Hora:</strong> {{ disponibilidad.hora_inicio }} - {{ disponibilidad.hora_fin }}
+            </div>
+            
+            <!-- Formulario para reservar hora -->
+            <form method="POST" action="{% url 'reservar_servicio' %}">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="mascotaSelect-{{ disponibilidad.id }}">Selecciona una mascota:</label>
+                <select id="mascotaSelect-{{ disponibilidad.id }}" name="mascota_id" class="form-control">
+                  {% for mascota in mascotas %}
+                  <option value="{{ mascota.id }}">{{ mascota.nombre_perro }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <!-- Campos ocultos para pasar los detalles de la disponibilidad -->
+              <input type="hidden" name="colaborador_id" value="{{ colaborador.id }}">
+              <input type="hidden" name="servicio" value="{{ disponibilidad.servicio }}">
+              <input type="hidden" name="fecha" value="{{ disponibilidad.fecha|date:"Y-m-d" }}">
+              <input type="hidden" name="hora_inicio" value="{{ disponibilidad.hora_inicio }}">
+              <input type="hidden" name="hora_fin" value="{{ disponibilidad.hora_fin }}">
+              
+              <!-- Botón de reservar hora -->
+              <button type="submit" class="btn mt-2">Reservar Hora</button>
+            </form>
+          </li>
+          {% empty %}
+          <li class="list-group-item">No hay horas disponibles en este momento.</li>
+          {% endfor %}
+        {% else %}
+        <li class="list-group-item">No hay horas disponibles en este momento.</li>
+        {% endif %}
+        <div class="row d-flex justify-content-center">
+          <div class="col-2">
+            <a href="{% url 'servicios_disponibles' %}" class="btn mt-3">Volver</a>
+          </div>
+      </div>
+    </div>
+  </ul>
+  </div>
+</div>
+
+{% endblock %}

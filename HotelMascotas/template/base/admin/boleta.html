@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Boleta Electrónica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+        }
+        .boleta-container {
+            width: 80mm; /* Tamaño típico de impresión */
+            margin: auto;
+            padding: 10px;
+            border: 1px solid #000;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 14px;
+            margin: 0;
+        }
+        .header p {
+            margin: 2px 0;
+        }
+        .details, .footer {
+            margin-top: 10px;
+        }
+        .details table, .footer table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .details th, .details td, .footer th, .footer td {
+            padding: 4px;
+            text-align: left;
+            border: 1px solid #000;
+        }
+        .total {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: right;
+        }
+        .payment-method {
+            margin-top: 10px;
+        }
+        .barcode {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="boleta-container">
+        <!-- Encabezado -->
+        <div class="header">
+            <h1>Hotel Pets Team</h1>
+            <p>RUT: 76.123.456-7</p>
+            <p>DIRECCIÓN: Calle Falsa 123, Santiago</p>
+            <p>GIRO: Hotel y cuidado de mascotas</p>
+            <p>TELÉFONO: +56 9 1234 5678</p>
+            <h2>BOLETA N° {{ reserva.id }}</h2>
+            <p>FECHA DE EMISIÓN: {{ reserva.fecha_inicio|date:"d/m/Y" }}</p>
+        </div>
+
+        
+
+        <!-- Detalles de la boleta -->
+        <div class="details">
+            <table>
+                <tr>
+                    <th>CÓDIGO</th>
+                    <th>DESCRIPCIÓN</th>
+                    <th>VALOR</th>
+                </tr>
+                <tr>
+                    <td>0001</td>
+                    <td>
+                        {{ reserva.mascota.nombre }} - Habitación: {{ reserva.habitacion.numero_habitacion }}<br>
+                        Desde {{ reserva.fecha_inicio|date:"d/m/Y" }} hasta {{ reserva.fecha_fin|date:"d/m/Y" }}
+                    </td>
+                    <td>${{ precio_total }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Subtotal y Total -->
+        <div class="footer">
+            <table>
+                <tr>
+                    <td><strong>SUBTOTAL</strong></td>
+                    <td>${{ precio_total }}</td>
+                </tr>
+                <tr>
+                    <td><strong>TOTAL</strong></td>
+                    <td>${{ precio_total }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Nota -->
+        <div class="barcode">
+            <p style="font-size: 10px;">Gracias por preferirnos</p>
+        </div>
+    </div>
+</body>
+</html>

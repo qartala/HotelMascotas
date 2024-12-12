@@ -1,0 +1,58 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}Cambiar Membresía{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+      footer {
+        margin-top: auto;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+    </style>
+</head>
+<div class="d-flex" style="height: 90px; visibility: hidden;">
+    <div class="vr"></div>
+  </div>
+<div class="container">
+    <h2 class="text-center">Selecciona una nueva Membresía</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered table-striped text-center">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descuento (%)</th>
+                        <th>Duración (días)</th>
+                        <th>Valor ($)</th>
+                        <th>Seleccionar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for membresia in membresias %}
+                    <tr>
+                        <td>{{ membresia.nombre }}</td>
+                        <td>{{ membresia.descuento|stringformat:"d" }}</td>
+                        <td>{{ membresia.duracion_dias }}</td>
+                        <td>{{ membresia.valor|stringformat:"d" }}</td>
+                        <td>
+                            <input type="radio" name="membresia_id" value="{{ membresia.id }}" required>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success btn-lg">Confirmar Cambio</button>
+            <a href="{% url 'gestionar_membresia_usuario' %}" class="btn btn-secondary btn-lg">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-title">
+        <h1>El pago ha fallado</h1>
+    </div>
+    <div class="card-body">
+        <p>Por favor, intente nuevamente.</p>
+        <a href="{% url 'perfil' %}" class="btn btn-primary">Volver</a>
+    </div>
+</div>
+{% endblock %}

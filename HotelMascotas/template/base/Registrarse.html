@@ -1,0 +1,218 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+        .register-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1100px;
+            height: 600px;
+            margin: 0 auto;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 50px;
+        }
+
+        .register-left {
+            background: linear-gradient(to bottom right, #0066ff, #0099cc);
+            width: 50%;
+            padding: 50px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .register-left h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .register-left p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .register-right {
+            background-color: #fff;
+            width: 50%;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .register-right h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #0066ff;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-check-input {
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background-color: #0066ff;
+            border: none;
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #004db3;
+        }
+
+        /* Wave background */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: url('https://cdn.jsdelivr.net/gh/abrahamcalfie/svg-wave-top@master/wave.svg') no-repeat;
+            background-size: cover;
+            z-index: -1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .register-wrapper {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .register-left,
+            .register-right {
+                width: 100%;
+            }
+
+            .register-left {
+                padding: 30px;
+            }
+
+            .register-right {
+                padding: 30px;
+            }
+        }
+        
+        .alert-custom-warning {
+        background-color: #e2e2e2; /* Cambia este color por el que desees */
+        color: #ffffff;
+        }
+    </style>
+</head>
+<div class="d-flex" style="height: 80px;">
+    <div class="vr"></div>
+  </div>
+<!-- Register Section -->
+<div class="register-wrapper">
+    <!-- Left section with wave and text -->
+    <div class="register-left">
+        <h1>¡Crea una cuenta!</h1>
+        <p style="color: #fff;">Con una cuenta podras disfrutar de todos los beneficios que ofrecemos para tu mascota.</p>
+        <div id="liveAlertPlaceholder"></div>
+        <div class="wave"></div>
+    </div>
+
+    <!-- Right section with register form -->
+    <div class="register-right">
+        <h2>Registrarse</h2>
+        
+        <form method="POST" action="">
+            {% csrf_token %}
+            <input type="text" id="usuario" name="usuario" class="form-control" placeholder="Usuario" required>
+            <input type="text" id="first_name" name="first_name" class="form-control" placeholder="Nombre" required>
+            <input type="text" id="correo" name="correo" class="form-control" placeholder="Correo" required>
+            <input type="password" id="contrasenia" name="contrasenia" class="form-control" placeholder="Contraseña" required>
+            <div class="row d-flex justify-content-center">
+                <button type="submit" class="btn" style="width: 30%;">Registrarse</button>
+              </div>
+        </form>
+    </div>
+</div>
+<div class="d-flex" style="height: 80px;">
+    <div class="vr"></div>
+  </div>
+<script>
+    // Función para mostrar alertas dinámicas
+    function showAlert(message) {
+        const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        alertPlaceholder.append(wrapper);
+    }
+
+    // Validar el formulario
+    document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault();  // Previene el envío por defecto
+
+        // Limpiar alertas previas
+        document.getElementById('liveAlertPlaceholder').innerHTML = '';
+
+        // Variables de campo
+        const usuario = document.getElementById('usuario').value.trim();
+        const firstName = document.getElementById('first_name').value.trim();
+        const correo = document.getElementById('correo').value.trim();
+        const contrasenia = document.getElementById('contrasenia').value;
+
+        // Indicador de validación
+        let isValid = true;
+
+        // Validación de usuario
+        const usuarioPattern = /^(?=.*[A-Z])[A-Za-z\d]{6,}$/;
+        if (!usuarioPattern.test(usuario)) {
+            showAlert('El nombre de usuario debe tener al menos 6 caracteres y contener al menos una letra mayúscula.', 'warning');
+            isValid = false;
+        }
+
+        // Validación de nombre: solo letras y al menos 2 caracteres
+        const namePattern = /^[A-Za-z\s]+$/;
+        if (!namePattern.test(firstName) || firstName.length < 2) {
+            showAlert('El nombre solo debe contener letras y tener al menos 2 caracteres.', 'warning');
+            isValid = false;
+        }
+
+        // Validación de correo: formato correcto de email
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(correo)) {
+            showAlert('Por favor ingresa un correo válido.', 'warning');
+            isValid = false;
+        }
+
+        // Validación de contraseña: mínimo 8 caracteres, incluye mayúscula, minúscula, número y símbolo
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
+        if (!passwordPattern.test(contrasenia)) {
+            showAlert('La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y un símbolo.', 'warning');
+            isValid = false;
+        }
+
+        
+        // Si todos los campos son válidos, envía el formulario
+        if (isValid) {
+            this.submit();
+        }
+    });
+</script>
+{% endblock %}

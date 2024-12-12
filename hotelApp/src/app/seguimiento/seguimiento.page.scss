@@ -1,0 +1,78 @@
+
+.contenido-seguimiento {
+  display: flex;
+  justify-content: center; /* Centrar horizontalmente */
+  align-items: flex-start; /* Alinear contenido al inicio verticalmente */
+  flex-direction: column; /* Colocar en columna */
+  padding: 10px; /* Espaciado interno */
+  min-height: 100vh; /* Ocupar toda la altura de la pantalla */
+  box-sizing: border-box;
+}
+
+.menu-item {
+  ion-icon {
+    font-size: 24px;
+  }
+}
+
+.navbar-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+  color: var(--ion-color-primary);
+}
+
+
+.info-mascota {
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  margin: 20px auto; /* Alinear al centro horizontalmente */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px; /* Ancho máximo */
+  width: 100%; /* Ocupar el ancho máximo disponible */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centrar contenido */
+}
+
+.imagen-mascota {
+  width: 100px; /* Tamaño de la imagen */
+  height: 100px; /* Tamaño de la imagen */
+  border-radius: 50%; /* Imagen circular */
+  margin-bottom: 20px; /* Espacio debajo de la imagen */
+}
+
+.titulo-mascota {
+  font-size: 1.5rem;
+  margin: 0; /* Quitar margen */
+  text-align: center; /* Centrar texto */
+}
+
+.texto-secundario {
+  font-size: 1rem;
+  margin: 5px 0; /* Espacio superior e inferior */
+  text-align: center; /* Centrar texto */
+}
+
+.separator {
+  border: none;
+  height: 1px;
+  background: #e0e0e0; /* Línea de separación */
+  margin: 20px 0; /* Espacio arriba y abajo de la línea */
+  width: 100%; /* Asegura que ocupe el ancho completo */
+}
+
+.subtitulo {
+  font-size: 1.2rem;
+  margin: 20px 0; /* Espacio arriba y abajo del subtítulo */
+  text-align: center; /* Centrar subtítulo */
+}
+
+.servicios-lista {
+  width: 100%; /* Ocupa todo el ancho */
+}
+
+.btn-action {
+  margin: 5px; /* Margen para botones */
+}

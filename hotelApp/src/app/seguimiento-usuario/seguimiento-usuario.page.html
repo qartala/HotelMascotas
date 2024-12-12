@@ -1,0 +1,174 @@
+<ion-content class="seguimiento-content">
+  <div class="background-image"></div>
+  <div class="ion-page" id="main-content">
+    <!-- Header -->
+    <ion-header>
+      <ion-toolbar class="navbar">
+        <ion-buttons slot="start">
+          <ion-button (click)="ir('reserva-usuario')" class="menu-item">
+            <ion-icon slot="icon-only" name="arrow-back-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title class="navbar-title">Seguimiento</ion-title>
+        <ion-buttons slot="end" class="chat-boton">
+          <ion-button (click)="irAlChat()">
+            <ion-icon name="chatbubbles-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <!-- Mostrar mensaje si no hay servicios -->
+    <div *ngIf="!groupedServicios?.length" class="mensaje-simple">
+      <ion-card>
+        <ion-card-content>
+          <ion-text color="medium">
+            <h2>El seguimiento no está disponible</h2>
+            <p>El check-in de la reserva aún no se ha realizado.</p>
+          </ion-text>
+          <ion-button expand="block" color="primary" (click)="ir('reserva-usuario')">
+            Volver a Reservas
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Lista de días reservados con servicios -->
+    <div *ngIf="groupedServicios?.length" class="scrollable-container">
+      <ion-card>
+        <ion-card-header class="card-header">
+          <ion-card-title class="dia-title">
+            Regalos
+          </ion-card-title>
+          <p>Regalos para esta reserva</p>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-row class="ion-justify-content-start" *ngIf="reservaRegalia && reservaRegalia.length > 0; else noRegalos">
+            <ion-col size="6" *ngFor="let reserva of reservaRegalia">
+                <ion-card>
+                  <img [src]="reserva.regalia.foto" class="regalo-img"/>
+                  <ion-card-header>
+                    <p style="text-align: center;">{{ reserva.regalia.nombre }}</p>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <p><strong>Cantidad:</strong> {{ reserva.cantidad }}</p>
+                    <p><strong>Utilizado:</strong> {{ reserva.usada ? 'Sí' : 'No'}}</p>
+                  </ion-card-content>
+                </ion-card>
+            </ion-col>
+          </ion-row>
+          <ng-template #noRegalos>
+            <ion-card>
+              <ion-card-content>
+                <p>No hay regalos asociados a esta reserva.</p>
+              </ion-card-content>
+            </ion-card>
+          </ng-template>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card *ngFor="let grupo of groupedServicios" class="servicio-card">
+        <ion-card-header class="card-header">
+          <ion-card-title class="dia-title">
+            {{ grupo.dia }} - {{ grupo.fecha }}
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row *ngFor="let servicio of grupo.servicios">
+              <ion-col size="12">
+                <!-- Comió -->
+                <div class="servicio-detail">
+                  <ion-label class="label-highlight">Comió:</ion-label>
+                  <p [class]="servicio.comio ? 'positivo' : 'negativo'">
+                    {{ servicio.comio ? 'Sí' : 'No' }}
+                  </p>
+                  <img
+                    *ngIf="servicio.comio_evidencia"
+                    [src]="servicio.comio_evidencia"
+                    alt="Evidencia de comida"
+                    class="evidencia-img"
+                  />
+                  <p *ngIf="!servicio.comio_evidencia" class="negativo">
+                    Sin evidencia disponible
+                  </p>
+                </div>
+
+                <!-- Paseo -->
+                <div class="servicio-detail">
+                  <ion-label class="label-highlight">Paseo:</ion-label>
+                  <p [class]="servicio.paseo ? 'positivo' : 'negativo'">
+                    {{ servicio.paseo ? 'Sí' : 'No' }}
+                  </p>
+                  <img
+                    *ngIf="servicio.paseo_evidencia"
+                    [src]="servicio.paseo_evidencia"
+                    alt="Evidencia de paseo"
+                    class="evidencia-img"
+                  />
+                  <p *ngIf="!servicio.paseo_evidencia" class="negativo">
+                    Sin evidencia disponible
+                  </p>
+                </div>
+
+                <!-- Entretenimiento -->
+                <div class="servicio-detail">
+                  <ion-label class="label-highlight">Entretenimiento:</ion-label>
+                  <p [class]="servicio.entretencion ? 'positivo' : 'negativo'">
+                    {{ servicio.entretencion ? 'Sí' : 'No' }}
+                  </p>
+                  <img
+                    *ngIf="servicio.entretencion_evidencia"
+                    [src]="servicio.entretencion_evidencia"
+                    alt="Evidencia de entretenimiento"
+                    class="evidencia-img"
+                  />
+                  <p *ngIf="!servicio.entretencion_evidencia" class="negativo">
+                    Sin evidencia disponible
+                  </p>
+                </div>
+
+                <!-- Medicamentos -->
+                <div class="servicio-detail">
+                  <ion-label class="label-highlight">Medicamentos:</ion-label>
+                  <p [class]="servicio.medicamentos ? 'positivo' : 'negativo'">
+                    {{ servicio.medicamentos ? 'Sí' : 'No' }}
+                  </p>
+                  <img
+                    *ngIf="servicio.medicamentos_evidencia"
+                    [src]="servicio.medicamentos_evidencia"
+                    alt="Evidencia de medicamentos"
+                    class="evidencia-img"
+                  />
+                  <p *ngIf="!servicio.medicamentos_evidencia" class="negativo">
+                    Sin evidencia disponible
+                  </p>
+                </div>
+
+                 <!-- regalo -->
+                 <div class="servicio-detail">
+                  <ion-label class="label-highlight">Regalo:</ion-label>
+                  <img
+                    *ngIf="servicio.regalo_evidencia"
+                    [src]="servicio.regalo_evidencia"
+                    alt="Evidencia del regalo"
+                    class="evidencia-img"
+                  />
+                  <p *ngIf="!servicio.regalo_evidencia" class="negativo">
+                    Sin evidencia disponible
+                  </p>
+                </div>
+
+                <!-- Observaciones -->
+                <div class="servicio-detail">
+                  <ion-label class="label-highlight">Observaciones:</ion-label>
+                  <p>{{ servicio.observacion || 'Sin observaciones' }}</p>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

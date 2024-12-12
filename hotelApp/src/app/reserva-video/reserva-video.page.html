@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="regresar()" class="menu-item" color="secondary">
+        <ion-icon slot="icon-only" name="arrow-back-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="secondary">Reservas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Filtro para buscar reservas -->
+  <ion-item>
+    <ion-input
+      placeholder="Buscar reservas por mascota o habitación"
+      [(ngModel)]="filtro"
+    ></ion-input>
+  </ion-item>
+  <ion-button expand="block" (click)="filtrarReservas()">Buscar</ion-button>
+
+  <!-- Listado de reservas filtradas -->
+  <ion-list>
+    <ion-item *ngFor="let reserva of reservasFiltradas">
+      <ion-label>
+        <h2>{{ reserva.mascota.nombre_perro }}</h2>
+        <p>Desde: {{ reserva.fecha_inicio }}</p>
+        <p>Hasta: {{ reserva.fecha_fin }}</p>
+        <p>Habitación: {{ reserva.habitacion.numero_habitacion || 'N/A' }}</p>
+      </ion-label>
+      <ion-button
+        slot="end"
+        color="primary"
+        (click)="irAVideos(reserva)"
+      >
+        {{ usuarioEsTrabajador ? 'Ver Videos' : 'Gestionar Videos' }}
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

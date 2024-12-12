@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="regresar()" class="menu-item" color="secondary">
+        <ion-icon slot="icon-only" name="arrow-back-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="secondary">Subir y Listar Videos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="background-image"></div>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-title>
+            <p style="padding: 20px; text-align: center;">
+              <strong>Sube tus videos aquí para compartir momentos especiales</strong>
+            </p>
+          </ion-card-title>
+          <ion-card-content>
+            <p>Recuerda que solo puedes subir videos si tienes una membresía activa.</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" size-md="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Información del Video</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item>
+              <ion-label position="floating">Descripción</ion-label>
+              <ion-input [(ngModel)]="descripcion"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>Seleccionar Archivo</ion-label>
+              <input type="file" (change)="seleccionarArchivo($event)" accept="video/*" />
+            </ion-item>
+
+            <ion-row class="ion-justify-content-center" style="margin-top: 20px;">
+              <ion-button expand="block" color="secondary" (click)="subirVideo()">Subir Video</ion-button>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- Lista de Videos -->
+<ion-row>
+  <ion-col size="6" size-md="4" *ngFor="let video of videos"> <!-- Cambiar tamaño de las columnas -->
+    <ion-card style="width: 100%; max-width: 250px; margin: auto;"> <!-- Limitar el ancho del card -->
+      <ion-card-content>
+        <!-- Video con tamaño reducido -->
+        <video [src]="video.archivo_video_url" controls style="width: 100%; height: 150px; object-fit: cover;"></video>
+        <!-- Descripción -->
+        <p style="font-size: 14px; margin-top: 10px;"><strong>Descripción:</strong> {{ video.descripcion }}</p>
+        <!-- Fecha -->
+        <p style="font-size: 12px; margin-top: 5px;"><strong>Fecha:</strong> {{ video.fecha_subida | date:'short' }}</p>
+        <!-- Botón para eliminar -->
+        <ion-row class="ion-justify-content-end" style="margin-top: 10px;">
+          <ion-button size="small" color="danger" (click)="eliminarVideo(video.id)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ion-col>
+</ion-row>
+
+  </ion-grid>
+</ion-content>

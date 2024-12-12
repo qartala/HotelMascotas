@@ -1,0 +1,23 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card text-center" style="width: 100%; max-width: 500px;">
+        <div class="card-title mt-4">
+            <h1>¡Pago Exitoso!</h1>
+        </div>
+        <div class="card-body">
+            <p>El pago ha sido realizado con éxito.</p>
+            <p>Monto pagado: {{ response.amount }} CLP</p>
+            <p>Orden de compra: {{ response.buy_order }}</p>
+            <a href="{% url 'perfil' %}" class="btn">Volver</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

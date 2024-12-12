@@ -1,0 +1,131 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Servicios Disponibles
+{% endblock %}
+
+{% block content %}
+<head>
+  <style>
+    .section-header {
+      margin-top: 30px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-header h2 {
+      color: #0d6efd;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .container-profile {
+      margin-top: 80px;
+      padding: 30px;
+      background-color: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      flex: 1;
+    }
+
+    .card {
+      flex: 1;
+      align-items: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border: none;
+      transition: transform 0.3s ease;
+      margin-bottom: 30px;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .card img {
+      width: 50%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .btn {
+      background-color:#0d6efd;
+      border: none;
+      font-weight: bold;
+      padding: 10px 25px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #0d6efd;
+    }
+
+  </style>
+</head>
+<div class="d-flex" style="height: 90px; visibility: hidden;">
+  <div class="vr"></div>
+</div>
+<div class="container">
+  <div class="section-header">
+    <h2>Servicios Disponibles</h2>
+    <p>Explora los servicios y elige al colaborador que mas se ajuste a tus necesidades.</p>
+  </div>
+
+  
+  <div class="mb-4">
+    <div class="row d-flex justify-content-center">
+      <div class="col-4">
+        <form method="GET" action="{% url 'servicios_disponibles' %}">
+          <select name="servicio" class="form-select">
+            <option value="">Todos los servicios</option>
+            <option value="Baños" {% if request.GET.servicio == 'Baños' %}selected{% endif %}>Baños</option>
+            <option value="Spa" {% if request.GET.servicio == 'Spa' %}selected{% endif %}>Spa</option>
+            <option value="Transporte" {% if request.GET.servicio == 'Transporte' %}selected{% endif %}>Transporte</option>
+            <option value="Peluqueria" {% if request.GET.servicio == 'Peluqueria' %}selected{% endif %}>Peluquería</option>
+            <option value="Fotografia" {% if request.GET.servicio == 'Fotografia' %}selected{% endif %}>Fotografía</option>
+          </select>
+          <div class="row d-flex justify-content-center">
+            <div class="col-4 pt-3">
+              <div >
+                <button class="btn btn-primary" type="submit" >Filtrar</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-body row">
+    {% for servicio in servicios %}
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card">
+        <h5 class="card-text p-3" style="text-align: center; color: black;">Colaborador: {{ servicio.fullname }}</h5>
+        <img src="{% if servicio.foto_perfil %}{{ servicio.foto_perfil.url }}{% else %}/static/assets/perfilll.png{% endif %}" alt="Foto de perfil" class="img-thumbnail mb-3" height="100px" width="100px">
+
+        <div class="card-body text-center">
+          <h5 class="card-title">Servicio: {{ servicio.servicio }}</h5>
+          <p class="card-text">{{ servicio.descripcion|default_if_none:"Sin descripción disponible" }}</p>
+          <p><strong>Precio:</strong> ${{ servicio.precio_por_hora|default_if_none:"0" }}</p>
+          <div class="white-button p-2">
+            <a href="{% url 'ver_horas_colaborador' servicio.id %}" class="btn">Ver Horas</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p style="text-align: center;">No hay servicios disponibles para el filtro que aplicaste en este momento.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

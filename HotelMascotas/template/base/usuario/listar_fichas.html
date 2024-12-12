@@ -1,0 +1,465 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+    .nft{
+      user-select: none;
+      max-width: 700px;
+      margin: 5rem auto;
+      border: 1px solid #ddd;  /* Borde gris claro */
+      background-color: #fff;  /* Fondo blanco */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Sombra suave */
+      border-radius: .7rem;
+      overflow: hidden;
+      transition: .3s all;
+        hr{
+          width: 100%;
+          border: none;
+          border-bottom: 1px solid #1496a455;
+          margin-top: 0;
+        }
+        ins{
+          text-decoration: none;
+        }
+        .main{
+          display: flex;
+          width: 100%;
+          padding: 1rem;
+
+          .tokenImage{
+            border-radius: 2rem;
+            max-width: 100%;
+            height: 200px;
+            width: 200px;
+            object-fit: cover;
+          }
+          .description{
+            margin-left: 1rem;
+            color: #000000;
+          }
+          .tokenInfo{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .price{
+              display: flex;
+              align-items: center;
+              color: #ba64c0;
+              font-weight: 700;
+              ins{
+                margin-left: 1rem;
+                margin-right: .5rem;
+              }
+            }
+            .duration{
+              display: flex;
+              align-items: center;
+              color: #83bddb;
+              margin-right: .2rem;
+              ins{
+                margin: .5rem;
+                margin-bottom: .4rem;
+              }
+            }
+          }
+          .creator{
+            display: flex;
+            align-items: center;
+            margin-top: .2rem;
+            margin-bottom: -.3rem;
+            font-weight: 700;
+            ins{
+              color: #3409c3;
+              text-decoration: none;
+            }
+            .wrapper{
+              display: flex;
+              align-items: center;
+              border: 1px solid #ffffff22;
+              padding: .3rem;
+              margin: 0;
+              margin-right: .5rem;
+              border-radius: 100%;
+              box-shadow: inset 0 0 0 4px #000000aa;
+              img{
+                border-radius: 100%;
+                border: 1px solid #ffffff22;
+                width: 2rem;
+                height: 2rem;
+                object-fit: cover;
+                margin: 0;
+              }
+            }
+          }
+        }
+        ::before{
+          position: fixed;
+          content: "";
+          box-shadow: 0 0 100px 40px #ffffff08;
+          top: -10%;
+          left: -100%;
+          transform: rotate(-45deg);
+          height: 60rem;
+          transition: .7s all;
+        }
+        &:hover{
+          border: 1px solid #ccc;
+          box-shadow: 0 7px 20px rgba(0, 0, 0, 0.2);
+          transform: scale(1.015);
+        }
+}
+    
+    footer {
+        margin-top: auto;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+    </style>
+    <script>
+        $(document).ready(function(){
+            // Activate tooltip
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</head>
+
+<div class="container">
+    <div class="d-flex" style="height: 80px; visibility: hidden;">
+      <div class="vr"></div>
+    </div>
+    <div class="row d-flex justify-content-center pt-4">
+        <div class="col-7">
+            <h1 class="text-center">Fichas de Macotas</h1>
+            <div class="d-flex" style="height: 20px; visibility: hidden;">
+                <div class="vr"></div>
+              </div>
+                {% if fichas %}
+            <div class="row d-flex justify-content-center">
+                <div class="col-5 d-flex justify-content-center pb-1">
+                    <a href="{% url 'descargar_fichas' %}" class="btn">Descargar (PDF)</a>
+                </div>
+            </div>
+                {% endif %}
+                    {% if fichas %}
+                        {% for ficha in fichas %}
+                            <div class="nft">
+                                <div class='main'>
+                                    <div class="row d-flex align-items-center">
+                                        <div class="col-4">
+                                            {% if ficha.imagen_mascota %}
+                                            <img class='tokenImage' src="/media/{{ficha.imagen_mascota}}" alt="" />
+                                            {% else %}
+                                            <p style="text-align: center;">sin imagen</p>
+                                            {% endif %}
+
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="row">
+                                                <p class='description'>
+                                                <td>
+                                                        <h2 class="pt-3" style="text-align: center; font-weight: 700;">{{ ficha.nombre_perro }}</h2>
+
+                                                    <li>
+                                                        <strong>Raza:</strong> {{ ficha.raza }}
+
+                                                    </li>
+                                                    <li>
+                                                        <strong>Peso:</strong> {{ ficha.peso }} kg
+
+                                                    </li>
+                                                    <li>
+                                                        <strong>Alimentación:</strong> {{ ficha.comida }}
+
+                                                    </li>
+                                                    <li>
+                                                        <strong>Contiene chip:</strong> {{ ficha.chip }}
+
+                                                    </li>
+                                                </td>
+                                                
+                                                </p>
+                                            </div>
+                                            <div class="row">
+                                                <div class='creator'>
+                                                    <p class="card-text" style="text-align: center;">Historial Medico</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-10">
+                                                    <div class='creator'>
+                                                    <p class="card-text" style="text-align: center;">Vacunas: <p class="p-1">{{ficha.vacunas}}</p></p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2 d-flex align-items-center">
+                                                    <a href="#" class="delete" data-bs-toggle="modal" 
+                                                    data-bs-target="#confirmDeleteVacunasModal-{{ ficha.id }}">
+                                                        <i class="material-icons" data-toggle="tooltip" title="Eliminar vacunas" style="color: #BB271A;">
+                                                            delete
+                                                        </i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-10">
+                                                    <div class='creator'>
+                                                    <p class="card-text" style="text-align: center;">Alergias: <p class="p-1">{{ficha.alergias}}</p></p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2 d-flex align-items-center">
+                                                    <a href="#" class="delete" data-bs-toggle="modal" 
+                                                    data-bs-target="#confirmDeleteAlergiasModal-{{ ficha.id }}">
+                                                        <i class="material-icons" data-toggle="tooltip" title="Eliminar alergias" style="color: #BB271A;">
+                                                            delete
+                                                        </i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-10">
+                                                    <div class='creator'>
+                                                    <p class="card-text" style="text-align: center;">Enfermedades: <p class="p-1"> {{ficha.enfermedades}}</p></p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2 d-flex align-items-center">
+                                                    <a href="#" class="delete" data-bs-toggle="modal" 
+                                                    data-bs-target="#confirmDeleteEnfermedadesModal-{{ ficha.id }}">
+                                                        <i class="material-icons" data-toggle="tooltip" title="Eliminar enfermedades" style="color: #BB271A;">
+                                                            delete
+                                                        </i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row pt-4">
+                                                <div class='tokenInfo'>
+                                                <div class="duration">
+                                                    <div class="actions">
+                                                      <a href="#" class="delete btn" data-bs-toggle="modal" 
+                                                          data-bs-target="#modificarMascotaModal-{{ ficha.id }}">
+                                                          Modificar
+                                                        </a>
+                                                        <a class="delete btn" href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-url="{% url 'eliminar_ficha' ficha.id %}">Eliminar</a>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </p>
+                                </div>
+                            </div>
+                            <!-- Modal de modificar -->
+                            <div class="modal fade" id="modificarMascotaModal-{{ ficha.id }}" tabindex="-1" 
+                                  aria-labelledby="modalLabel-{{ ficha.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="POST" enctype="multipart/form-data" action="{% url 'modificar_mascota' ficha.id %}">
+                                            {% csrf_token %}
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Modificar Mascota</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <div class="form-group">
+                                                            <label>Nombre del Perro</label>
+                                                            <input type="text" class="form-control" name="nombre_perro" value="{{ ficha.nombre_perro }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Raza</label>
+                                                            <input type="text" class="form-control" name="raza" value="{{ ficha.raza }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Edad</label>
+                                                            <input type="number" class="form-control" name="edad" value="{{ ficha.edad }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="form-group">
+                                                            <label>Peso (kg)</label>
+                                                            <input type="number" step="0.1" class="form-control" name="peso" value="{{ ficha.peso }}" required>
+                                                        </div>
+                                                        <div class="form-group pt-2">
+                                                            <label for="chip">¿Tiene Chip?</label>
+                                                            <select id="chip" name="chip" required>
+                                                                <option value="Si" {% if ficha.chip == "Si" %}selected{% endif %}>Si</option>
+                                                                <option value="No" {% if ficha.chip == "No" %}selected{% endif %}>No</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group pt-2">
+                                                            <label>Tipo de comida</label>
+                                                            <input type="text" class="form-control" name="comida" value="{{ ficha.comida }}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 pt-3">
+                                                        <div class="form-group">
+                                                            <label>Agregar vacunas</label>
+                                                            <select name="vacunas" class="form-select" multiple>
+                                                                <option value="Ninguna">Ninguna</option>
+                                                                <option value="Rabia">Rabia</option>
+                                                                <option value="Parvovirus">Parvovirus</option>
+                                                                <option value="Moquillo">Moquillo</option>
+                                                                <option value="Hepatitis">Hepatitis</option>
+                                                                <option value="Tifus">Tifus</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 pt-3">
+                                                        <div class="form-group">
+                                                            <label>Alergias</label>
+                                                            <select name="alergias" class="form-select" multiple>
+                                                                <option value="Ninguna">Ninguna</option>
+                                                                <option value="Polen">Polen</option>
+                                                                <option value="Polvo">Polvo</option>
+                                                                <option value="Verduras">Verduras</option>
+                                                                <option value="Carne">Carne</option>
+                                                                <option value="Pescado">Pescado</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 pt-3">
+                                                        <div class="form-group">
+                                                            <label>Enfermedades</label>
+                                                            <select name="enfermedades" class="form-select" multiple>
+                                                                <option value="Ninguna">Ninguna</option>
+                                                                <option value="Diabetes">Diabetes</option>
+                                                                <option value="Hipotiroidismo">Hipotiroidismo</option>
+                                                                <option value="Epilepsia">Epilepsia</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Imagen Actual</label>
+                                                    <img src="/media/{{ficha.imagen_mascota}}" style="width: 100px; height: auto;">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Nueva Imagen</label>
+                                                    <input type="file" class="form-control" name="imagen_mascota">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-success">Guardar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal de eliminar vacunas -->
+                            <div class="modal fade" id="confirmDeleteVacunasModal-{{ ficha.id }}" tabindex="-1" 
+                                 aria-labelledby="exampleModalLabel-{{ ficha.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ¿Estás seguro de que deseas limpiar las vacunas?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn" data-bs-dismiss="modal">Cancelar</button>
+                                            <a href="{% url 'eliminar_vacunas' ficha.id %}" class="btn">Eliminar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal de eliminar alergias -->
+                            <div class="modal fade" id="confirmDeleteAlergiasModal-{{ ficha.id }}" tabindex="-1" 
+                                 aria-labelledby="exampleModalLabel-{{ ficha.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ¿Estás seguro de que deseas limpiar las alergias?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn" data-bs-dismiss="modal">Cancelar</button>
+                                            <a href="{% url 'eliminar_alergias' ficha.id %}" class="btn">Eliminar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal de eliminar enfermedades -->
+                            <div class="modal fade" id="confirmDeleteEnfermedadesModal-{{ ficha.id }}" tabindex="-1" 
+                                 aria-labelledby="exampleModalLabel-{{ ficha.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ¿Estás seguro de que deseas limpiar las enfermedades?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn" data-bs-dismiss="modal">Cancelar</button>
+                                            <a href="{% url 'eliminar_enfermedades' ficha.id %}" class="btn">Eliminar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        {% endfor %}
+                    {% else %}
+                    <p class="empty-message text-center">No hay fichas registradas.</p>
+                    {% endif %}
+        </div>
+    </div>
+</div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar esta ficha?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var url = button.getAttribute('data-url');
+            confirmDeleteBtn.setAttribute('href', url);
+        });
+    });
+</script>
+
+{% endblock %}

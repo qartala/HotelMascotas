@@ -1,0 +1,19 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+<div class="d-flex" style="height: 100px;">
+    <div class="vr"></div>
+  </div>
+<div class="container text-center">
+    <h1>Ocurrió un error</h1>
+    <p>{{ error }}</p>
+    <a href="{% url 'perfil' %}" class="btn">Volver</a>
+</div>
+<div class="d-flex" style="height: 100px;">
+    <div class="vr"></div>
+  </div>
+{% endblock %}

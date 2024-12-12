@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva - {{ reserva.id }}</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .header, .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .mascota-img {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Detalles de la Reserva</h1>
+        <h2>Reserva № {{ reserva.id }}</h2>
+    </div>
+
+    <table>
+        <tr>
+            <th>Cliente</th>
+            <td>{{ reserva.cliente.username }}</td>
+        </tr>
+        <tr>
+            <th>Habitación</th>
+            <td>{{ reserva.habitacion.numero_habitacion }} - {{ reserva.habitacion.tipo_habitacion }}</td>
+        </tr>
+        <tr>
+            <th>Fecha de Inicio</th>
+            <td>{{ reserva.fecha_inicio }}</td>
+        </tr>
+        <tr>
+            <th>Fecha de Fin</th>
+            <td>{{ reserva.fecha_fin }}</td>
+        </tr>
+        <tr>
+            <th>Mascota</th>
+            <td>{{ reserva.mascota.nombre_perro }}</td>
+        </tr>
+        
+        {% if reserva.mascota.imagen_mascota_url %}
+        <tr>
+            <th>Imagen de la Mascota</th>
+            <td>
+                <img src="{{ reserva.mascota.imagen_mascota_url }}" alt="Imagen de la Mascota" class="mascota-img">
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th>Precio Total</th>
+            <td>{{ precio_total }} CLP</td>
+        </tr>
+    </table>
+    <div class="footer">
+        <p>Gracias por confiar en nosotros. ¡Esperamos que disfrutes tu estadía!</p>
+    </div>
+</body>
+</html>

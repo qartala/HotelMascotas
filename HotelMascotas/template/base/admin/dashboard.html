@@ -1,0 +1,872 @@
+{% extends 'base/admin/Administrador.html' %}
+{% load static humanize %}
+
+{% block title %}
+Dashboard - KPIs
+{% endblock %}
+
+{% block content %}
+<style>
+    /* Contenedor general */
+    .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    /* Títulos */
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 5px;
+        color: #34495e;
+    }
+
+    /* Tarjetas */
+    .card {
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        background-color: #ffffff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .card img {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 10px;
+    }
+
+    .card h5 {
+        font-size: 24px;
+        margin: 0;
+        color: #34495e;
+        font-weight: bold;
+    }
+
+    .card p {
+        font-size: 14px;
+        color: #7f8c8d;
+        margin: 0;
+    }
+
+    /* Colores personalizados para las tarjetas */
+    .card-stock-low {
+        background-color: #ffebee; /* Rojo claro */
+        color: #d32f2f; /* Rojo oscuro */
+    }
+
+    .card-checkin-pending {
+        background-color: #fff8e1; /* Amarillo claro */
+        color: #f57c00; /* Amarillo oscuro */
+    }
+
+    .card-checkout-pending {
+        background-color: #ffe056; /* Amarillo más claro */
+        color: #f9a825; /* Amarillo más oscuro */
+    }
+
+    .card-arrival {
+        background-color: #e8f5e9; /* Verde claro */
+        color: #388e3c; /* Verde oscuro */
+    }
+
+    .card-departure {
+        background-color: #e3f2fd; /* Azul claro */
+        color: #1976d2; /* Azul oscuro */
+    }
+
+    /* Estilos del botón */
+    .modern-button {
+        display: inline-block;
+        padding: 10px 15px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #3498db;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .modern-button:hover {
+        background-color: #2980b9;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+   /* Contenedor desplegable */
+   .modern-panel {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        max-width: 90%;
+        padding: 20px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1001;
+    }
+
+    /* Fondo con desenfoque */
+    .blur-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(5px); /* Desenfoque */
+        background-color: rgba(0, 0, 0, 0.3); /* Fondo semitransparente */
+        z-index: 1000;
+    }
+
+    /* Botón flotante */
+    .modern-floating-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 15px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #3498db;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 999;
+    }
+
+    .modern-floating-button:hover {
+        background-color: #2980b9;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .modern-panel p {
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        color: #34495e;
+        margin-bottom: 10px;
+    }
+
+    .modern-panel ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .modern-panel ul li {
+        margin: 8px 0;
+        font-size: 14px;
+        display: flex;
+        align-items: flex-start;
+        color: #34495e;
+    }
+
+    .modern-panel ul li::before {
+        content: "✔";
+        color: #2ecc71;
+        font-size: 16px;
+        font-weight: bold;
+        margin-right: 8px;
+    }
+
+    .legend-container {
+        display: flex;
+        justify-content: center; /* Centra horizontalmente */
+        align-items: center; /* Centra verticalmente */
+        margin-top: 20px; /* Separación con el título */
+        gap: 20px; /* Espaciado entre los ítems */
+        padding: 15px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 16px; /* Tamaño de fuente */
+        font-family: 'Poppins', sans-serif; /* Fuente profesional */
+        color: #34495e; /* Color de texto */
+    }
+
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        margin-right: 8px;
+        border-radius: 3px;
+        border: 1px solid #ccc; /* Borde para mayor visibilidad */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    }
+
+    .bg-warning {
+        background-color: #fff8e1; /* Amarillo claro */
+    }
+
+    .bg-danger {
+        background-color: #ffebee; /* Rojo claro */
+    }
+
+    .bg-success {
+        background-color: #e8f5e9; /* Verde claro */
+    }
+
+     /* Ícono de información */
+    .info-icon {
+        font-size: 20px;
+        color: #3498db;
+        cursor: pointer;
+        position: absolute;
+        bottom: 10px; /* Ubica el ícono a 10px desde la parte inferior */
+        right: 10px; /* Ubica el ícono a 10px desde el borde derecho */
+}
+
+    /* Cuadro de información oculto por defecto */
+    .info-box {
+        display: none;
+        position: absolute;
+        top: 30px; /* Ajusta para posicionarlo debajo del ícono */
+        right: 0;
+        width: 250px;
+        background: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 15px;
+        z-index: 1000;
+    }
+
+    /* Mostrar cuadro al pasar sobre el ícono */
+    .info-icon:hover + .info-box {
+        display: block;
+    }
+
+    /* Estilos internos del cuadro */
+    .info-box p {
+        font-size: 14px;
+        color: #34495e;
+        margin: 0;
+    }
+
+    .info-box ul {
+        padding: 0;
+        margin: 10px 0 0 0;
+        list-style: none;
+    }
+
+    .info-box ul li {
+        font-size: 12px;
+        color: #34495e;
+    }
+
+    .alert-container {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 1000px;
+    background-color: #f8d7da;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.alert-heading {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #721c24;
+    margin-bottom: 20px;
+}
+
+.table {
+    margin-top: 10px;
+}
+
+.table th {
+    text-align: center;
+    font-size: 14px;
+    color: #343a40;
+    background-color: #f1f1f1;
+}
+
+.table td {
+    text-align: center;
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 22px;
+        }
+
+        .card img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .card h5 {
+            font-size: 18px;
+        }
+
+        .card p {
+            font-size: 12px;
+        }
+    }
+</style>
+
+
+
+
+
+<div class="row mt-3">
+    <div class="col-12 text-center">
+        <p id="fecha-hora" style="font-size: 16px; font-family: 'Poppins', sans-serif; color: #34495e;"></p>
+    </div>
+</div>
+<div class="container mt-5">
+
+    
+
+    <h1 class="text-center mb-5">Panel Administrativo</h1>
+
+
+    <div class="legend-container">
+        <!-- Información -->
+        <div class="legend-item" style="display: flex; align-items: center; position: relative;">
+            <span style="font-size: 18px; color: #3498db; margin-right: 10px;">ℹ️</span>
+            <span>Información</span>
+        </div>
+
+
+        <!-- Pendientes -->
+        <div class="legend-item">
+            <span class="legend-color bg-warning"></span>
+            <span>Pendientes</span>
+        </div>
+
+        <!-- Crítico -->
+        <div class="legend-item">
+            <span class="legend-color bg-danger"></span>
+            <span>Crítico </span>
+        </div>
+
+        <!-- Normal -->
+        <div class="legend-item">
+            <span class="legend-color bg-success"></span>
+            <span>Normal</span>
+        </div>
+    </div>
+
+
+    
+    <!-- Tarjetas (KPIs) -->
+    <div class="row g-4">
+        <!-- Colaboradores Activos -->
+        
+           
+        
+        <h2 class="section-title">Estadísticas Generales</h2>
+
+        <div class="col-lg-3 col-md-6 col-sm-12">
+
+            <a href="{% url 'listar_colaboradores_aprobados' %}" class="col-lg-3 col-md-6 col-sm-12 text-decoration-none">
+
+                <div class="card" style="position: relative;">
+                    <div class="card-body text-center">
+                        <img src="{% static 'assets/colaborar.png' %}" alt="Colaboradores Activos">
+                        <h5>{{ colaboradores_activos }}</h5>
+                        <p>Colaboradores activos</p>
+                        <!-- Ícono de información y cuadro -->
+                        <span class="info-icon">ℹ️</span>
+                        <div class="info-box">
+                            <p>Información sobre colaboradores activos:</p>
+                            <ul>
+                                <li>Número total: {{ colaboradores_activos }}</li>
+                                <li>Redirige a la lista de colaboradores aprobados.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+           
+            </a>
+            
+        </div>
+        
+        
+    
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card" style="position: relative;">
+                <div class="card-body text-center">
+                    <img src="{% static 'assets/cliente.png' %}" alt="Clientes Registrados">
+                    <h5>{{ clientes }}</h5>
+                    <p>Clientes registrados</p>
+                    
+                    <div class="info-box">
+                        <p>Información sobre clientes registrados:</p>
+                        <ul>
+                            <li>Número total: {{ clientes }}</li>
+                            <li>Accede al listado en la sección correspondiente.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    
+        <!-- Mascotas Hospedadas -->
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <img src="{% static 'assets/mascotas.png' %}" alt="Mascotas Hospedadas">
+                    <h5>{{ mascotas_hospedadas }}</h5>
+                    <p>Mascotas hospedadas</p>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Servicios realizados hoy -->
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <img src="{% static 'assets/mujer.png' %}" alt="Servicios realizados hoy">
+                    <h5>{{ servicios_hoy }}</h5>
+                    <p>Servicios realizados hoy</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reservas por habitación -->
+
+
+        <a href="{% url 'listar_reservas_admin' %}" class="col-lg-3 col-md-6 col-sm-12 text-decoration-none">
+            <div class="card" style="position: relative;">
+                <div class="card-body text-center">
+                    <img src="{% static 'assets/result.png' %}" alt="Reservas por habitación">
+                    <h5>{{ total_reservas }}</h5>
+                    <p>Reservas de habitación</p>
+                    <!-- Ícono de información -->
+                    <span class="info-icon">ℹ️</span>
+                    <!-- Cuadro de información -->
+                    <div class="info-box">
+                        <p>Información sobre Reservas de habitación:</p>
+                        <ul>
+                            <li>Total de reservas: {{ total_reservas }}</li>
+                            <li>Muestra el listado completo de reservas activas.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </a>
+        
+       
+    
+        <a href="{% url 'dashboard_estrategico' %}" class="col-lg-3 col-md-6 col-sm-12 text-decoration-none">
+            <div class="card" style="position: relative;">
+                <div class="card-body text-center">
+                    <img src="{% static 'assets/financiero.png' %}" alt="Totales de ingresos">
+                    <h5>${{ ingresos_totales|intcomma }}</h5>
+                    <p>Totales de ingresos</p>
+                    <!-- Ícono de información -->
+                    <span class="info-icon">ℹ️</span>
+                    <!-- Cuadro de información -->
+                    <div class="info-box">
+                        <p>Información sobre Totales de ingresos:</p>
+                        <ul>
+                            <li>Ingreso acumulado: ${{ ingresos_totales|intcomma }}</li>
+                            <li>Ingresas al apartado de datos estadísticos del hotel.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </a>
+        
+        
+    
+        <!-- Check-in acumulados -->
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <img src="{% static 'assets/checkin.png' %}" alt="Check-in acumulados">
+                    <h5>{{ pendientes_check_in_acumulados }}</h5>
+                    <p>Check-in acumulados</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card {% if perros_llegan_hoy > 0 %}card-arrival{% else %}bg-light text-dark{% endif %}">
+                <div class="card-body text-center">
+                    <img src="{% static 'assets/checkin.png' %}" alt="Perros que llegan hoy">
+                    <h5>{{ perros_llegan_hoy }}</h5>
+                    <p>Perros que llegan hoy</p>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Perros que se van hoy -->
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card {% if perros_se_van_hoy > 0 %}card-departure{% else %}bg-light text-dark{% endif %}">
+                <div class="card-body text-center">
+                    <img src="{% static 'assets/checkout.png' %}" alt="Perros que se van hoy">
+                    <h5>{{ perros_se_van_hoy }}</h5>
+                    <p>Perros que se van hoy</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta de calificaciones bajas -->
+    <a href="{% url 'listar_calificaciones_bajas' %}" class="col-lg-3 col-md-6 col-sm-12 text-decoration-none">
+        <div class="card card-stock-low shadow-sm">
+            <div class="card-body text-center">
+                <img src="{% static 'assets/mala-resena.png' %}" alt="Calificaciones bajas" class="mb-3" style="width: 50px;">
+                <h5>{{ calificaciones_bajas_count }}</h5>
+                <p>Calificaciones bajas</p>
+                <!-- Ícono de información -->
+                <span class="info-icon" onclick="toggleInfo(this)">ℹ️</span>
+                <!-- Cuadro de información -->
+                <div class="info-box">
+                    <p>Información sobre calificaciones bajas:</p>
+                    <ul>
+                        <li>Total detectadas: {{ calificaciones_bajas_count }}</li>
+                        <li>Haz clic para gestionar estas calificaciones.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <!-- Regalos en stock -->
+    <a href="{% url 'listar_regalias' %}" class="col-lg-3 col-md-6 col-sm-12 text-decoration-none">
+        <div class="card {% if total_regalos < 5 %}card-stock-low{% else %}bg-light text-dark{% endif %} shadow-sm">
+            <div class="card-body text-center">
+                <img src="{% static 'assets/stock.png' %}" alt="Stock de regalos" class="mb-3" style="width: 50px;">
+                <h5 id="stock-value">{{ total_regalos }}</h5>
+                <p>Regalos en stock</p>
+                <!-- Ícono de información -->
+                <span class="info-icon" onclick="toggleInfo(this)">ℹ️</span>
+                <!-- Cuadro de información -->
+                <div class="info-box">
+                    <p>Información sobre regalos en stock:</p>
+                    <ul>
+                        <li>Cantidad total: {{ total_regalos }}</li>
+                        <li>Accede al listado de regalos disponibles en stock.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    
+        
+    </div>
+    
+    <div class="row g-4 mt-4">
+        
+        <!-- Perros que llegan hoy -->
+    
+
+
+
+<h2 class="section-title">Pendientes</h2>
+
+<div class="row g-4">
+    
+    <!-- Check-ins pendientes -->
+    <a href="#checkins-pendientes" class="col-lg-3 col-md-6 col-sm-12 text-decoration-none">
+        <div class="card {% if pendientes_check_in_hoy > 0 %}card-checkin-pending{% else %}bg-light text-dark{% endif %} shadow-sm">
+            <div class="card-body text-center">
+                <img src="{% static 'assets/pendientec.png' %}" alt="Check-ins pendientes hoy" class="mb-3" style="width: 50px;">
+                <h5>{{ pendientes_check_in_hoy }}</h5>
+                <p>Check-ins pendientes hoy</p>
+                <!-- Ícono de información -->
+                <span class="info-icon" onclick="toggleInfo(this)">ℹ️</span>
+                <!-- Cuadro de información -->
+                <div class="info-box">
+                    <p>Información sobre Check-ins pendientes:</p>
+                    <ul>
+                        <li>Número total: {{ pendientes_check_in_hoy }}</li>
+                        <li>Redirige a la lista de check-ins pendientes diarios para su gestión.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <!-- Check-outs pendientes -->
+    <a href="#checkouts-pendientes" class="col-lg-3 col-md-6 col-sm-12 text-decoration-none">
+        <div class="card {% if pendientes_check_out_hoy > 0 %}card-checkout-pending{% else %}bg-light text-dark{% endif %} shadow-sm">
+            <div class="card-body text-center">
+                <img src="{% static 'assets/pendientec2.png' %}" alt="Check-outs pendientes hoy" class="mb-3" style="width: 50px;">
+                <h5>{{ pendientes_check_out_hoy }}</h5>
+                <p>Check-outs pendientes hoy</p>
+                <!-- Ícono de información -->
+                <span class="info-icon" onclick="toggleInfo(this)">ℹ️</span>
+                <!-- Cuadro de información -->
+                <div class="info-box">
+                    <p>Información sobre Check-outs pendientes:</p>
+                    <ul>
+                        <li>Número total: {{ pendientes_check_out_hoy }}</li>
+                        <li>Redirige a la lista de check-outs pendientes diarios para su gestión.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </a>
+
+
+
+    <!-- Tarjeta de Mensajes No Respondidos -->
+<a href="{% url 'reservas_activas' %}" class="col-lg-3 col-md-6 col-sm-12 text-decoration-none">
+    <div class="card shadow-sm">
+        <div class="card-body text-center">
+            <img src="{% static 'assets/mensaje.png' %}" alt="Mensajes No Respondidos" class="mb-3" style="width: 50px;">
+            <h5>{{ total_mensajes_no_respondidos }}</h5>
+            <p>Mensajes no respondidos</p>
+            <!-- Ícono de información -->
+            <span class="info-icon" onclick="toggleInfo(this)">ℹ️</span>
+            <!-- Cuadro de información -->
+            <div class="info-box">
+                <p>Información sobre mensajes no respondidos:</p>
+                <ul>
+                    <li>Total detectados: {{ total_mensajes_no_respondidos }}</li>
+                    <li>Haz clic para gestionar mensajes de reservas activas.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</a>
+
+
+    
+</div>
+
+    <!-- Gráfico -->
+    <div class="mt-5">
+        <h2 class="section-title">Porcentaje de Ocupación por Día de la Semana</h2>
+        <canvas id="graficaPorDia" width="400" height="200"></canvas>
+    </div>
+    <!-- Tablas -->
+    <div id="checkins-pendientes" class="section mt-4">
+        <h2 class="section-title">Check-ins Pendientes</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Habitación</th>
+                        <th>Mascota</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in reservas_check_in %}
+                    <tr>
+                        <td>{{ reserva.id }}</td>
+                        <td>{{ reserva.cliente.first_name }}</td>
+                        <td>{{ reserva.habitacion.numero_habitacion }}</td>
+                        <td>{{ reserva.mascota.nombre_perro }}</td>
+                        <td>
+                            <a href="{% url 'realizar_check_in' reserva.id %}" class="btn btn-primary btn-sm">Realizar Check-in</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No hay check-ins pendientes.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="checkouts-pendientes" class="section mt-4">
+        <h2 class="section-title">Check-outs Pendientes</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Habitación</th>
+                        <th>Mascota</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in reservas_check_out %}
+                    <tr>
+                        <td>{{ reserva.id }}</td>
+                        <td>{{ reserva.cliente.first_name }}</td>
+                        <td>{{ reserva.habitacion.numero_habitacion }}</td>
+                        <td>{{ reserva.mascota.nombre_perro }}</td>
+                        <td>
+                            <a href="{% url 'realizar_checkout' reserva.id %}" class="btn btn-danger btn-sm">Realizar Check-out</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No hay check-outs pendientes.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<script id="ocupacionData" type="application/json">
+    {{ ocupacion_por_dia|safe }}
+</script>
+
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+
+    
+    // Etiquetas para los días de la semana
+    const labels = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+    // Obtén los datos del script JSON generado por Django
+    const ocupacionPorDia = JSON.parse(document.getElementById("ocupacionData").textContent);
+    console.log("Datos de ocupación por día:", ocupacionPorDia);  // Verifica los datos
+
+    // Datos para el gráfico
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Porcentaje de Ocupación',
+            data: [
+                ocupacionPorDia.Lunes || 0,
+                ocupacionPorDia.Martes || 0,
+                ocupacionPorDia.Miércoles || 0,
+                ocupacionPorDia.Jueves || 0,
+                ocupacionPorDia.Viernes || 0,
+                ocupacionPorDia.Sábado || 0,
+                ocupacionPorDia.Domingo || 0,
+            ],
+            borderColor: 'rgb(75, 192, 192)', // Color de la línea
+            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Color del relleno
+            tension: 0.4, // Suaviza la línea
+            fill: true, // Rellena bajo la línea
+        }]
+    };
+
+    // Configuración del gráfico
+    const config = {
+        type: 'line', // Tipo de gráfico
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top', // Posición de la leyenda
+                },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true, // Comienza en 0
+                    max: 100, // Escala máxima para el eje Y
+                }
+            }
+        }
+    };
+
+    // Renderiza el gráfico
+    const ctx = document.getElementById('graficaPorDia').getContext('2d');
+    new Chart(ctx, config);
+});
+
+</script>
+
+<script>
+    function actualizarFechaHora() {
+        const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const ahora = new Date();
+        const fecha = ahora.toLocaleDateString('es-ES', opciones);
+        const hora = ahora.toLocaleTimeString('es-ES');
+        document.getElementById('fecha-hora').innerHTML = `📅 ${fecha} - ⏰ ${hora}`;
+    }
+
+    // Actualiza la fecha y hora cada segundo
+    setInterval(actualizarFechaHora, 1000);
+
+    // Inicializa la fecha y hora
+    actualizarFechaHora();
+</script>
+
+<script>
+    function filterTable(filter) {
+        window.location.href = '?filter=' + filter;
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    function toggleInfo(icon) {
+        const infoBox = icon.nextElementSibling; // Selecciona el cuadro de información asociado
+        if (infoBox.style.display === "block") {
+            infoBox.style.display = "none";
+        } else {
+            // Cierra otros cuadros abiertos
+            document.querySelectorAll('.info-box').forEach(box => {
+                box.style.display = 'none';
+            });
+            infoBox.style.display = "block";
+        }
+    }
+
+    // Cierra el cuadro al hacer clic fuera de la tarjeta
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.card')) {
+            document.querySelectorAll('.info-box').forEach(box => {
+                box.style.display = 'none';
+            });
+        }
+    });
+</script>
+
+{% endblock %}

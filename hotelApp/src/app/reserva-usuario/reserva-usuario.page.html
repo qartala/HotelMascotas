@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar class="navbar">
+    <ion-buttons slot="start">
+      <ion-button (click)="regresar()" class="menu-item">
+        <ion-icon slot="icon-only" name="arrow-back-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="navbar-title">Mis Reservas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+
+    <!-- Filtro de búsqueda -->
+    <ion-item>
+      <ion-input placeholder="Buscar por numero de habitacion o mascota" [(ngModel)]="filtro"></ion-input>
+    </ion-item>
+    <ion-button expand="block" (click)="filtrarReservas()" class="btn-filtrar">
+      Buscar
+    </ion-button>
+
+    <!-- Listado de Reservas -->
+    <div *ngFor="let reserva of reservasFiltradas">
+      <div 
+        class="reserva-card" 
+        [ngClass]="{ 'check-in-true': reserva.check_in }">
+        <div class="reserva-header">
+          <ion-icon name="paw-outline" class="reserva-icon"></ion-icon>
+          <h3 class="reserva-title">{{ reserva.mascota.nombre_perro }}</h3>
+        </div>
+        <p class="reserva-info">Habitación: {{ reserva.habitacion.numero_habitacion || 'N/A' }}</p>
+        <p class="reserva-info">Desde: {{ reserva.fecha_inicio }}</p>
+        <p class="reserva-info">Hasta: {{ reserva.fecha_fin }}</p>
+        <p
+          class="reserva-estado"
+          [ngClass]="reserva.pagado ? 'pagada' : 'no-pagada'">
+          {{ reserva.pagado ? 'Pagada' : 'No Pagada' }}
+        </p>
+        <ion-button
+          expand="block"
+          (click)="verSeguimientoUsuario(reserva.id)"
+          class="btn-seguimiento">
+          Ver Seguimiento
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

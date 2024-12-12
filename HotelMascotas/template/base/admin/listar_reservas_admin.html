@@ -1,0 +1,166 @@
+{% extends 'base/admin/Administrador.html' %}
+{% load humanize %}
+{% block title %}
+Inicio - Reservas
+{% endblock %}
+
+{% block content %}
+<head>
+    <!-- Estilos y scripts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container-xl">
+        <!-- Título y barra de búsqueda -->
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h2><b>Reservas</b></h2>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <form method="GET" action="">
+                            <div class="input-group">
+                                <input 
+                                    type="text" 
+                                    name="buscar_cliente" 
+                                    class="form-control" 
+                                    placeholder="Buscar por cliente..." 
+                                    value="{{ request.GET.buscar_cliente|default:'' }}">
+
+                                    <input 
+                                    type="text" 
+                                    name="buscar_habitacion" 
+                                    class="form-control ml-2" 
+                                    placeholder="Buscar por habitación..." 
+                                    value="{{ request.GET.buscar_habitacion|default:'' }}">
+                            
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit">Buscar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Reservas -->
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Cliente</th>
+                        <th>Habitación</th>
+                        <th>Mascota</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Pagado</th>
+                        <th>Check-in</th>
+                        <th>Checkout</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in page_obj %}
+                    <tr>
+                        <td>{{ reserva.id }}</td>
+                        <td>{{ reserva.cliente.first_name }}</td>
+                        <td>{{ reserva.habitacion.numero_habitacion }}</td>
+                        <td>{{ reserva.mascota.nombre_perro }}</td>
+                        <td>{{ reserva.fecha_inicio }}</td>
+                        <td>{{ reserva.fecha_fin }}</td>
+                        <td>{{ reserva.pagado|yesno:"Sí,No" }}</td>
+                        <td>{{ reserva.check_in|yesno:"Sí,No" }}</td>
+                        <td>{{ reserva.checkout|yesno:"Sí,No" }}</td>
+                        <td>
+                            <a href="#" class="checkin" data-bs-toggle="modal" data-bs-target="#confirmCheckInModal-{{ reserva.id }}"
+                               {% if not reserva.pagado %}style="pointer-events: none; opacity: 0.5;"{% endif %}>
+                                <i class="material-icons" data-toggle="tooltip" title="Realizar Check-in" style="color: #2854C5;">fact_check</i>
+                            </a>
+                            <a href="#" class="checkout" data-bs-toggle="modal" data-bs-target="#confirmCheckoutModal-{{ reserva.id }}"
+                               {% if not reserva.check_in %}style="pointer-events: none; opacity: 0.5;"{% endif %}>
+                                <i class="material-icons" data-toggle="tooltip" title="Realizar Check-out" style="color: #28C76F;">exit_to_app</i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Modal para Confirmar Check-in -->
+                    <div class="modal fade" id="confirmCheckInModal-{{ reserva.id }}" tabindex="-1" aria-labelledby="exampleModalLabel-{{ reserva.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Confirmar Check-in</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    ¿Estás seguro de que deseas {% if reserva.check_in %}cancelar{% else %}realizar{% endif %} el check-in para esta reserva?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <a href="{% url 'realizar_check_in' reserva.id %}" class="btn btn-primary">
+                                        {% if reserva.check_in %}Cancelar Check-in{% else %}Realizar Check-in{% endif %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal para Confirmar Check-out -->
+                    <div class="modal fade" id="confirmCheckoutModal-{{ reserva.id }}" tabindex="-1" aria-labelledby="exampleModalLabel-{{ reserva.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Confirmar Check-out</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    ¿Estás seguro de que deseas {% if reserva.checkout %}cancelar{% else %}realizar{% endif %} el check-out para esta reserva?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <a href="{% url 'realizar_checkout' reserva.id %}" class="btn btn-primary">
+                                        {% if reserva.checkout %}Cancelar Check-out{% else %}Realizar Check-out{% endif %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="text-center">No hay reservas registradas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+                <!-- Paginación -->
+                <ul class="pagination">
+                    <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                        <!-- <a class="page-link" href="?page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% else %}1{% endif %}"> -->
+                        <a class="page-link" href="?page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% else %}1{% endif %}&buscar_cliente={{ request.GET.buscar_cliente|default:'' }}&buscar_habitacion={{ request.GET.buscar_habitacion|default:'' }}">
+                            Anterior
+                        </a>
+                    </li>
+                    {% for num in page_obj.paginator.page_range %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                            <!-- <a class="page-link" href="?page={{ num }}">{{ num }}</a> -->
+                            <a class="page-link" href="?page={{ num }}&buscar_cliente={{ request.GET.buscar_cliente|default:'' }}&buscar_habitacion={{ request.GET.buscar_habitacion|default:'' }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+                    <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                        <!-- <a class="page-link" href="?page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}{{ page_obj.paginator.num_pages }}{% endif %}"> -->
+                        <a class="page-link" href="?page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}{{ page_obj.paginator.num_pages }}{% endif %}&buscar_cliente={{ request.GET.buscar_cliente|default:'' }}&buscar_habitacion={{ request.GET.buscar_habitacion|default:'' }}">
+                            Siguiente
+                        </a>
+                    </li>
+                </ul>
+        </div>
+    </div>
+</body>
+{% endblock %}

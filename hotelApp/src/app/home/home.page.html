@@ -1,0 +1,114 @@
+<ion-app>
+  <!-- Menu Lateral -->
+  <ion-menu contentId="main-content" type="overlay">
+    <ion-header>
+      <ion-toolbar class="menu-toolbar">
+        <ion-title class="menu-title">Menú</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="12">
+          <ion-list lines="none" class="menu-list">
+            <ion-item (click)="ir('home')" class="menu-item">
+              <ion-icon slot="start" name="home-outline"></ion-icon>
+              <ion-label>Inicio</ion-label>
+            </ion-item>
+            <!-- Mostrar solo para trabajadores -->
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-button (click)="logout()" class="logout-button" color="danger">
+          <ion-icon name="log-out-outline"></ion-icon>
+          <ion-label>Cerrar Sesión</ion-label>
+        </ion-button>
+      </ion-row>
+    </ion-content>
+
+  </ion-menu>
+
+
+  <!-- Contenido Principal -->
+  <div class="ion-page" id="main-content">
+    <ion-header>
+      <ion-toolbar class="navbar">
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title class="navbar-title">Pets Team</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <!-- Fondo con Imagen y Filtro -->
+      <div class="background-image"></div>
+
+      <!-- Carrusel de Bienvenida -->
+      <ion-slides pager="true" class="welcome-carousel">
+        <ion-slide>
+          <div class="welcome-section">
+            <h2 class="welcome-title">Bienvenidos a <span>Pets Team</span></h2>
+            <p class="welcome-description">
+              Un espacio de lujo para tus mascotas. Servicios de alta calidad en un entorno cómodo y seguro.
+            </p>
+
+          </div>
+        </ion-slide>
+      </ion-slides>
+
+      <!-- Sección de Botones de Servicios -->
+      <ion-grid>
+        <ion-row>
+
+          <ion-col size="4">
+            <div class="service-card" (click)="redirigirPerfil()">
+              <ion-icon name="person-circle-outline" class="service-icon"></ion-icon>
+              <ion-card-title>Perfil </ion-card-title>
+            </div>
+          </ion-col>
+          <!-- Mostrar solo para trabajadores -->
+          <ion-col size="4" *ngIf="esTrabajador">
+            <div class="service-card" (click)="reedirigir()">
+              <ion-icon name="calendar-outline" class="service-icon"></ion-icon>
+              <ion-card-title>Reservas</ion-card-title>
+            </div>
+          </ion-col>
+
+          <!-- Mostrar para todos -->
+          <ion-col size="4" *ngIf="!esTrabajador">
+            <div class="service-card" (click)="ir('regalias')">
+              <ion-icon name="gift-outline" class="service-icon"></ion-icon>
+              <ion-card-title>Adquirir regalos</ion-card-title>
+            </div>
+          </ion-col>
+
+          <ion-col size="4" *ngIf="!esTrabajador">
+            <div class="service-card" (click)="ir('regalia-usuario')">
+              <ion-icon name="gift-outline" class="service-icon"></ion-icon>
+              <ion-card-title>Mis Regalos</ion-card-title>
+            </div>
+          </ion-col>
+
+          <ion-col size="4" *ngIf="!esTrabajador">
+            <div class="service-card" (click)="ir('reserva-video')">
+              <ion-icon name="videocam-outline" class="service-icon"></ion-icon>
+              <ion-card-title>Mis Videos</ion-card-title>
+            </div>
+          </ion-col>
+
+
+          <ion-col size="4" *ngIf="!esTrabajador">
+            <div class="service-card" (click)="ir('reserva-usuario')">
+              <ion-icon name="eye-outline" class="service-icon"></ion-icon>
+              <ion-card-title>Reservas Usuario</ion-card-title>
+            </div>
+          </ion-col>
+
+        </ion-row>
+      </ion-grid>
+
+    </ion-content>
+  </div>
+</ion-app>

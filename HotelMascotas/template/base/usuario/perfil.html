@@ -1,0 +1,374 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="path/to/your/styles.css"> 
+  <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&display=swap');
+
+        * {
+          box-sizing: border-box;
+        }
+
+        
+
+        .data-card {
+          font-family: 'Open Sans', sans-serif;
+          display: flex;
+          flex-direction: column;
+          max-width: 20.75em;
+          min-height: 10.75em;
+          overflow: hidden;
+          border-radius: .5em;
+          text-decoration: none;
+          background: rgb(255, 255, 255);
+          margin: 1em;
+          padding: 2.75em 2.5em;
+          box-shadow: 0 1.5em 2.5em -.5em rgba(#000000, .1);
+          transition: transform .45s ease, background .45s ease;
+          
+          h3 {
+            color: #005ae2;
+            font-size: 3.5em;
+            font-weight: 600;
+            line-height: 1;
+            padding-bottom: .5em;
+            margin: 0 0 0.142857143em;
+            border-bottom: 2px solid #0059ff;
+            transition: color .45s ease, border .45s ease;
+          }
+
+          h4 {
+            color: #000000;
+            text-transform: uppercase;
+            font-size: 1.125em;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0.1em;
+            margin: 0 0 1.777777778em;
+            transition: color .45s ease;
+          }
+
+          p {
+            opacity: 0;
+            color: #FFFFFF;
+            font-weight: 600;
+            line-height: 1.8;
+            margin: 0 0 1.25em;
+            transform: translateY(-1em);
+            transition: opacity .45s ease, transform .5s ease;
+          }
+
+          .link-text {
+            display: block;
+            color: #006aff;
+            font-size: 1.125em;
+            font-weight: 600;
+            line-height: 1.2;
+            margin: auto 0 0;
+            transition: color .45s ease;
+
+            svg {
+              margin-left: .5em;
+              transition: transform .6s ease;
+              
+              path {
+                transition: fill .45s ease;
+              }
+            }
+          }
+          
+          &:hover {
+            background: rgb(20, 71, 255);
+            transform: scale(1.02);
+            
+            h3 {
+              color: #FFFFFF;
+              border-bottom-color: #005eff;
+            }
+
+            h4 {
+              color: #FFFFFF;
+            }
+
+            p {
+              opacity: 1;
+              transform: none;
+            }
+
+            .link-text {
+              color: #FFFFFF;
+
+              svg {
+                animation: point 1.25s infinite alternate;
+                
+                path {
+                  fill: #FFFFFF;
+                }
+              }
+            }
+          }
+        }
+
+        @keyframes point {
+          0% {
+          transform: translateX(0);
+          }
+          100% {
+            transform: translateX(.125em);
+          }
+        }
+
+        #card2 {
+          width: 350px;
+          height: 375px;
+          background-image: url("images/bg-pattern-card.svg");
+          background-position: top;
+          background-repeat: no-repeat;
+          background-color: white;
+          border-radius: 5%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        #userInfo2 {
+          height: 60%;
+          display: flex;
+          justify-content: space-between;
+          flex-direction: column;
+          align-items: center;
+          padding-top: 40px;
+          text-align: center;
+          margin-bottom: 5px;
+        }
+
+        #userStats2 {
+          height: 20%;
+          width: 100%;
+          display: flex;
+          justify-content: space-around;
+          flex-direction: row;
+          align-content: center;
+          align-items: center;
+          border-top: 1px solid rgba(150, 150, 150, 0.2);
+          text-align: center;
+          padding-top: 15px;
+        }
+
+        #location2 {
+          margin: 10px 5px 5px 5px;
+          font-size: 14px;
+        }
+
+        #portrait2 {
+          border-radius: 50%;
+          border: 5px solid white;
+          margin-bottom: 15px;
+          object-fit: contain;
+          transform: translate(0, 70px);
+          height: 96px;
+          width: 96px;
+        }
+
+        .attribution2 {
+          margin-top: 10px;
+          font-size: 10px;
+          text-align: center;
+        }
+
+        .numberOf,
+        #name2 {
+          font-weight: 700;
+          color: hsl(229, 23%, 23%);
+        }
+
+        .numberType2 {
+          font-size: 11px;
+          margin: 5px;
+        }
+
+        #name2 {
+          margin-right: 4px;
+        }
+  </style>
+</head>
+<br>
+<br>
+<div class="container">
+  <div class="d-flex" style="height: 80px; visibility: hidden;">
+    <div class="vr"></div>
+  </div>
+
+<div class="row">
+  
+  <div class="card-body ">
+    <div class="d-flex" style="height: 20px; visibility: hidden;">
+      <div class="vr"></div>
+    </div>
+    <div class="row d-flex">
+      <div class="col-4 pt-3">
+        <div class="row d-flex justify-content-center">
+            <div id="card2" class="border border-dark">
+              <div id="userInfo2">
+                <img
+                  src="/static/assets/perroPerfil.jfif"
+                  alt="Imagen"
+                  height="140px"
+                />
+                <div id="person2">
+                  <span id="name2">{{ user.first_name }}</span>
+                  <div id="location2">{{ user.email }}</div>
+                </div>
+              </div>
+              <div id="userStats2">
+                <span>
+                  <div class="numberOf2">{{fichas_count}}</div>
+                  <div class="numberType2">Tus mascotas</div>
+                </span>
+                <span>
+                  <div class="numberOf2">{{reservas_habitacion_count}}</div>
+                  <div class="numberType2">Tus reservas</div>
+                </span>
+                <span>
+                  <div class="numberOf2">{{reservas_servicio_count}}</div>
+                  <div class="numberType2">Tus servicios</div>
+                </span>
+              </div>
+              <div class="white-button pt-2">
+                <a href="{% url 'actualizar_perfil' %}" class="">Actualizar Perfil</a>
+              </div>
+            </div>
+        </div>
+      </div>
+      
+      <div class="col-8">
+
+        <div class="row d-flex justify-content-center">
+          <div class="col-6 d-flex align-items-center">
+            <a href="{% url 'ficha_salud' %}" class="data-card border border-dark">
+              <h3 class="text-center"><i class="fas fa-paw fa-3x" style="font-size: 120px; width: 120px; height: 120px;"></i></h3>
+              <h4>Ingresar Mascota</h4>
+              <p>Registra a tu mascota en el sistema para gestionar sus servicios.</p>
+              <span class="link-text">
+                Agrega una mascota
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'listar_fichas' %}" class="data-card border border-dark">
+              <h3 class="text-center"><i class="fas fa-dog fa-3x" style="font-size: 120px; width: 120px; height: 120px;"></i></h3>
+              <h4>Listado de Mascotas</h4>
+              <p>Consulta los detalles de todas tus mascotas registradas.</p>
+              <span class="link-text">
+                Ve tus mascotas
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'listar_reservas' %}" class="data-card border border-dark">
+              <h3 class="text-center"><i class="fa fa-calendar-check" style="font-size: 120px; width: 120px; height: 120px;"></i></h3>
+              <h4>Reservas de habitaciones</h4>
+              <p>Visualiza todas las reservas de habitaciones que realizaste</p>
+              <span class="link-text">
+                Ve tus reservas
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'listar_reservas_servicios' %}" class="data-card border border-dark">
+              <h3 class="text-center"><i class="fa fa-calendar-check" style="font-size: 120px; width: 120px; height: 120px;"></i></h3>
+              <h4>Reservas Servicios</h4>
+              <p>Visualiza todas las reservas de servicios que realizaste</p>
+              <span class="link-text">
+                Ve tus reservas
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'gestionar_membresia_usuario' %}" class="data-card border border-dark">
+              <h3 class="text-center"><i class="fa fa-credit-card" style="font-size: 120px; width: 120px; height: 120px;"></i></h3>
+              <h4>Membresias</h4>
+              <p>Visualiza y gestiona tu Membresias</p>
+              <span class="link-text">
+                Ve a tus membresias
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'agregar_calificacion' %}" class="data-card border border-dark">
+              <h3 class="text-center">
+                <i class="fa-solid fa-star fa-3x" style="font-size: 120px; width: 120px; height: 120px; color: gold;"></i>
+              </h3>
+              <h4>Calificación</h4>
+              <p>¿Deseas Calificar Nuestro Servicio?</p>
+              <span class="link-text">
+                Haz tu calificación
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" 
+                        d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" 
+                        fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'regalos' %}" class="data-card border border-dark">
+              <h3 class="text-center">
+                <i class="fa-solid fa-gift fa-3x" style="font-size: 120px; width: 120px; height: 120px;"></i>
+              </h3>
+              <h4>Regalos</h4>
+              <p>Paga aqui tus regalos enviados por la App</p>
+              <span class="link-text">
+                Ve tus regalos
+                <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" 
+                        d="M17.8631 0.929124L24.2271 7.29308C24.6176 7.68361 24.6176 8.31677 24.2271 8.7073L17.8631 15.0713C17.4726 15.4618 16.8394 15.4618 16.4489 15.0713C16.0584 14.6807 16.0584 14.0476 16.4489 13.657L21.1058 9.00019H0.47998V7.00019H21.1058L16.4489 2.34334C16.0584 1.95281 16.0584 1.31965 16.4489 0.929124C16.8394 0.538599 17.4726 0.538599 17.8631 0.929124Z" 
+                        fill="#006aff"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  
+  </div>
+  
+</div>
+<div class="d-flex" style="height: 80px; visibility: hidden;">
+  <div class="vr"></div>
+</div>
+
+    
+    <!-- <div class="card text-center">
+      <div class="card-body">
+        <i class="fas fa-concierge-bell fa-3x mb-3" style="color: #0d6efd;"></i> 
+        <h5 class="card-title">prueba</h5>
+        <p class="card-text">prueba</p>
+        <a href="{% url 'prueba' %}" class="btn btn-warning">ir</a>
+      </div>
+    </div> -->
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base/admin/Administrador.html' %}
+{% load static %}
+
+{% block title %}
+Admin - Membresia
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Crear Membresía</h1>
+    <div class="row d-flex justify-content-center">
+        <div class="col-7">
+            <hr>
+            <form class="form-custom" method="POST" action="">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
+                <div class="mb-3">
+                    <label for="descuento" class="form-label">Descuento (%)</label>
+                    <input type="number" class="form-control" id="descuento" name="descuento" required>
+                </div>
+                <div class="mb-3">
+                    <label for="duracion_dias" class="form-label">Duración (días)</label>
+                    <input type="number" class="form-control" id="duracion_dias" name="duracion_dias" required>
+                </div>
+                <div class="form-group">
+                    <label for="valor">Valor de la Membresía</label>
+                    <input type="number" step="0.01" name="valor" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Crear Membresía</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

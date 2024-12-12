@@ -1,0 +1,65 @@
+{% extends 'base/usuario/base.html' %}
+
+{% block title %}
+Inicio - cliente
+{% endblock %}
+
+{% block content %}
+div class="container mt-5">
+<div class="d-flex" style="height: 130px; visibility: hidden;">
+    <div class="vr"></div>
+</div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white text-center">
+                    <h3>¡Pago Exitoso!</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-center">Tu pago se ha procesado exitosamente.</p>
+                    
+                    <h5>Detalles de la Reserva</h5>
+                    <ul>
+                        <li><strong>Habitación:</strong> {{ reserva.habitacion.numero_habitacion }}</li>
+                        <li><strong>Fecha de Inicio:</strong> {{ reserva.fecha_inicio|date:"d M Y" }}</li>
+                        <li><strong>Fecha de Fin:</strong> {{ reserva.fecha_fin|date:"d M Y" }}</li>
+                    </ul>
+
+                    <h5>Regalos Pagados</h5>
+                    <div class="row">
+                        {% for regalia in reserva.regalias.all %}
+                        {% if regalia.usada %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <img src="/media/{{ regalia.regalia.foto }}" class="card-img-top regalo-img" alt="{{ regalia.regalia.nombre }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ regalia.regalia.nombre }}</h5>
+                                    <p><strong>Cantidad:</strong> {{ regalia.cantidad }}</p>
+                                    <p><strong>Precio Total:</strong> {{ regalia.precio_total_r }} CLP</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <h5 class="mt-4">Total Pagado: <span class="text-success">{{ total_pagado }} CLP</span></h5>
+
+                    <div class="text-center mt-4">
+                        <a href="{% url 'regalos' %}" class="btn btn-primary">Volver a Regalos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .regalo-img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}

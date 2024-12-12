@@ -1,0 +1,38 @@
+{% extends 'base/colaborador/basePerfil.html' %}
+
+{% block title %}
+Inicio - colab
+{% endblock %}
+
+{% block content %}
+<main class="container py-5 text-center">
+    <section class="text-center mb-5">
+        <h1 class="mb-4">Panel de {{ colaborador.fullname }}</h1>
+        <h4 class="mb-4">Servicio: {{ colaborador.servicio }}</h4>
+        <hr>
+    </section>
+    
+    <div class="row justify-content-center g-4">
+        <div class="col-md-4">
+            <div class="card shadow border-light">
+                <div class="card-body text-center">
+                    <i class="fas fa-user fa-4x mb-3 text-primary"></i>
+                    <h5 class="card-title">Perfil</h5>
+                    <a class="btn btn-primary" href="{% url 'perfil_colaborador' %}">Perfil</a>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="col-md-4">
+            <div class="card shadow border-light">
+                <div class="card-body text-center">
+                    <i class="fas fa-clock fa-4x mb-3 text-warning"></i>
+                    <h5 class="card-title">Horas disponibles</h5>
+                    <a class="btn btn-primary" href="{% url 'horas_disponibles' %}">Horas disponibles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
